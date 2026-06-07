@@ -1,5 +1,6 @@
 package com.crm.presentation.SanPham;
 
+import com.crm.application.common.Mediator;
 import com.crm.application.loaisanpham.command.*;
 import com.crm.application.loaisanpham.handler.*;
 import com.crm.application.loaisanpham.query.*;
@@ -16,48 +17,35 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:5173")
 public class LoaiSanPhamController {
 
-    private final CreateLoaiSanPhamHandler createHandler;
-    private final UpdateLoaiSanPhamHandler updateHandler;
-    private final DeleteLoaiSanPhamHandler deleteHandler;
-    private final GetAllLoaiSanPhamQueryHandler getAllHandler;
-    private final GetLoaiSanPhamByIdQueryHandler getByIdHandler;
+    private final Mediator mediator;
 
-    public LoaiSanPhamController(CreateLoaiSanPhamHandler createHandler,
-                                 UpdateLoaiSanPhamHandler updateHandler,
-                                 DeleteLoaiSanPhamHandler deleteHandler,
-                                 GetAllLoaiSanPhamQueryHandler getAllHandler,
-                                 GetLoaiSanPhamByIdQueryHandler getByIdHandler) {
-        this.createHandler = createHandler;
-        this.updateHandler = updateHandler;
-        this.deleteHandler = deleteHandler;
-        this.getAllHandler = getAllHandler;
-        this.getByIdHandler = getByIdHandler;
+    public LoaiSanPhamController(Mediator mediator) {
+        this.mediator = mediator;
     }
-
     @GetMapping
     public ResponseEntity<List<LoaiSanPham>> getAll() {
-        return ResponseEntity.ok(getAllHandler.handle(new GetAllLoaiSanPhamQuery()));
+        return ResponseEntity.ok(mediator.send(new GetAllLoaiSanPhamQuery()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LoaiSanPham> getById(@PathVariable Integer  id) {
-        return ResponseEntity.ok(getByIdHandler.handle(new GetLoaiSanPhamByIdQuery(id)));
+        return ResponseEntity.ok(mediator.send(new GetLoaiSanPhamByIdQuery(id)));
     }
 
     @PostMapping
     public ResponseEntity<LoaiSanPham> create(@RequestBody CreateLoaiSanPhamCommand command) {
-        return new ResponseEntity<>(createHandler.handle(command), HttpStatus.CREATED);
+        return new ResponseEntity<>(mediator.send(command), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<LoaiSanPham> update(@PathVariable Integer  id,
                                               @RequestBody UpdateLoaiSanPhamCommand command) {
         command.setId(id);
-        return ResponseEntity.ok(updateHandler.handle(command));
+        return ResponseEntity.ok(mediator.send(command));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable Integer  id) {
-        return ResponseEntity.ok(deleteHandler.handle(new DeleteLoaiSanPhamCommand(id)));
+        return ResponseEntity.ok(mediator.send(new DeleteLoaiSanPhamCommand(id)));
     }
 }

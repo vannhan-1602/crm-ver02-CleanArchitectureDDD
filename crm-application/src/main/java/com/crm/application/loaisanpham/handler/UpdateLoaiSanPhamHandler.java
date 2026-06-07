@@ -1,12 +1,13 @@
 package com.crm.application.loaisanpham.handler;
 
+import com.crm.application.common.IRequest;
 import com.crm.application.loaisanpham.command.UpdateLoaiSanPhamCommand;
 import com.crm.domain.entities.LoaiSanPham;
 import com.crm.domain.repositories.LoaiSanPhamRepo;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdateLoaiSanPhamHandler {
+public class UpdateLoaiSanPhamHandler implements IRequest<UpdateLoaiSanPhamCommand> {
     private final LoaiSanPhamRepo loaiSanPhamRepo;
 
     public UpdateLoaiSanPhamHandler(LoaiSanPhamRepo loaiSanPhamRepo) {

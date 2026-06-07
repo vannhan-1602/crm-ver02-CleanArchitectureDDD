@@ -1,5 +1,6 @@
 package com.crm.presentation.controllers;
 
+import com.crm.application.common.Mediator;
 import com.crm.application.loaisanpham.command.CreateLoaiSanPhamCommand;
 import com.crm.application.loaisanpham.command.UpdateLoaiSanPhamCommand;
 import com.crm.application.sanpham.command.CreateSanPhamCommand;
@@ -22,44 +23,38 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/sanpham")
 @CrossOrigin(origins = "http://localhost:5173")
-public class SanPhamController  {
-    @Autowired
-    private final CreateSanPhamHandler createHandler;
-    private final UpdateSanPhamHandler updateHandler;
-    private final DeleteSanPhamHandler deleteHandler;
-    private final GetAllSanPhamQueryHandler getAllHandler;
-    private final GetSanPhamByIdQueryHandler getByIdHandler;
-    public SanPhamController(CreateSanPhamHandler createHandler,
-                             UpdateSanPhamHandler updateHandler,
-                             DeleteSanPhamHandler deleteHandler,
-                             GetAllSanPhamQueryHandler getAllHandler,
-                             GetSanPhamByIdQueryHandler getByIdHandler) {
-        this.createHandler = createHandler;
-        this.updateHandler = updateHandler;
-        this.deleteHandler = deleteHandler;
-        this.getAllHandler = getAllHandler;
-        this.getByIdHandler = getByIdHandler;
-    }    @GetMapping()
-    public ResponseEntity<List<SanPham>> GetAll() {
-            return new ResponseEntity<>(getAllHandler.handle(new GetAllSanPhamQuery()), HttpStatus.OK);
+public class SanPhamController {
 
+    private final Mediator mediator;
+
+    public SanPhamController(Mediator mediator) {
+        this.mediator = mediator;
     }
-    @PostMapping()
-    public ResponseEntity<SanPham> Create(@RequestBody CreateSanPhamCommand command) {
-        return new ResponseEntity<>(createHandler.handle(command), HttpStatus.CREATED);
+
+    @GetMapping
+    public ResponseEntity<List<SanPham>> getAll() {
+        return ResponseEntity.ok(mediator.send(new GetAllSanPhamQuery()));
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<SanPham> GetById(@PathVariable Integer  id) {
-        return new ResponseEntity<SanPham>(getByIdHandler.handle(new GetSanPhamByIdQuery(id)), HttpStatus.OK);
+    public ResponseEntity<SanPham> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(mediator.send(new GetSanPhamByIdQuery(id)));
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<SanPham> Update(@PathVariable Integer  id, @RequestBody UpdateSanPhamCommand command) {
-        command.setId(id);
-        return ResponseEntity.ok(updateHandler.handle(command));
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> Delete(@PathVariable Integer  id) {
-        return ResponseEntity.ok(deleteHandler.handle(new DeleteSanPhamCommand(id)));
 
+    @PostMapping
+    public ResponseEntity<SanPham> create(@RequestBody CreateSanPhamCommand command) {
+        return new ResponseEntity<>(mediator.send(command), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SanPham> update(@PathVariable Integer id,
+                                          @RequestBody UpdateSanPhamCommand command) {
+        command.setId(id);
+        return ResponseEntity.ok(mediator.send(command));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable Integer id) {
+        return ResponseEntity.ok(mediator.send(new DeleteSanPhamCommand(id)));
     }
 }
