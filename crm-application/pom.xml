@@ -22,5 +22,9 @@
             <artifactId>pipelinr</artifactId>
             <version>0.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
     </dependencies>
 </project>
