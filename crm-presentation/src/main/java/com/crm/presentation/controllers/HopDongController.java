@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/hop-dong")
 public class HopDongController {
     private final CreateHopDongHandler createHopDongHandler;
