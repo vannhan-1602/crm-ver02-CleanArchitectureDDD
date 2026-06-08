@@ -8,6 +8,8 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # Thêm dòng này
     show-sql: true
 server:
   port: 8080
