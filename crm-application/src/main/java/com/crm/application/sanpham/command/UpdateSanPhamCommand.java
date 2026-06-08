@@ -1,8 +1,11 @@
 package com.crm.application.sanpham.command;
 
+import com.crm.application.common.IRequest;
+import com.crm.domain.entities.SanPham;
+
 import java.util.UUID;
 
-public class UpdateSanPhamCommand {
+public class UpdateSanPhamCommand implements IRequest<SanPham> {
     private Integer  id;
     private Integer loaiSanPham;
     private String maSanPham;

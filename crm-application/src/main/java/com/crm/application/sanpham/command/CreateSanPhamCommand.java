@@ -1,6 +1,9 @@
 package com.crm.application.sanpham.command;
 
-public class CreateSanPhamCommand {
+import com.crm.application.common.IRequest;
+import com.crm.domain.entities.SanPham;
+
+public class CreateSanPhamCommand implements IRequest<SanPham> {
     private Integer loaiSanPham;
     private String maSanPham;
     private String tenSanPham;
