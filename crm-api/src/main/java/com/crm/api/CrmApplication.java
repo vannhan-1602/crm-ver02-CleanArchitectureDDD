@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"com.crm"})
 @EnableJpaRepositories(basePackages = {"com.crm.persistence.repositories"})
-@EntityScan(basePackages = {"com.crm.persistence.jpa"})
+@EntityScan(basePackages = {"com.crm.persistence.jpa", "com.crm.persistence.entities"})
 public class CrmApplication {
     public static void main(String[] args) {
         SpringApplication.run(CrmApplication.class, args);

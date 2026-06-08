@@ -1,0 +1,326 @@
+.hopdong-page {
+  min-height: 100vh;
+  padding: 32px;
+  color: #162033;
+}
+
+.hopdong-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.hopdong-header h1 {
+  margin: 6px 0 8px;
+  font-size: 34px;
+  line-height: 1.15;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5b6b85;
+}
+
+.subtitle {
+  max-width: 720px;
+  color: #5f6c80;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search {
+  width: min(420px, 100%);
+  min-width: 280px;
+}
+
+.search,
+.form-panel input,
+.form-panel select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d6deea;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  outline: none;
+  color: #162033;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.search:focus,
+.form-panel input:focus,
+.form-panel select:focus {
+  border-color: #4a78ff;
+  box-shadow: 0 0 0 4px rgba(74, 120, 255, 0.12);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card,
+.panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #dbe3ef;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(33, 48, 72, 0.06);
+}
+
+.stat-card {
+  padding: 18px;
+}
+
+.stat-card span {
+  display: block;
+  color: #5c6c84;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.stat-card strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.panel-head h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.panel-head p {
+  margin: 0;
+  color: #5c6c84;
+  font-size: 14px;
+}
+
+.form-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.form-panel label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #40506b;
+  min-width: 0;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.two-col > label {
+  min-width: 0;
+}
+
+.actions,
+.row-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actions {
+  margin-top: 18px;
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn,
+.danger-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease,
+    background 0.12s ease;
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.ghost-btn:hover,
+.danger-btn:hover {
+  transform: translateY(-1px);
+}
+
+.primary-btn {
+  color: #fff;
+  background: #315efb;
+}
+
+.secondary-btn {
+  color: #1d2a44;
+  background: #e7eefb;
+}
+
+.ghost-btn {
+  color: #1d2a44;
+  background: #eef2f8;
+}
+
+.danger-btn {
+  color: #fff;
+  background: #d84d5b;
+}
+
+.message {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.message.error {
+  color: #8d1325;
+  background: #fdecef;
+}
+
+.message.success {
+  color: #135c2f;
+  background: #eaf8ef;
+}
+
+.table-panel {
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid #e5ebf3;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+th {
+  color: #51627a;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+tbody tr:hover {
+  background: #f8fbff;
+}
+
+.empty-row {
+  text-align: center;
+  padding: 28px 10px;
+  color: #5c6c84;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-dangthuchien {
+  color: #115e59;
+  background: #dcfce7;
+}
+
+.badge-tamdung {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.badge-thanhly {
+  color: #7c2d12;
+  background: #ffedd5;
+}
+
+.loading {
+  color: #4a78ff;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 860px) {
+  .hopdong-page {
+    padding: 20px;
+  }
+
+  .hopdong-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+}
