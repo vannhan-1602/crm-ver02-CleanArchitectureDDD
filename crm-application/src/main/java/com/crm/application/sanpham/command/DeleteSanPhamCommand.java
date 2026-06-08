@@ -2,8 +2,6 @@ package com.crm.application.sanpham.command;
 
 import com.crm.application.common.IRequest;
 
-import java.util.UUID;
-
 public class DeleteSanPhamCommand implements IRequest<Boolean> {
     private final Integer  id;
 

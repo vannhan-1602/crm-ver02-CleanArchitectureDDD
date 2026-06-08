@@ -1,8 +1,7 @@
-package com.crm.presentation.SanPham;
+package com.crm.presentation.controllers;
 
 import com.crm.application.common.Mediator;
 import com.crm.application.loaisanpham.command.*;
-import com.crm.application.loaisanpham.handler.*;
 import com.crm.application.loaisanpham.query.*;
 import com.crm.domain.entities.LoaiSanPham;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/loaisanpham")

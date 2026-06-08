@@ -1,8 +1,23 @@
-package com.crm.domain.entities;
+package com.crm.persistence.jpa;
 
-public class LoaiSanPham {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "bh_loaisanpham")
+public class LoaiSanPhamJpaEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "ten_loai")
     private String tenLoai;
+
+    @Column(name = "mo_ta")
     private String moTa;
 
     public Integer getId() {

@@ -17,7 +17,7 @@ public class DeleteLoaiSanPhamHandler implements IRequestHandler<DeleteLoaiSanPh
     public Boolean handle(DeleteLoaiSanPhamCommand command) {
         LoaiSanPham lsp = loaiSanPhamRepo.findById(command.getId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy loại sản phẩm"));
-        loaiSanPhamRepo.Delete(lsp);
+        loaiSanPhamRepo.delete(lsp);
         return true;
     }
 }

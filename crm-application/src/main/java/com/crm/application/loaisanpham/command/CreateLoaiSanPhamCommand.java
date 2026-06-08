@@ -3,8 +3,6 @@ package com.crm.application.loaisanpham.command;
 import com.crm.application.common.IRequest;
 import com.crm.domain.entities.LoaiSanPham;
 
-import java.util.List;
-
 public class CreateLoaiSanPhamCommand implements IRequest<LoaiSanPham> {
     private String tenLoai;
     private String moTa;

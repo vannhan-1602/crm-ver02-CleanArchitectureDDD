@@ -3,8 +3,6 @@ package com.crm.application.sanpham.query;
 import com.crm.application.common.IRequest;
 import com.crm.domain.entities.SanPham;
 
-import java.util.UUID;
-
 public class GetSanPhamByIdQuery implements IRequest<SanPham> {
     private final   Integer  id;
 

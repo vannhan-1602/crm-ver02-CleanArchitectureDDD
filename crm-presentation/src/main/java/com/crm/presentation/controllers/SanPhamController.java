@@ -1,24 +1,17 @@
 package com.crm.presentation.controllers;
 
 import com.crm.application.common.Mediator;
-import com.crm.application.loaisanpham.command.CreateLoaiSanPhamCommand;
-import com.crm.application.loaisanpham.command.UpdateLoaiSanPhamCommand;
 import com.crm.application.sanpham.command.CreateSanPhamCommand;
 import com.crm.application.sanpham.command.DeleteSanPhamCommand;
 import com.crm.application.sanpham.command.UpdateSanPhamCommand;
-import com.crm.application.sanpham.handler.*;
 import com.crm.application.sanpham.query.GetAllSanPhamQuery;
 import com.crm.application.sanpham.query.GetSanPhamByIdQuery;
 import com.crm.domain.entities.SanPham;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/sanpham")
