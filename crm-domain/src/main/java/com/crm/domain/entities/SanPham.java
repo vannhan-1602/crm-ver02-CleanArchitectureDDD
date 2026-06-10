@@ -1,6 +1,8 @@
 package com.crm.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SanPham {
 
@@ -23,6 +25,22 @@ public class SanPham {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    public void ThemHinhAnh(SanPhamHinhAnh hinhAnh)
+    {
+        if (this.hinhAnh == null) {
+            this.hinhAnh = new ArrayList<>();
+        }
+        this.hinhAnh.add(hinhAnh);
+    }
+    public List<SanPhamHinhAnh> getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(List<SanPhamHinhAnh> hinhAnh) {
+        this.hinhAnh = hinhAnh;
+    }
+
+    private List<SanPhamHinhAnh> hinhAnh=new ArrayList<>();
 
     public Integer getSanPhamId() {
         return id;

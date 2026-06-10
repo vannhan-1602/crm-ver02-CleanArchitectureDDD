@@ -1,7 +1,12 @@
 package com.crm.persistence.mapper;
 
 import com.crm.domain.entities.SanPham;
+import com.crm.domain.entities.SanPhamHinhAnh;
+import com.crm.persistence.jpa.SanPhamHinhAnhJpaEntity;
 import com.crm.persistence.jpa.SanPhamJpaEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class SanPhamMapper {
     private SanPhamMapper() {
@@ -19,6 +24,11 @@ public final class SanPhamMapper {
         domain.setTrangThai(jpa.getTrangThai());
         domain.setCreatedAt(jpa.getCreatedAt());
         domain.setUpdatedAt(jpa.getUpdatedAt());
+        if (jpa.getDshinhanh() != null) {
+            domain.setHinhAnh(new ArrayList<>(jpa.getDshinhanh().stream()
+                    .map(SanPhamHinhAnhMapper::toDomain)
+                    .toList()));
+        }
         return domain;
     }
 
@@ -34,6 +44,13 @@ public final class SanPhamMapper {
         jpa.setTrangThai(domain.getTrangThai());
         jpa.setCreatedAt(domain.getCreatedAt());
         jpa.setUpdatedAt(domain.getUpdatedAt());
+        if (domain.getHinhAnh() != null) {
+            List<SanPhamHinhAnhJpaEntity> hinhAnh = domain.getHinhAnh().stream()
+                    .map(SanPhamHinhAnhMapper::toJpa)
+                    .toList();
+            hinhAnh.forEach(item -> item.setSanPham(jpa));
+            jpa.setDshinhanh(hinhAnh);
+        }
         return jpa;
     }
 }
