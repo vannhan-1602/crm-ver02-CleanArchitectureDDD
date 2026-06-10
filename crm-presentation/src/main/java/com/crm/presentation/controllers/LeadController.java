@@ -6,6 +6,7 @@ import com.crm.application.lead.query.GetAllLeadsQuery;
 import com.crm.application.lead.query.GetLeadByIdQuery;
 import com.crm.domain.entities.KhachHang;
 import com.crm.domain.entities.Lead;
+import com.crm.domain.repositories.NhanVienRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,22 +20,27 @@ import java.util.List;
 public class LeadController {
 
     private final Mediator mediator;
+    private final NhanVienRepository nhanVienRepository;
 
-    public LeadController(Mediator mediator) {
+    public LeadController(Mediator mediator,
+                          NhanVienRepository nhanVienRepository) {
         this.mediator = mediator;
+        this.nhanVienRepository = nhanVienRepository;
     }
 
 
     @GetMapping
     public List<LeadResponse> getAll() {
         List<Lead> leads = mediator.send(new GetAllLeadsQuery());
-        return leads.stream().map(LeadResponse::from).toList();
+        return leads.stream()
+                .map(lead -> LeadResponse.from(lead, nhanVienRepository))
+                .toList();
     }
 
 
     @GetMapping("/{id}")
     public LeadResponse getById(@PathVariable Long id) {
-        return LeadResponse.from(mediator.send(new GetLeadByIdQuery(id)));
+        return LeadResponse.from(mediator.send(new GetLeadByIdQuery(id)), nhanVienRepository);
     }
 
     @PostMapping
@@ -47,7 +53,7 @@ public class LeadController {
                 request.getEmail(),
                 request.getNhanVienPhuTrachId()
         ));
-        return LeadResponse.from(lead);
+        return LeadResponse.from(lead, nhanVienRepository);
     }
 
 
@@ -62,7 +68,7 @@ public class LeadController {
                 request.getNhanVienPhuTrachId()
         );
         command.setId(id);
-        return LeadResponse.from(mediator.send(command));
+        return LeadResponse.from(mediator.send(command), nhanVienRepository);
     }
 
 
@@ -77,9 +83,8 @@ public class LeadController {
     public LeadResponse changeStatus(@PathVariable Long id,
                                      @RequestBody ChangeStatusRequest request) {
         ChangeLeadStatusCommand command = new ChangeLeadStatusCommand(id, request.getTinhTrangMoi());
-        return LeadResponse.from(mediator.send(command));
+        return LeadResponse.from(mediator.send(command), nhanVienRepository);
     }
-
 
 
     @PostMapping("/{id}/convert")
@@ -90,6 +95,8 @@ public class LeadController {
     }
 
 
+
+
     static class CreateLeadRequest {
         private String tenLead;
         private String tenCongTy;
@@ -97,11 +104,11 @@ public class LeadController {
         private String email;
         private Integer nhanVienPhuTrachId;
 
-        public String getTenLead()               { return tenLead; }
-        public String getTenCongTy()             { return tenCongTy; }
-        public String getSoDienThoai()           { return soDienThoai; }
-        public String getEmail()                 { return email; }
-        public Integer getNhanVienPhuTrachId()   { return nhanVienPhuTrachId; }
+        public String getTenLead()             { return tenLead; }
+        public String getTenCongTy()           { return tenCongTy; }
+        public String getSoDienThoai()         { return soDienThoai; }
+        public String getEmail()               { return email; }
+        public Integer getNhanVienPhuTrachId() { return nhanVienPhuTrachId; }
     }
 
     static class UpdateLeadRequest {
@@ -111,17 +118,19 @@ public class LeadController {
         private String email;
         private Integer nhanVienPhuTrachId;
 
-        public String getTenLead()               { return tenLead; }
-        public String getTenCongTy()             { return tenCongTy; }
-        public String getSoDienThoai()           { return soDienThoai; }
-        public String getEmail()                 { return email; }
-        public Integer getNhanVienPhuTrachId()   { return nhanVienPhuTrachId; }
+        public String getTenLead()             { return tenLead; }
+        public String getTenCongTy()           { return tenCongTy; }
+        public String getSoDienThoai()         { return soDienThoai; }
+        public String getEmail()               { return email; }
+        public Integer getNhanVienPhuTrachId() { return nhanVienPhuTrachId; }
     }
 
     static class ChangeStatusRequest {
         private String tinhTrangMoi;
         public String getTinhTrangMoi() { return tinhTrangMoi; }
     }
+
+
 
     static class LeadResponse {
         private Long id;
@@ -131,33 +140,38 @@ public class LeadController {
         private String email;
         private String tinhTrang;
         private Integer nhanVienPhuTrachId;
+        private String tenNhanVienPhuTrach;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public static LeadResponse from(Lead lead) {
+        public static LeadResponse from(Lead lead, NhanVienRepository nhanVienRepository) {
             LeadResponse r = new LeadResponse();
-            r.id                    = lead.getId();
-            r.tenLead               = lead.getTenLead();
-            r.tenCongTy             = lead.getTenCongTy();
-            r.soDienThoai           = lead.getSoDienThoai();
-            r.email                 = lead.getEmail();
-            r.tinhTrang             = lead.getTinhTrang() != null
+            r.id                   = lead.getId();
+            r.tenLead              = lead.getTenLead();
+            r.tenCongTy            = lead.getTenCongTy();
+            r.soDienThoai          = lead.getSoDienThoai();
+            r.email                = lead.getEmail();
+            r.tinhTrang            = lead.getTinhTrang() != null
                     ? lead.getTinhTrang().name() : null;
-            r.nhanVienPhuTrachId    = lead.getNhanVienPhuTrachId();
-            r.createdAt             = lead.getCreatedAt();
-            r.updatedAt             = lead.getUpdatedAt();
+            r.nhanVienPhuTrachId   = lead.getNhanVienPhuTrachId();
+            r.tenNhanVienPhuTrach  = lead.getNhanVienPhuTrachId() != null
+                    ? nhanVienRepository.findHoTenById(lead.getNhanVienPhuTrachId()).orElse(null)
+                    : null;
+            r.createdAt            = lead.getCreatedAt();
+            r.updatedAt            = lead.getUpdatedAt();
             return r;
         }
 
-        public Long getId()                      { return id; }
-        public String getTenLead()               { return tenLead; }
-        public String getTenCongTy()             { return tenCongTy; }
-        public String getSoDienThoai()           { return soDienThoai; }
-        public String getEmail()                 { return email; }
-        public String getTinhTrang()             { return tinhTrang; }
-        public Integer getNhanVienPhuTrachId()   { return nhanVienPhuTrachId; }
-        public LocalDateTime getCreatedAt()      { return createdAt; }
-        public LocalDateTime getUpdatedAt()      { return updatedAt; }
+        public Long getId()                     { return id; }
+        public String getTenLead()              { return tenLead; }
+        public String getTenCongTy()            { return tenCongTy; }
+        public String getSoDienThoai()          { return soDienThoai; }
+        public String getEmail()                { return email; }
+        public String getTinhTrang()            { return tinhTrang; }
+        public Integer getNhanVienPhuTrachId()  { return nhanVienPhuTrachId; }
+        public String getTenNhanVienPhuTrach()  { return tenNhanVienPhuTrach; } // ← THÊM MỚI
+        public LocalDateTime getCreatedAt()     { return createdAt; }
+        public LocalDateTime getUpdatedAt()     { return updatedAt; }
     }
 
     static class KhachHangResponse {
@@ -171,22 +185,22 @@ public class LeadController {
 
         public static KhachHangResponse from(KhachHang kh) {
             KhachHangResponse r = new KhachHangResponse();
-            r.id                    = kh.getId();
-            r.maKhachHang           = kh.getMaKhachHang();
-            r.tenKhachHang          = kh.getTenKhachHang();
-            r.email                 = kh.getEmail();
-            r.soDienThoai           = kh.getSoDienThoai();
-            r.nhanVienPhuTrachId    = kh.getNhanVienPhuTrachId();
-            r.createdAt             = kh.getCreatedAt();
+            r.id                 = kh.getId();
+            r.maKhachHang        = kh.getMaKhachHang();
+            r.tenKhachHang       = kh.getTenKhachHang();
+            r.email              = kh.getEmail();
+            r.soDienThoai        = kh.getSoDienThoai();
+            r.nhanVienPhuTrachId = kh.getNhanVienPhuTrachId();
+            r.createdAt          = kh.getCreatedAt();
             return r;
         }
 
-        public Long getId()                      { return id; }
-        public String getMaKhachHang()           { return maKhachHang; }
-        public String getTenKhachHang()          { return tenKhachHang; }
-        public String getEmail()                 { return email; }
-        public String getSoDienThoai()           { return soDienThoai; }
-        public Integer getNhanVienPhuTrachId()   { return nhanVienPhuTrachId; }
-        public LocalDateTime getCreatedAt()      { return createdAt; }
+        public Long getId()                    { return id; }
+        public String getMaKhachHang()         { return maKhachHang; }
+        public String getTenKhachHang()        { return tenKhachHang; }
+        public String getEmail()               { return email; }
+        public String getSoDienThoai()         { return soDienThoai; }
+        public Integer getNhanVienPhuTrachId() { return nhanVienPhuTrachId; }
+        public LocalDateTime getCreatedAt()    { return createdAt; }
     }
 }

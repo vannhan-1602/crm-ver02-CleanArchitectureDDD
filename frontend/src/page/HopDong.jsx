@@ -1,105 +1,109 @@
-import { useEffect, useMemo, useState } from 'react'
-import './HopDong.css'
+import { useEffect, useMemo, useState } from "react";
+import "./HopDong.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 
 const emptyForm = {
-  maHopDong: '',
-  khachHangId: '',
-  ngayKy: '',
-  thoiHan: '',
-  trangThai: 'DangThucHien',
-}
+  maHopDong: "",
+  khachHangId: "",
+  ngayKy: "",
+  thoiHan: "",
+  trangThai: "DangThucHien",
+};
 
 function formatDateTime(value) {
-  if (!value) return '-'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return new Intl.DateTimeFormat('vi-VN', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(date)
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("vi-VN", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(date);
 }
 
 function HopDong() {
-  const [items, setItems] = useState([])
-  const [form, setForm] = useState(emptyForm)
-  const [editingId, setEditingId] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [search, setSearch] = useState('')
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [search, setSearch] = useState("");
 
   const filteredItems = useMemo(() => {
-    const keyword = search.trim().toLowerCase()
-    if (!keyword) return items
+    const keyword = search.trim().toLowerCase();
+    if (!keyword) return items;
     return items.filter((item) => {
       return [
         item.maHopDong,
+        item.tenKhachHang,
         item.khachHangId,
         item.trangThai,
         item.ngayKy,
       ]
         .filter(Boolean)
-        .some((value) => String(value).toLowerCase().includes(keyword))
-    })
-  }, [items, search])
+        .some((value) => String(value).toLowerCase().includes(keyword));
+    });
+  }, [items, search]);
 
   const loadHopDong = async () => {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError("");
     try {
-      const response = await fetch(`${API_BASE_URL}/api/hop-dong`)
+      const response = await fetch(`${API_BASE_URL}/api/hop-dong`);
       if (!response.ok) {
-        throw new Error(`Khong the tai danh sach hop dong (${response.status})`)
+        throw new Error(
+          `Không thể tải danh sách hợp đồng (${response.status})`,
+        );
       }
-      const data = await response.json()
-      setItems(Array.isArray(data) ? data : [])
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(err.message || 'Tai danh sach that bai')
+      setError(err.message || "Tải danh sách thất bại");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadHopDong()
-  }, [])
+    loadHopDong();
+  }, []);
 
   const resetForm = () => {
-    setForm(emptyForm)
-    setEditingId(null)
-  }
+    setForm(emptyForm);
+    setEditingId(null);
+  };
 
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setForm((current) => ({
       ...current,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    if (!form.maHopDong.trim()) return 'Ma hop dong khong duoc rong'
-    if (!form.khachHangId.trim()) return 'Khach hang ID khong duoc rong'
-    if (!form.ngayKy) return 'Ngay ky khong duoc rong'
-    if (!form.thoiHan.trim()) return 'Thoi han khong duoc rong'
-    return ''
-  }
+    if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
+    if (!form.khachHangId.trim()) return "Mã khách hàng không được rỗng";
+    if (!form.ngayKy) return "Ngày ký không được rỗng";
+    if (!form.thoiHan.trim()) return "Thời hạn không được rỗng";
+    return "";
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    const validationMessage = validateForm()
+    event.preventDefault();
+    const validationMessage = validateForm();
     if (validationMessage) {
-      setError(validationMessage)
-      setSuccess('')
-      return
+      setError(validationMessage);
+      setSuccess("");
+      return;
     }
 
-    setSubmitting(true)
-    setError('')
-    setSuccess('')
+    setSubmitting(true);
+    setError("");
+    setSuccess("");
 
     const payload = {
       maHopDong: form.maHopDong.trim(),
@@ -107,7 +111,7 @@ function HopDong() {
       ngayKy: form.ngayKy,
       thoiHan: Number(form.thoiHan),
       trangThai: form.trangThai,
-    }
+    };
 
     try {
       const response = await fetch(
@@ -115,120 +119,120 @@ function HopDong() {
           ? `${API_BASE_URL}/api/hop-dong/${editingId}`
           : `${API_BASE_URL}/api/hop-dong`,
         {
-          method: editingId ? 'PUT' : 'POST',
+          method: editingId ? "PUT" : "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         },
-      )
+      );
 
       if (!response.ok) {
         throw new Error(
           editingId
-            ? `Cap nhat that bai (${response.status})`
-            : `Tao moi that bai (${response.status})`,
-        )
+            ? `Cập nhật thất bại (${response.status})`
+            : `Tạo mới thất bại (${response.status})`,
+        );
       }
 
-      await loadHopDong()
-      resetForm()
-      setSuccess(editingId ? 'Cap nhat hop dong thanh cong' : 'Tao hop dong thanh cong')
+      await loadHopDong();
+      resetForm();
+      setSuccess(
+        editingId ? "Cập nhật hợp đồng thành công" : "Tạo hợp đồng thành công",
+      );
     } catch (err) {
-      setError(err.message || 'Khong the luu hop dong')
+      setError(err.message || "Không thể lưu hợp đồng");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleEdit = (item) => {
-    setEditingId(item.id)
+    setEditingId(item.id);
     setForm({
-      maHopDong: item.maHopDong ?? '',
-      khachHangId: item.khachHangId ?? '',
-      ngayKy: item.ngayKy ?? '',
-      thoiHan: item.thoiHan ?? '',
-      trangThai: item.trangThai ?? 'DangThucHien',
-    })
-    setError('')
-    setSuccess('')
-  }
+      maHopDong: item.maHopDong ?? "",
+      khachHangId: item.khachHangId ?? "",
+      ngayKy: item.ngayKy ?? "",
+      thoiHan: item.thoiHan ?? "",
+      trangThai: item.trangThai ?? "DangThucHien",
+    });
+    setError("");
+    setSuccess("");
+  };
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm('Ban co muon xoa hop dong nay khong?')
-    if (!confirmed) return
+    const confirmed = window.confirm("Bạn có muốn xóa hợp đồng này không?");
+    if (!confirmed) return;
 
-    setError('')
-    setSuccess('')
+    setError("");
+    setSuccess("");
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/hop-dong/${id}`, {
-        method: 'DELETE',
-      })
+        method: "DELETE",
+      });
 
       if (!response.ok && response.status !== 204) {
-        throw new Error(`Xoa that bai (${response.status})`)
+        throw new Error(`Xóa thất bại (${response.status})`);
       }
 
-      await loadHopDong()
+      await loadHopDong();
       if (editingId === id) {
-        resetForm()
+        resetForm();
       }
-      setSuccess('Xoa hop dong thanh cong')
+      setSuccess("Xóa hợp đồng thành công");
     } catch (err) {
-      setError(err.message || 'Khong the xoa hop dong')
+      setError(err.message || "Không thể xóa hợp đồng");
     }
-  }
+  };
 
   const stats = useMemo(() => {
     return {
       total: items.length,
-      active: items.filter((item) => item.trangThai === 'DangThucHien').length,
-      paused: items.filter((item) => item.trangThai === 'TamDung').length,
-      closed: items.filter((item) => item.trangThai === 'ThanhLy').length,
-    }
-  }, [items])
+      active: items.filter((item) => item.trangThai === "DangThucHien").length,
+      paused: items.filter((item) => item.trangThai === "TamDung").length,
+      closed: items.filter((item) => item.trangThai === "ThanhLy").length,
+    };
+  }, [items]);
 
   return (
     <main className="hopdong-page">
       <section className="hopdong-header">
         <div>
           <p className="eyebrow">CRM / Hop dong</p>
-          <h1>Quan ly hop dong</h1>
-          <p className="subtitle">
-            Tao, cap nhat, tim va xoa hop dong truc tiep tu API backend.
-          </p>
+          <h1>Quản lý hợp đồng</h1>
+          
         </div>
 
         <div className="toolbar">
           <input
             className="search"
             type="search"
-            placeholder="Tim theo ma, khach hang, trang thai..."
+            placeholder="Tìm theo mã, khách hàng, trạng thái..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
           <button className="secondary-btn" type="button" onClick={loadHopDong}>
-            Tai lai
+            Tải lại
           </button>
         </div>
       </section>
 
       <section className="stats-row">
         <article className="stat-card">
-          <span>Tong so</span>
+          <span>Tổng số</span>
           <strong>{stats.total}</strong>
         </article>
         <article className="stat-card">
-          <span>Dang thuc hien</span>
+          <span>Đang thực hiện</span>
           <strong>{stats.active}</strong>
         </article>
         <article className="stat-card">
-          <span>Tam dung</span>
+          <span>Tạm dừng</span>
           <strong>{stats.paused}</strong>
         </article>
         <article className="stat-card">
-          <span>Thanh ly</span>
+          <span>Thanh lý</span>
           <strong>{stats.closed}</strong>
         </article>
       </section>
@@ -237,18 +241,18 @@ function HopDong() {
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
-              <h2>{editingId ? 'Cap nhat hop dong' : 'Tao hop dong moi'}</h2>
-              <p>Du lieu se goi vao API `api/hop-dong`.</p>
+              <h2>{editingId ? "Cap nhat hop dong" : "Tao hop dong moi"}</h2>
+              <p>Dữ liệu sẽ gọi vào API `api/hop-dong`.</p>
             </div>
             {editingId ? (
               <button className="ghost-btn" type="button" onClick={resetForm}>
-                Huy sua
+                Hủy sửa
               </button>
             ) : null}
           </div>
 
           <label>
-            Ma hop dong
+            Mã hợp đồng
             <input
               name="maHopDong"
               value={form.maHopDong}
@@ -258,7 +262,7 @@ function HopDong() {
           </label>
 
           <label>
-            Khach hang ID
+            Mã khách hàng
             <input
               name="khachHangId"
               type="number"
@@ -271,7 +275,7 @@ function HopDong() {
 
           <div className="two-col">
             <label>
-              Ngay ky
+              Ngày ký
               <input
                 name="ngayKy"
                 type="date"
@@ -281,7 +285,7 @@ function HopDong() {
             </label>
 
             <label>
-              Thoi han
+              Thời hạn
               <input
                 name="thoiHan"
                 type="number"
@@ -294,11 +298,15 @@ function HopDong() {
           </div>
 
           <label>
-            Trang thai
-            <select name="trangThai" value={form.trangThai} onChange={handleChange}>
-              <option value="DangThucHien">Dang thuc hien</option>
-              <option value="TamDung">Tam dung</option>
-              <option value="ThanhLy">Thanh ly</option>
+            Trạng thái
+            <select
+              name="trangThai"
+              value={form.trangThai}
+              onChange={handleChange}
+            >
+              <option value="DangThucHien">Đang thực hiện</option>
+              <option value="TamDung">Tạm dừng</option>
+              <option value="ThanhLy">Thanh lý</option>
             </select>
           </label>
 
@@ -307,10 +315,10 @@ function HopDong() {
 
           <div className="actions">
             <button className="primary-btn" type="submit" disabled={submitting}>
-              {submitting ? 'Dang luu...' : editingId ? 'Cap nhat' : 'Tao moi'}
+              {submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo mới"}
             </button>
             <button className="secondary-btn" type="button" onClick={resetForm}>
-              Lam moi form
+              Làm mới form
             </button>
           </div>
         </form>
@@ -318,12 +326,12 @@ function HopDong() {
         <section className="panel table-panel">
           <div className="panel-head">
             <div>
-              <h2>Danh sach hop dong</h2>
+              <h2>Danh sách hợp đồng</h2>
               <p>
-                Hien thi {filteredItems.length}/{items.length} ban ghi.
+                Hiển thị {filteredItems.length}/{items.length} bản ghi.
               </p>
             </div>
-            {loading ? <span className="loading">Dang tai...</span> : null}
+            {loading ? <span className="loading">Đang tải...</span> : null}
           </div>
 
           <div className="table-wrap">
@@ -331,20 +339,22 @@ function HopDong() {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Ma hop dong</th>
-                  <th>Khach hang</th>
-                  <th>Ngay ky</th>
-                  <th>Thoi han</th>
-                  <th>Trang thai</th>
-                  <th>Cap nhat</th>
-                  <th>Hanh dong</th>
+                  <th>Mã hợp đồng</th>
+                  <th>Khách hàng</th>
+                  <th>Ngày ký</th>
+                  <th>Thời hạn</th>
+                  <th>Trạng thái</th>
+                  <th>Cập nhật</th>
+                  <th>Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredItems.length === 0 ? (
                   <tr>
                     <td colSpan="8" className="empty-row">
-                      {loading ? 'Dang tai du lieu...' : 'Khong co du lieu phu hop'}
+                      {loading
+                        ? "Đang tải dữ liệu..."
+                        : "Không có dữ liệu phù hợp"}
                     </td>
                   </tr>
                 ) : (
@@ -352,22 +362,39 @@ function HopDong() {
                     <tr key={item.id}>
                       <td>{item.id}</td>
                       <td>{item.maHopDong}</td>
-                      <td>{item.khachHangId}</td>
-                      <td>{item.ngayKy ?? '-'}</td>
-                      <td>{item.thoiHan ?? '-'}</td>
                       <td>
-                        <span className={`badge badge-${String(item.trangThai || '').toLowerCase()}`}>
-                          {item.trangThai || '-'}
+                        <div className="stacked-cell">
+                          <strong>{item.tenKhachHang || 'Không có tên'}</strong>
+                          <span style={{ color: '#6d7c91', fontSize: '12px' }}>
+                            {item.khachHangId ?? '-'}
+                          </span>
+                        </div>
+                      </td>
+                      <td>{item.ngayKy ?? "-"}</td>
+                      <td>{item.thoiHan ?? "-"}</td>
+                      <td>
+                        <span
+                          className={`badge badge-${String(item.trangThai || "").toLowerCase()}`}
+                        >
+                          {item.trangThai || "-"}
                         </span>
                       </td>
                       <td>{formatDateTime(item.updatedAt)}</td>
                       <td>
                         <div className="row-actions">
-                          <button type="button" className="ghost-btn" onClick={() => handleEdit(item)}>
-                            Sua
+                          <button
+                            type="button"
+                            className="ghost-btn"
+                            onClick={() => handleEdit(item)}
+                          >
+                            Sửa
                           </button>
-                          <button type="button" className="danger-btn" onClick={() => handleDelete(item.id)}>
-                            Xoa
+                          <button
+                            type="button"
+                            className="danger-btn"
+                            onClick={() => handleDelete(item.id)}
+                          >
+                            Xóa
                           </button>
                         </div>
                       </td>
@@ -380,7 +407,7 @@ function HopDong() {
         </section>
       </section>
     </main>
-  )
+  );
 }
 
-export default HopDong
+export default HopDong;

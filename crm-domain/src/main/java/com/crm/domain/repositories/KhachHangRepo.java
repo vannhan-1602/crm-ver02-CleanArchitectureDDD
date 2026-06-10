@@ -11,6 +11,8 @@ public interface KhachHangRepo {
 
     Optional<KhachHang> findById(Long id);
 
+    Optional<KhachHang> findByIdIncludingDeleted(Long id);
+
     List<KhachHang> findAll();
 
   

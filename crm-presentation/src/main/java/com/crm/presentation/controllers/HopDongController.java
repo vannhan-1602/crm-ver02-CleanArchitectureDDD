@@ -8,6 +8,8 @@ import com.crm.application.hopdong.command.UpdateHopDongCommand;
 import com.crm.application.hopdong.query.GetAllHopDongQuery;
 import com.crm.application.hopdong.query.GetHopDongByIdQuery;
 import com.crm.domain.entities.HopDong;
+import com.crm.domain.repositories.KhachHangRepo;
+import com.crm.domain.entities.KhachHang;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,9 +32,11 @@ import java.util.List;
 @RequestMapping("/api/hop-dong")
 public class HopDongController {
     private final Mediator mediator;
+    private final KhachHangRepo khachHangRepo;
 
-    public HopDongController(Mediator mediator) {
+    public HopDongController(Mediator mediator, KhachHangRepo khachHangRepo) {
         this.mediator = mediator;
+        this.khachHangRepo = khachHangRepo;
     }
 
     @PostMapping
@@ -45,20 +49,20 @@ public class HopDongController {
                 request.getThoiHan(),
                 request.getTrangThai()
         ));
-        return HopDongResponse.from(hopDong);
+        return HopDongResponse.from(hopDong, khachHangRepo);
     }
 
     @GetMapping
     public List<HopDongResponse> getAll() {
         List<HopDong> hopDongs = mediator.send(new GetAllHopDongQuery());
         return hopDongs.stream()
-                .map(HopDongResponse::from)
+                .map(hopDong -> HopDongResponse.from(hopDong, khachHangRepo))
                 .toList();
     }
 
     @GetMapping("/{id}")
     public HopDongResponse getById(@PathVariable Long id) {
-        return HopDongResponse.from(mediator.send(new GetHopDongByIdQuery(id)));
+        return HopDongResponse.from(mediator.send(new GetHopDongByIdQuery(id)), khachHangRepo);
     }
 
     @PutMapping("/{id}")
@@ -72,7 +76,7 @@ public class HopDongController {
         );
         command.setId(id);
         HopDong hopDong = mediator.send(command);
-        return HopDongResponse.from(hopDong);
+        return HopDongResponse.from(hopDong, khachHangRepo);
     }
 
     @DeleteMapping("/{id}")
@@ -84,7 +88,7 @@ public class HopDongController {
     @PatchMapping("/{id}/complete")
     public HopDongResponse complete(@PathVariable Long id) {
         HopDong hopDong = mediator.send(new CompleteHopDongCommand(id));
-        return HopDongResponse.from(hopDong);
+        return HopDongResponse.from(hopDong, khachHangRepo);
     }
 
     static class CreateHopDongRequest {
@@ -147,17 +151,23 @@ public class HopDongController {
         private Long id;
         private String maHopDong;
         private Long khachHangId;
+        private String tenKhachHang;
         private LocalDate ngayKy;
         private Integer thoiHan;
         private String trangThai;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public static HopDongResponse from(HopDong hopDong) {
+        public static HopDongResponse from(HopDong hopDong, KhachHangRepo khachHangRepo) {
             HopDongResponse response = new HopDongResponse();
             response.id = hopDong.getId();
             response.maHopDong = hopDong.getMaHopDong() != null ? hopDong.getMaHopDong().getValue() : null;
             response.khachHangId = hopDong.getKhachHangId();
+            response.tenKhachHang = hopDong.getKhachHangId() != null
+                    ? khachHangRepo.findByIdIncludingDeleted(hopDong.getKhachHangId())
+                    .map(KhachHang::getTenKhachHang)
+                    .orElse(null)
+                    : null;
             response.ngayKy = hopDong.getNgayKy();
             response.thoiHan = hopDong.getThoiHan();
             response.trangThai = hopDong.getTrangThai() != null ? hopDong.getTrangThai().name() : null;
@@ -176,6 +186,10 @@ public class HopDongController {
 
         public Long getKhachHangId() {
             return khachHangId;
+        }
+
+        public String getTenKhachHang() {
+            return tenKhachHang;
         }
 
         public LocalDate getNgayKy() {

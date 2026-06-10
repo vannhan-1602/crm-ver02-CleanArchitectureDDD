@@ -285,6 +285,12 @@ tbody tr:hover {
   background: #ffedd5;
 }
 
+.stacked-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .loading {
   color: #4a78ff;
   font-weight: 600;
