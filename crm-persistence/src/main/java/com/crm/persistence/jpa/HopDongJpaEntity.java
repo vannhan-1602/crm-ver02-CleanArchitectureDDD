@@ -1,4 +1,4 @@
-package com.crm.persistence.entities;
+package com.crm.persistence.jpa;
 
 import com.crm.domain.valueobjects.TrangThaiHopDong;
 import jakarta.persistence.*;

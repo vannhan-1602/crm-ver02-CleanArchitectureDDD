@@ -31,6 +31,12 @@ public class KhachHangJpaRepoImpl implements KhachHangRepo {
     }
 
     @Override
+    public Optional<KhachHang> findByIdIncludingDeleted(Long id) {
+        return jpaRepo.findById(id)
+                .map(KhachHangMapper::toDomain);
+    }
+
+    @Override
     public List<KhachHang> findAll() {
         return jpaRepo.findByIsDeletedFalse()
                 .stream()

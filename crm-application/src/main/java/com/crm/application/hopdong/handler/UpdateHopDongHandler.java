@@ -27,11 +27,16 @@ public class UpdateHopDongHandler implements IRequestHandler<UpdateHopDongComman
             existing.changeMaHopDong(new MaHopDong(command.getMaHopDong()));
         }
 
+        TrangThaiHopDong trangThai = null;
+        if (command.getTrangThai() != null && !command.getTrangThai().isBlank()) {
+            trangThai = TrangThaiHopDong.from(command.getTrangThai());
+        }
+
         existing.updateDetails(
                 command.getKhachHangId(),
                 command.getNgayKy(),
                 command.getThoiHan(),
-                TrangThaiHopDong.from(command.getTrangThai())
+                trangThai
         );
 
         return hopDongRepo.save(existing);

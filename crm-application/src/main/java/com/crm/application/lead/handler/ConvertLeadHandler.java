@@ -62,9 +62,9 @@ public class ConvertLeadHandler implements IRequestHandler<ConvertLeadCommand, K
             return "KH0001";
         }
 
-        String current = maxMa.get(); // ví dụ: "KH0004"
+        String current = maxMa.get();
         try {
-            // Bỏ prefix "KH", parse số
+          
             int soHienTai = Integer.parseInt(current.replaceAll("[^0-9]", ""));
             return String.format("KH%04d", soHienTai + 1);
         } catch (NumberFormatException e) {
