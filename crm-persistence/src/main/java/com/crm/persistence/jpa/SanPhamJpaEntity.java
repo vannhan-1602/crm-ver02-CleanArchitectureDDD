@@ -17,32 +17,32 @@ public class SanPhamJpaEntity {
     @Column(name = "Id")
     private Integer id;
 
-    @Column(name = "loai_san_pham_id")
+    @Column(name = "LoaiSanPham_Id")
     private Integer loaiSanPham;
 
-    @Column(name = "masp")
+    @Column(name = "MaSP")
     private String maSanPham;
 
-    @Column(name = "tensp")
+    @Column(name = "TenSP")
     private String tenSanPham;
 
-    @Column(name = "don_vi")
+    @Column(name = "DonVi")
     private String donVi;
 
-    @Column(name = "gia_ban")
+    @Column(name = "GiaBan")
     private Double giaBan;
 
-    @Column(name = "so_luong_ton")
+    @Column(name = "SoLuongTon")
     private Integer slTon;
 
-    @Column(name = "trang_thai")
+    @Column(name = "TrangThai")
     private Integer trangThai;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "CreateAt", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "UpdateAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "sanPham" ,cascade = CascadeType.ALL, orphanRemoval = true)

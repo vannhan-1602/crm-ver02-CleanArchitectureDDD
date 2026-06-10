@@ -12,12 +12,13 @@ import jakarta.persistence.Table;
 public class LoaiSanPhamJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
     private Integer id;
 
-    @Column(name = "ten_loai")
+    @Column(name = "TenLoai")
     private String tenLoai;
 
-    @Column(name = "mo_ta")
+    @Column(name = "Mota")
     private String moTa;
 
     public Integer getId() {
