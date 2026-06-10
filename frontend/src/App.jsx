@@ -46,6 +46,9 @@ function App() {
             <Link to="/tai-chinh" style={linkStyle}>
               Quản lý hóa đơn
             </Link>
+              <Link to="/sanpham" style={linkStyle}>
+                  Quản lý Sản Phẩm
+              </Link>
           </nav>
         </aside>
 
@@ -96,6 +99,7 @@ function App() {
               <Route path="/hop-dong" element={<HopDong />} />
               <Route path="/tai-chinh" element={<TaiChinh />} />
               <Route path="/" element={<LeadManager />} />
+                <Route path="/sanpham" element={<SanPhamManager />} />
             </Routes>
           </div>
 
