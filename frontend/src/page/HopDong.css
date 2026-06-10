@@ -74,6 +74,36 @@
   margin-bottom: 24px;
 }
 
+.finance-tabs {
+  display: inline-flex;
+  gap: 6px;
+  padding: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  background: #eef3fb;
+}
+
+.finance-tab {
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 14px;
+  color: #40506b;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.finance-tab.active {
+  color: #16345f;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(33, 48, 72, 0.08);
+}
+
 .stat-card,
 .panel {
   background: rgba(255, 255, 255, 0.9);
@@ -285,10 +315,19 @@ tbody tr:hover {
   background: #ffedd5;
 }
 
-.stacked-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.badge-chuathanhtoan {
+  color: #8d1325;
+  background: #fdecef;
+}
+
+.badge-thanhtoan1phan {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.badge-hoantat {
+  color: #135c2f;
+  background: #eaf8ef;
 }
 
 .loading {
