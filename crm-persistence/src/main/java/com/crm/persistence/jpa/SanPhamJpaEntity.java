@@ -12,7 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "bh_sanpham")
+@Table(name = "BH_SanPham")
 public class SanPhamJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

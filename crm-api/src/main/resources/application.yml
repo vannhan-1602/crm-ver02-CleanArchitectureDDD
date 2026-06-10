@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/crmonline_pro?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/CRMOnline?useSSL=false&serverTimezone=UTC
     username: root 
-    password:
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     open-in-view: false
@@ -12,4 +12,4 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # Thêm dòng này
     show-sql: true
 server:
-  port: 8080
+  port: 8081
