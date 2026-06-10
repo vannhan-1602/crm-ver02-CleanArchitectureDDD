@@ -1,8 +1,7 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-// Import các component/page
 import HopDong from "./page/HopDong";
+import TaiChinh from "./page/TaiChinh";
 import LeadManager from "./components/LeadManager";
 
 function App() {
@@ -15,7 +14,6 @@ function App() {
           fontFamily: "Arial, sans-serif",
         }}
       >
-        {/* THANH SIDEBAR (Bên trái) */}
         <aside
           style={{
             width: "250px",
@@ -44,10 +42,12 @@ function App() {
             <Link to="/hop-dong" style={linkStyle}>
               Quản lý Hợp đồng
             </Link>
+            <Link to="/tai-chinh" style={linkStyle}>
+              Quản lý hóa đơn
+            </Link>
           </nav>
         </aside>
 
-        {/* KHU VỰC NỘI DUNG CHÍNH (Bên phải) */}
         <main
           style={{
             flex: 1,
@@ -57,7 +57,6 @@ function App() {
             height: "100vh",
           }}
         >
-          {/* Header */}
           <header
             style={{
               height: "60px",
@@ -70,8 +69,8 @@ function App() {
             }}
           >
             <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-              <span style={{ cursor: "pointer" }}>🔔</span>
-              <span style={{ cursor: "pointer" }}>⚙️</span>
+              <span style={{ cursor: "pointer" }}>Thông báo</span>
+              <span style={{ cursor: "pointer" }}>Cài đặt</span>
               <div
                 style={{
                   width: "35px",
@@ -90,13 +89,11 @@ function App() {
             </div>
           </header>
 
-          {/* Nội dung sẽ thay đổi khi bạn bấm vào menu ở Sidebar */}
           <div style={{ padding: "20px", flex: 1, overflowY: "auto" }}>
             <Routes>
               <Route path="/leads" element={<LeadManager />} />
               <Route path="/hop-dong" element={<HopDong />} />
-
-              {/* Trang mặc định khi vừa mở web lên */}
+              <Route path="/tai-chinh" element={<TaiChinh />} />
               <Route path="/" element={<LeadManager />} />
             </Routes>
           </div>
@@ -106,7 +103,6 @@ function App() {
   );
 }
 
-// CSS cho các link ở Sidebar
 const linkStyle = {
   color: "#b1b9c3",
   textDecoration: "none",
