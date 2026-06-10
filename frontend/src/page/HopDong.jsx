@@ -1,105 +1,103 @@
-import { useEffect, useMemo, useState } from 'react'
-import './HopDong.css'
+import { useEffect, useMemo, useState } from "react";
+import "./HopDong.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 
 const emptyForm = {
-  maHopDong: '',
-  khachHangId: '',
-  ngayKy: '',
-  thoiHan: '',
-  trangThai: 'DangThucHien',
-}
+  maHopDong: "",
+  khachHangId: "",
+  ngayKy: "",
+  thoiHan: "",
+  trangThai: "DangThucHien",
+};
 
 function formatDateTime(value) {
-  if (!value) return '-'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return new Intl.DateTimeFormat('vi-VN', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(date)
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("vi-VN", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(date);
 }
 
 function HopDong() {
-  const [items, setItems] = useState([])
-  const [form, setForm] = useState(emptyForm)
-  const [editingId, setEditingId] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  const [search, setSearch] = useState('')
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [search, setSearch] = useState("");
 
   const filteredItems = useMemo(() => {
-    const keyword = search.trim().toLowerCase()
-    if (!keyword) return items
+    const keyword = search.trim().toLowerCase();
+    if (!keyword) return items;
     return items.filter((item) => {
-      return [
-        item.maHopDong,
-        item.khachHangId,
-        item.trangThai,
-        item.ngayKy,
-      ]
+      return [item.maHopDong, item.khachHangId, item.trangThai, item.ngayKy]
         .filter(Boolean)
-        .some((value) => String(value).toLowerCase().includes(keyword))
-    })
-  }, [items, search])
+        .some((value) => String(value).toLowerCase().includes(keyword));
+    });
+  }, [items, search]);
 
   const loadHopDong = async () => {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError("");
     try {
-      const response = await fetch(`${API_BASE_URL}/api/hop-dong`)
+      const response = await fetch(`${API_BASE_URL}/api/hop-dong`);
       if (!response.ok) {
-        throw new Error(`Khong the tai danh sach hop dong (${response.status})`)
+        throw new Error(
+          `Khong the tai danh sach hop dong (${response.status})`,
+        );
       }
-      const data = await response.json()
-      setItems(Array.isArray(data) ? data : [])
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(err.message || 'Tai danh sach that bai')
+      setError(err.message || "Tai danh sach that bai");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadHopDong()
-  }, [])
+    loadHopDong();
+  }, []);
 
   const resetForm = () => {
-    setForm(emptyForm)
-    setEditingId(null)
-  }
+    setForm(emptyForm);
+    setEditingId(null);
+  };
 
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setForm((current) => ({
       ...current,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    if (!form.maHopDong.trim()) return 'Ma hop dong khong duoc rong'
-    if (!form.khachHangId.trim()) return 'Khach hang ID khong duoc rong'
-    if (!form.ngayKy) return 'Ngay ky khong duoc rong'
-    if (!form.thoiHan.trim()) return 'Thoi han khong duoc rong'
-    return ''
-  }
+    if (!form.maHopDong.trim()) return "Ma hop dong khong duoc rong";
+    if (!form.khachHangId.trim()) return "Khach hang ID khong duoc rong";
+    if (!form.ngayKy) return "Ngay ky khong duoc rong";
+    if (!form.thoiHan.trim()) return "Thoi han khong duoc rong";
+    return "";
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    const validationMessage = validateForm()
+    event.preventDefault();
+    const validationMessage = validateForm();
     if (validationMessage) {
-      setError(validationMessage)
-      setSuccess('')
-      return
+      setError(validationMessage);
+      setSuccess("");
+      return;
     }
 
-    setSubmitting(true)
-    setError('')
-    setSuccess('')
+    setSubmitting(true);
+    setError("");
+    setSuccess("");
 
     const payload = {
       maHopDong: form.maHopDong.trim(),
@@ -107,7 +105,7 @@ function HopDong() {
       ngayKy: form.ngayKy,
       thoiHan: Number(form.thoiHan),
       trangThai: form.trangThai,
-    }
+    };
 
     try {
       const response = await fetch(
@@ -115,79 +113,81 @@ function HopDong() {
           ? `${API_BASE_URL}/api/hop-dong/${editingId}`
           : `${API_BASE_URL}/api/hop-dong`,
         {
-          method: editingId ? 'PUT' : 'POST',
+          method: editingId ? "PUT" : "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
         },
-      )
+      );
 
       if (!response.ok) {
         throw new Error(
           editingId
             ? `Cap nhat that bai (${response.status})`
             : `Tao moi that bai (${response.status})`,
-        )
+        );
       }
 
-      await loadHopDong()
-      resetForm()
-      setSuccess(editingId ? 'Cap nhat hop dong thanh cong' : 'Tao hop dong thanh cong')
+      await loadHopDong();
+      resetForm();
+      setSuccess(
+        editingId ? "Cap nhat hop dong thanh cong" : "Tao hop dong thanh cong",
+      );
     } catch (err) {
-      setError(err.message || 'Khong the luu hop dong')
+      setError(err.message || "Khong the luu hop dong");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleEdit = (item) => {
-    setEditingId(item.id)
+    setEditingId(item.id);
     setForm({
-      maHopDong: item.maHopDong ?? '',
-      khachHangId: item.khachHangId ?? '',
-      ngayKy: item.ngayKy ?? '',
-      thoiHan: item.thoiHan ?? '',
-      trangThai: item.trangThai ?? 'DangThucHien',
-    })
-    setError('')
-    setSuccess('')
-  }
+      maHopDong: item.maHopDong ?? "",
+      khachHangId: item.khachHangId ?? "",
+      ngayKy: item.ngayKy ?? "",
+      thoiHan: item.thoiHan ?? "",
+      trangThai: item.trangThai ?? "DangThucHien",
+    });
+    setError("");
+    setSuccess("");
+  };
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm('Ban co muon xoa hop dong nay khong?')
-    if (!confirmed) return
+    const confirmed = window.confirm("Ban co muon xoa hop dong nay khong?");
+    if (!confirmed) return;
 
-    setError('')
-    setSuccess('')
+    setError("");
+    setSuccess("");
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/hop-dong/${id}`, {
-        method: 'DELETE',
-      })
+        method: "DELETE",
+      });
 
       if (!response.ok && response.status !== 204) {
-        throw new Error(`Xoa that bai (${response.status})`)
+        throw new Error(`Xoa that bai (${response.status})`);
       }
 
-      await loadHopDong()
+      await loadHopDong();
       if (editingId === id) {
-        resetForm()
+        resetForm();
       }
-      setSuccess('Xoa hop dong thanh cong')
+      setSuccess("Xoa hop dong thanh cong");
     } catch (err) {
-      setError(err.message || 'Khong the xoa hop dong')
+      setError(err.message || "Khong the xoa hop dong");
     }
-  }
+  };
 
   const stats = useMemo(() => {
     return {
       total: items.length,
-      active: items.filter((item) => item.trangThai === 'DangThucHien').length,
-      paused: items.filter((item) => item.trangThai === 'TamDung').length,
-      closed: items.filter((item) => item.trangThai === 'ThanhLy').length,
-    }
-  }, [items])
+      active: items.filter((item) => item.trangThai === "DangThucHien").length,
+      paused: items.filter((item) => item.trangThai === "TamDung").length,
+      closed: items.filter((item) => item.trangThai === "ThanhLy").length,
+    };
+  }, [items]);
 
   return (
     <main className="hopdong-page">
@@ -237,7 +237,7 @@ function HopDong() {
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
-              <h2>{editingId ? 'Cap nhat hop dong' : 'Tao hop dong moi'}</h2>
+              <h2>{editingId ? "Cap nhat hop dong" : "Tao hop dong moi"}</h2>
               <p>Du lieu se goi vao API `api/hop-dong`.</p>
             </div>
             {editingId ? (
@@ -295,7 +295,11 @@ function HopDong() {
 
           <label>
             Trang thai
-            <select name="trangThai" value={form.trangThai} onChange={handleChange}>
+            <select
+              name="trangThai"
+              value={form.trangThai}
+              onChange={handleChange}
+            >
               <option value="DangThucHien">Dang thuc hien</option>
               <option value="TamDung">Tam dung</option>
               <option value="ThanhLy">Thanh ly</option>
@@ -307,7 +311,7 @@ function HopDong() {
 
           <div className="actions">
             <button className="primary-btn" type="submit" disabled={submitting}>
-              {submitting ? 'Dang luu...' : editingId ? 'Cap nhat' : 'Tao moi'}
+              {submitting ? "Dang luu..." : editingId ? "Cap nhat" : "Tao moi"}
             </button>
             <button className="secondary-btn" type="button" onClick={resetForm}>
               Lam moi form
@@ -344,7 +348,9 @@ function HopDong() {
                 {filteredItems.length === 0 ? (
                   <tr>
                     <td colSpan="8" className="empty-row">
-                      {loading ? 'Dang tai du lieu...' : 'Khong co du lieu phu hop'}
+                      {loading
+                        ? "Dang tai du lieu..."
+                        : "Khong co du lieu phu hop"}
                     </td>
                   </tr>
                 ) : (
@@ -353,20 +359,30 @@ function HopDong() {
                       <td>{item.id}</td>
                       <td>{item.maHopDong}</td>
                       <td>{item.khachHangId}</td>
-                      <td>{item.ngayKy ?? '-'}</td>
-                      <td>{item.thoiHan ?? '-'}</td>
+                      <td>{item.ngayKy ?? "-"}</td>
+                      <td>{item.thoiHan ?? "-"}</td>
                       <td>
-                        <span className={`badge badge-${String(item.trangThai || '').toLowerCase()}`}>
-                          {item.trangThai || '-'}
+                        <span
+                          className={`badge badge-${String(item.trangThai || "").toLowerCase()}`}
+                        >
+                          {item.trangThai || "-"}
                         </span>
                       </td>
                       <td>{formatDateTime(item.updatedAt)}</td>
                       <td>
                         <div className="row-actions">
-                          <button type="button" className="ghost-btn" onClick={() => handleEdit(item)}>
+                          <button
+                            type="button"
+                            className="ghost-btn"
+                            onClick={() => handleEdit(item)}
+                          >
                             Sua
                           </button>
-                          <button type="button" className="danger-btn" onClick={() => handleDelete(item.id)}>
+                          <button
+                            type="button"
+                            className="danger-btn"
+                            onClick={() => handleDelete(item.id)}
+                          >
                             Xoa
                           </button>
                         </div>
@@ -380,7 +396,7 @@ function HopDong() {
         </section>
       </section>
     </main>
-  )
+  );
 }
 
-export default HopDong
+export default HopDong;

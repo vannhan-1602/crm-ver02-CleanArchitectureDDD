@@ -28,6 +28,15 @@ public class KhachHangJpaEntity {
     @Column(name = "SoDienThoai", length = 20)
     private String soDienThoai;
 
+    @Column(name = "LoaiKhachHang_Id")
+    private  Integer loaiKhachHangId;
+
+    @Column(name = "TinhTrang_Id")
+    private Integer tinhTrangId;
+
+    @Column(name = "MaSoThue")
+    private String maSoThue;
+
     @Column(name = "NhanVienPhuTrach_Id")
     private Integer nhanVienPhuTrachId;
 
@@ -62,7 +71,17 @@ public class KhachHangJpaEntity {
 
     public String getSoDienThoai()                  { return soDienThoai; }
     public void setSoDienThoai(String v)            { this.soDienThoai = v; }
+    public Integer getLoaiKhachHangId()             {return loaiKhachHangId;}
 
+    public void setLoaiKhachHangId(Integer loaiKhachHangId) {this.loaiKhachHangId = loaiKhachHangId;}
+
+    public Integer getTinhTrangId()                 {return tinhTrangId;}
+
+    public void setTinhTrangId(Integer tinhTrangId) {this.tinhTrangId = tinhTrangId;}
+
+    public String getMaSoThue()                     {return maSoThue;}
+
+    public void setMaSoThue(String maSoThue)        {this.maSoThue = maSoThue;}
     public Integer getNhanVienPhuTrachId()          { return nhanVienPhuTrachId; }
     public void setNhanVienPhuTrachId(Integer v)    { this.nhanVienPhuTrachId = v; }
 
