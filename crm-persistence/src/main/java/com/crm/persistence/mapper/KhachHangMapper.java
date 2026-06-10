@@ -16,6 +16,9 @@ public final class KhachHangMapper {
                 jpa.getTenKhachHang(),
                 jpa.getEmail(),
                 jpa.getSoDienThoai(),
+                jpa.getLoaiKhachHangId(),
+                jpa.getTinhTrangId(),
+                jpa.getMaSoThue(),
                 jpa.getNhanVienPhuTrachId(),
                 jpa.isDeleted(),
                 jpa.getCreatedAt(),
@@ -31,6 +34,9 @@ public final class KhachHangMapper {
         jpa.setTenKhachHang(domain.getTenKhachHang());
         jpa.setEmail(domain.getEmail());
         jpa.setSoDienThoai(domain.getSoDienThoai());
+        jpa.setLoaiKhachHangId(domain.getLoaiKhachHangId());
+        jpa.setTinhTrangId(domain.getTinhTrangId());
+        jpa.setMaSoThue(domain.getMaSoThue());
         jpa.setNhanVienPhuTrachId(domain.getNhanVienPhuTrachId());
         jpa.setDeleted(domain.isDeleted());
         jpa.setCreatedAt(domain.getCreatedAt());

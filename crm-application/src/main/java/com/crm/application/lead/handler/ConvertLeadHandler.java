@@ -42,7 +42,11 @@ public class ConvertLeadHandler implements IRequestHandler<ConvertLeadCommand, K
                 lead.getTenLead(),
                 lead.getEmail(),
                 lead.getSoDienThoai(),
+                null,
+                null,
+                null,
                 lead.getNhanVienPhuTrachId()
+
         );
 
         KhachHang savedKhachHang = khachHangRepo.save(khachHang);
