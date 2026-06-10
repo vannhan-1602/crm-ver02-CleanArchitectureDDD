@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import HopDong from "./page/HopDong";
 import TaiChinh from "./page/TaiChinh";
 import LeadManager from "./components/LeadManager";
+import SanPhamManager from "./page/SanPhamManager.jsx";
 
 function App() {
   return (
@@ -97,6 +98,7 @@ function App() {
               <Route path="/" element={<LeadManager />} />
             </Routes>
           </div>
+
         </main>
       </div>
     </Router>
@@ -109,7 +111,7 @@ const linkStyle = {
   padding: "10px",
   borderRadius: "4px",
   transition: "background-color 0.2s",
-  display: "block",
+  display: "block"
 };
 
 export default App;

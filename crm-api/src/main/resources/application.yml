@@ -3,13 +3,23 @@ spring:
     url: jdbc:mysql://localhost:3306/CRMOnline?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root 
     password: 123456
+    url: jdbc:mysql://localhost:3306/crmonline_pro?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
+    username: root
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    web:
+      resources:
+        static-locations: file:./uploads/,classpath:/static/
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: none
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # Thêm dòng này
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
 server:
   port: 8081

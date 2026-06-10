@@ -1,15 +1,13 @@
 package com.crm.persistence.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.crm.domain.entities.SanPhamHinhAnh;
+import jakarta.persistence.*;
+import jdk.dynalink.linker.LinkerServices;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "BH_SanPham")
@@ -47,9 +45,18 @@ public class SanPhamJpaEntity {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
+    @OneToMany(mappedBy = "sanPham" ,cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SanPhamHinhAnhJpaEntity> dshinhanh;
     public Integer getId() {
         return id;
+    }
+
+    public List<SanPhamHinhAnhJpaEntity> getDshinhanh() {
+        return dshinhanh;
+    }
+
+    public void setDshinhanh(List<SanPhamHinhAnhJpaEntity> dshinhanh) {
+        this.dshinhanh = dshinhanh;
     }
 
     public void setId(Integer id) {

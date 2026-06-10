@@ -36,7 +36,13 @@ function HopDong() {
     const keyword = search.trim().toLowerCase();
     if (!keyword) return items;
     return items.filter((item) => {
-      return [item.maHopDong, item.khachHangId, item.trangThai, item.ngayKy]
+      return [
+        item.maHopDong,
+        item.tenKhachHang,
+        item.khachHangId,
+        item.trangThai,
+        item.ngayKy,
+      ]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(keyword));
     });
@@ -49,13 +55,13 @@ function HopDong() {
       const response = await fetch(`${API_BASE_URL}/api/hop-dong`);
       if (!response.ok) {
         throw new Error(
-          `Khong the tai danh sach hop dong (${response.status})`,
+          `Không thể tải danh sách hợp đồng (${response.status})`,
         );
       }
       const data = await response.json();
       setItems(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError(err.message || "Tai danh sach that bai");
+      setError(err.message || "Tải danh sách thất bại");
     } finally {
       setLoading(false);
     }
@@ -79,10 +85,10 @@ function HopDong() {
   };
 
   const validateForm = () => {
-    if (!form.maHopDong.trim()) return "Ma hop dong khong duoc rong";
-    if (!form.khachHangId.trim()) return "Khach hang ID khong duoc rong";
-    if (!form.ngayKy) return "Ngay ky khong duoc rong";
-    if (!form.thoiHan.trim()) return "Thoi han khong duoc rong";
+    if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
+    if (!form.khachHangId.trim()) return "Mã khách hàng không được rỗng";
+    if (!form.ngayKy) return "Ngày ký không được rỗng";
+    if (!form.thoiHan.trim()) return "Thời hạn không được rỗng";
     return "";
   };
 
@@ -124,18 +130,18 @@ function HopDong() {
       if (!response.ok) {
         throw new Error(
           editingId
-            ? `Cap nhat that bai (${response.status})`
-            : `Tao moi that bai (${response.status})`,
+            ? `Cập nhật thất bại (${response.status})`
+            : `Tạo mới thất bại (${response.status})`,
         );
       }
 
       await loadHopDong();
       resetForm();
       setSuccess(
-        editingId ? "Cap nhat hop dong thanh cong" : "Tao hop dong thanh cong",
+        editingId ? "Cập nhật hợp đồng thành công" : "Tạo hợp đồng thành công",
       );
     } catch (err) {
-      setError(err.message || "Khong the luu hop dong");
+      setError(err.message || "Không thể lưu hợp đồng");
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +161,7 @@ function HopDong() {
   };
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm("Ban co muon xoa hop dong nay khong?");
+    const confirmed = window.confirm("Bạn có muốn xóa hợp đồng này không?");
     if (!confirmed) return;
 
     setError("");
@@ -167,16 +173,16 @@ function HopDong() {
       });
 
       if (!response.ok && response.status !== 204) {
-        throw new Error(`Xoa that bai (${response.status})`);
+        throw new Error(`Xóa thất bại (${response.status})`);
       }
 
       await loadHopDong();
       if (editingId === id) {
         resetForm();
       }
-      setSuccess("Xoa hop dong thanh cong");
+      setSuccess("Xóa hợp đồng thành công");
     } catch (err) {
-      setError(err.message || "Khong the xoa hop dong");
+      setError(err.message || "Không thể xóa hợp đồng");
     }
   };
 
@@ -194,41 +200,39 @@ function HopDong() {
       <section className="hopdong-header">
         <div>
           <p className="eyebrow">CRM / Hop dong</p>
-          <h1>Quan ly hop dong</h1>
-          <p className="subtitle">
-            Tao, cap nhat, tim va xoa hop dong truc tiep tu API backend.
-          </p>
+          <h1>Quản lý hợp đồng</h1>
+          
         </div>
 
         <div className="toolbar">
           <input
             className="search"
             type="search"
-            placeholder="Tim theo ma, khach hang, trang thai..."
+            placeholder="Tìm theo mã, khách hàng, trạng thái..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
           <button className="secondary-btn" type="button" onClick={loadHopDong}>
-            Tai lai
+            Tải lại
           </button>
         </div>
       </section>
 
       <section className="stats-row">
         <article className="stat-card">
-          <span>Tong so</span>
+          <span>Tổng số</span>
           <strong>{stats.total}</strong>
         </article>
         <article className="stat-card">
-          <span>Dang thuc hien</span>
+          <span>Đang thực hiện</span>
           <strong>{stats.active}</strong>
         </article>
         <article className="stat-card">
-          <span>Tam dung</span>
+          <span>Tạm dừng</span>
           <strong>{stats.paused}</strong>
         </article>
         <article className="stat-card">
-          <span>Thanh ly</span>
+          <span>Thanh lý</span>
           <strong>{stats.closed}</strong>
         </article>
       </section>
@@ -238,17 +242,17 @@ function HopDong() {
           <div className="panel-head">
             <div>
               <h2>{editingId ? "Cap nhat hop dong" : "Tao hop dong moi"}</h2>
-              <p>Du lieu se goi vao API `api/hop-dong`.</p>
+              <p>Dữ liệu sẽ gọi vào API `api/hop-dong`.</p>
             </div>
             {editingId ? (
               <button className="ghost-btn" type="button" onClick={resetForm}>
-                Huy sua
+                Hủy sửa
               </button>
             ) : null}
           </div>
 
           <label>
-            Ma hop dong
+            Mã hợp đồng
             <input
               name="maHopDong"
               value={form.maHopDong}
@@ -258,7 +262,7 @@ function HopDong() {
           </label>
 
           <label>
-            Khach hang ID
+            Mã khách hàng
             <input
               name="khachHangId"
               type="number"
@@ -271,7 +275,7 @@ function HopDong() {
 
           <div className="two-col">
             <label>
-              Ngay ky
+              Ngày ký
               <input
                 name="ngayKy"
                 type="date"
@@ -281,7 +285,7 @@ function HopDong() {
             </label>
 
             <label>
-              Thoi han
+              Thời hạn
               <input
                 name="thoiHan"
                 type="number"
@@ -294,15 +298,15 @@ function HopDong() {
           </div>
 
           <label>
-            Trang thai
+            Trạng thái
             <select
               name="trangThai"
               value={form.trangThai}
               onChange={handleChange}
             >
-              <option value="DangThucHien">Dang thuc hien</option>
-              <option value="TamDung">Tam dung</option>
-              <option value="ThanhLy">Thanh ly</option>
+              <option value="DangThucHien">Đang thực hiện</option>
+              <option value="TamDung">Tạm dừng</option>
+              <option value="ThanhLy">Thanh lý</option>
             </select>
           </label>
 
@@ -311,10 +315,10 @@ function HopDong() {
 
           <div className="actions">
             <button className="primary-btn" type="submit" disabled={submitting}>
-              {submitting ? "Dang luu..." : editingId ? "Cap nhat" : "Tao moi"}
+              {submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo mới"}
             </button>
             <button className="secondary-btn" type="button" onClick={resetForm}>
-              Lam moi form
+              Làm mới form
             </button>
           </div>
         </form>
@@ -322,12 +326,12 @@ function HopDong() {
         <section className="panel table-panel">
           <div className="panel-head">
             <div>
-              <h2>Danh sach hop dong</h2>
+              <h2>Danh sách hợp đồng</h2>
               <p>
-                Hien thi {filteredItems.length}/{items.length} ban ghi.
+                Hiển thị {filteredItems.length}/{items.length} bản ghi.
               </p>
             </div>
-            {loading ? <span className="loading">Dang tai...</span> : null}
+            {loading ? <span className="loading">Đang tải...</span> : null}
           </div>
 
           <div className="table-wrap">
@@ -335,13 +339,13 @@ function HopDong() {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Ma hop dong</th>
-                  <th>Khach hang</th>
-                  <th>Ngay ky</th>
-                  <th>Thoi han</th>
-                  <th>Trang thai</th>
-                  <th>Cap nhat</th>
-                  <th>Hanh dong</th>
+                  <th>Mã hợp đồng</th>
+                  <th>Khách hàng</th>
+                  <th>Ngày ký</th>
+                  <th>Thời hạn</th>
+                  <th>Trạng thái</th>
+                  <th>Cập nhật</th>
+                  <th>Hành động</th>
                 </tr>
               </thead>
               <tbody>
@@ -349,8 +353,8 @@ function HopDong() {
                   <tr>
                     <td colSpan="8" className="empty-row">
                       {loading
-                        ? "Dang tai du lieu..."
-                        : "Khong co du lieu phu hop"}
+                        ? "Đang tải dữ liệu..."
+                        : "Không có dữ liệu phù hợp"}
                     </td>
                   </tr>
                 ) : (
@@ -358,7 +362,14 @@ function HopDong() {
                     <tr key={item.id}>
                       <td>{item.id}</td>
                       <td>{item.maHopDong}</td>
-                      <td>{item.khachHangId}</td>
+                      <td>
+                        <div className="stacked-cell">
+                          <strong>{item.tenKhachHang || 'Không có tên'}</strong>
+                          <span style={{ color: '#6d7c91', fontSize: '12px' }}>
+                            {item.khachHangId ?? '-'}
+                          </span>
+                        </div>
+                      </td>
                       <td>{item.ngayKy ?? "-"}</td>
                       <td>{item.thoiHan ?? "-"}</td>
                       <td>
@@ -376,14 +387,14 @@ function HopDong() {
                             className="ghost-btn"
                             onClick={() => handleEdit(item)}
                           >
-                            Sua
+                            Sửa
                           </button>
                           <button
                             type="button"
                             className="danger-btn"
                             onClick={() => handleDelete(item.id)}
                           >
-                            Xoa
+                            Xóa
                           </button>
                         </div>
                       </td>
