@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 // Import các component/page
 import HopDong from "./page/HopDong"; 
-import LeadManager from "./components/LeadManager"; 
+import LeadManager from "./components/LeadManager";
+import SanPhamManager from "./page/SanPhamManager.jsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Link to="/nhan-vien" style={linkStyle}>Quản lý Nhân viên</Link>
             <Link to="/leads" style={linkStyle}>Quản lý Lead</Link>
             <Link to="/hop-dong" style={linkStyle}>Quản lý Hợp đồng</Link>
+              <Link to="/sanpham" style={linkStyle}>Quản lý Hợp đồng</Link>
           </nav>
         </aside>
 
@@ -40,7 +42,7 @@ function App() {
             <Routes>
               <Route path="/leads" element={<LeadManager />} />
               <Route path="/hop-dong" element={<HopDong />} />
-              
+                <Route path="/sanpham" element={<SanPhamManager />} />
               {/* Trang mặc định khi vừa mở web lên */}
               <Route path="/" element={<LeadManager />} /> 
             </Routes>
