@@ -9,10 +9,12 @@ public enum TrangThaiHopDong {
         if (value == null || value.isBlank()) {
             return DangThucHien;
         }
-        try {
-            return TrangThaiHopDong.valueOf(value);
-        } catch (IllegalArgumentException ex) {
-            return DangThucHien;
+        String normalized = value.trim();
+        for (TrangThaiHopDong trangThaiHopDong : values()) {
+            if (trangThaiHopDong.name().equalsIgnoreCase(normalized)) {
+                return trangThaiHopDong;
+            }
         }
+        throw new IllegalArgumentException("Trang thai hop dong khong hop le: " + value);
     }
 }

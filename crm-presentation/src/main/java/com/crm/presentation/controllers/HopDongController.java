@@ -2,6 +2,7 @@ package com.crm.presentation.controllers;
 
 import com.crm.application.common.Mediator;
 import com.crm.application.hopdong.command.CreateHopDongCommand;
+import com.crm.application.hopdong.command.CompleteHopDongCommand;
 import com.crm.application.hopdong.command.DeleteHopDongCommand;
 import com.crm.application.hopdong.command.UpdateHopDongCommand;
 import com.crm.application.hopdong.query.GetAllHopDongQuery;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,6 +79,12 @@ public class HopDongController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         mediator.send(new DeleteHopDongCommand(id));
+    }
+
+    @PatchMapping("/{id}/complete")
+    public HopDongResponse complete(@PathVariable Long id) {
+        HopDong hopDong = mediator.send(new CompleteHopDongCommand(id));
+        return HopDongResponse.from(hopDong);
     }
 
     static class CreateHopDongRequest {
@@ -148,11 +156,11 @@ public class HopDongController {
         public static HopDongResponse from(HopDong hopDong) {
             HopDongResponse response = new HopDongResponse();
             response.id = hopDong.getId();
-            response.maHopDong = hopDong.getMaHopDong().getValue();
+            response.maHopDong = hopDong.getMaHopDong() != null ? hopDong.getMaHopDong().getValue() : null;
             response.khachHangId = hopDong.getKhachHangId();
             response.ngayKy = hopDong.getNgayKy();
             response.thoiHan = hopDong.getThoiHan();
-            response.trangThai = hopDong.getTrangThai().name();
+            response.trangThai = hopDong.getTrangThai() != null ? hopDong.getTrangThai().name() : null;
             response.createdAt = hopDong.getCreatedAt();
             response.updatedAt = hopDong.getUpdatedAt();
             return response;
