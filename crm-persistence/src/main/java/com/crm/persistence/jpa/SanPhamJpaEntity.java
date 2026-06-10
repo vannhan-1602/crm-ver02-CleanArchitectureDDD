@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "BH_SanPham")
+@Table(name = "bh_sanpham")
 public class SanPhamJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +38,11 @@ public class SanPhamJpaEntity {
     @Column(name = "TrangThai")
     private Integer trangThai;
 
-    @Column(name = "CreateAt", updatable = false)
+    @Column(name = "CreatedAt", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdateAt")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "sanPham" ,cascade = CascadeType.ALL, orphanRemoval = true)
