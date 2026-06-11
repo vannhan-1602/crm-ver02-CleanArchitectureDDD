@@ -5,6 +5,7 @@ import TaiChinh from "./page/TaiChinh";
 import LeadManager from "./page/LeadManager";
 import SanPhamManager from "./page/SanPhamManager.jsx";
 import KhachHangManager from "./page/KhachHangManager.jsx";
+import TicketManager from "./page/TicketManager.jsx";
 
 function App() {
   return (
@@ -52,6 +53,9 @@ function App() {
             </Link>
             <Link to="/sanpham" style={linkStyle}>
               Quản lý Sản Phẩm
+            </Link>
+            <Link to="/tickets" style={linkStyle}>
+              Quản lý Ticket
             </Link>
           </nav>
         </aside>
@@ -105,6 +109,7 @@ function App() {
               <Route path="/hop-dong" element={<HopDong />} />
               <Route path="/tai-chinh" element={<TaiChinh />} />
               <Route path="/sanpham" element={<SanPhamManager />} />
+              <Route path="/tickets" element={<TicketManager />} />
             </Routes>
           </div>
         </main>
