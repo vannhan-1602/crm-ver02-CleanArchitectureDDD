@@ -1,20 +1,20 @@
-\# CRM Online — Ver 02
+# CRM Online — Ver 02
 
 
 
 Hệ thống quản lý khách hàng (CRM) xây dựng theo kiến trúc \*\*Clean Architecture + DDD\*\*, gồm backend Spring Boot và frontend React + Vite.
 
+Hiện tại đã làm xong các module : CRUD : Lead, Khách hàng, Hoạt động chăm sóc khách hàng, hợp đồng,Báo giá Hóa đơn/Phiếu thu/Phiếu chi
 
 
 
 
 
-
-\---
-
+---
 
 
-\##  Cấu trúc dự án
+
+##  Cấu trúc dự án
 
 
 
@@ -36,17 +36,17 @@ crm-ver02-CleanArchitectureDDD/
 
 └── frontend/            # React + Vite SPA
 
-&#x20;   └── src/
+   └── src/
 
-&#x20;       ├── components/  # LeadManager
+       ├── components/  # LeadManager
 
-&#x20;       └── page/        # HopDong, TaiChinh, SanPhamManager, KhachHangManager
+       └── page/        # HopDong, TaiChinh, SanPhamManager, KhachHangManager
 
 ```
 
 
 
-\### Luồng phụ thuộc (Clean Architecture)
+### Luồng phụ thuộc (Clean Architecture)
 
 
 
@@ -58,19 +58,19 @@ Presentation → Application → Domain ← Persistence
 
 
 
-\- \*\*Domain\*\*: không import gì từ các layer khác.
+- \*\*Domain\*\*: không import gì từ các layer khác.
 
-\- \*\*Application\*\*: chỉ biết Domain.
+- \*\*Application\*\*: chỉ biết Domain.
 
-\- \*\*Persistence / Presentation\*\*: implement / sử dụng interfaces của Domain.
-
-
-
-\---
+- \*\*Persistence / Presentation\*\*: implement / sử dụng interfaces của Domain.
 
 
 
-\## ⚙️ Yêu cầu môi trường
+---
+
+
+
+##  Yêu cầu môi trường
 
 
 
@@ -90,15 +90,15 @@ Presentation → Application → Domain ← Persistence
 
 
 
-\---
+---
 
 
 
-\##  Hướng dẫn chạy dự án
+##  Hướng dẫn chạy dự án
 
 
 
-\### Bước 1 — Clone repository
+### Bước 1 — Clone repository
 
 
 
@@ -112,11 +112,11 @@ cd crm-ver02-CleanArchitectureDDD
 
 
 
-\---
+---
 
 
 
-\### Bước 2 — Tạo database MySQL
+### Bước 2 — Tạo database MySQL
 
 
 
@@ -128,9 +128,9 @@ Mở MySQL client (Workbench, DBeaver, hoặc terminal) và chạy:
 
 CREATE DATABASE CRMOnline
 
-&#x20; CHARACTER SET utf8mb4
+ CHARACTER SET utf8mb4
 
-&#x20; COLLATE utf8mb4\_unicode\_ci;
+ COLLATE utf8mb4\_unicode\_ci;
 
 ```
 
@@ -146,11 +146,11 @@ CREATE DATABASE CRMOnline
 
 
 
-\---
+---
 
 
 
-\### Bước 3 — Cấu hình kết nối database
+### Bước 3 — Cấu hình kết nối database
 
 
 
@@ -162,41 +162,41 @@ Mở file `crm-api/src/main/resources/application.yml` và chỉnh thông tin ch
 
 spring:
 
-&#x20; datasource:
+ datasource:
 
-&#x20;   url: jdbc:mysql://localhost:3306/CRMOnline?useSSL=false\&serverTimezone=UTC\&allowPublicKeyRetrieval=true
+   url: jdbc:mysql://localhost:3306/CRMOnline?useSSL=false\&serverTimezone=UTC\&allowPublicKeyRetrieval=true
 
-&#x20;   username: root          # ← đổi nếu username MySQL khác
+   username: root          # ← đổi nếu username MySQL khác
 
-&#x20;   password: 123456        # ← đổi thành password thực của bạn
+   password: 123456        # ← đổi thành password thực của bạn
 
-&#x20; jpa:
+ jpa:
 
-&#x20;   hibernate:
+   hibernate:
 
-&#x20;     ddl-auto: none        # ← đổi thành "update" nếu muốn Hibernate tự tạo bảng
+     ddl-auto: none        # ← đổi thành "update" nếu muốn Hibernate tự tạo bảng
 
 ```
 
 
 
-\---
+---
 
 
 
-\### Bước 4 — Build và chạy Backend
+### Bước 4 — Build và chạy Backend
 
 
 
 ```bash
 
-\# Đứng ở thư mục gốc của project
+# Đứng ở thư mục gốc của project
 
 mvn clean install -DskipTests
 
 
 
-\# Chạy Spring Boot
+# Chạy Spring Boot
 
 mvn spring-boot:run -pl crm-api
 
@@ -224,11 +224,11 @@ curl http://localhost:8081/api/khach-hang
 
 
 
-\---
+---
 
 
 
-\### Bước 5 — Cài dependencies và chạy Frontend
+### Bước 5 — Cài dependencies và chạy Frontend
 
 
 
@@ -258,11 +258,11 @@ Frontend sẽ chạy tại: \*\*http://localhost:5173\*\*
 
 
 
-\---
+---
 
 
 
-\### Bước 6 — Truy cập ứng dụng
+### Bước 6 — Truy cập ứng dụng
 
 
 
@@ -286,15 +286,15 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\---
+---
 
 
 
-\##  Danh sách API Endpoints
+##  Danh sách API Endpoints
 
 
 
-\### Lead
+### Lead
 
 | Method | Endpoint | Mô tả |
 
@@ -312,7 +312,7 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\### Khách hàng
+### Khách hàng
 
 | Method | Endpoint | Mô tả |
 
@@ -330,7 +330,7 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\### Hợp đồng
+### Hợp đồng
 
 | Method | Endpoint | Mô tả |
 
@@ -348,7 +348,7 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\### Báo giá
+### Báo giá
 
 | Method | Endpoint | Mô tả |
 
@@ -364,7 +364,7 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\### Tài chính
+### Tài chính
 
 | Method | Endpoint | Mô tả |
 
@@ -378,7 +378,7 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\### Sản phẩm
+### Sản phẩm
 
 | Method | Endpoint | Mô tả |
 
@@ -392,7 +392,7 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\### Nhân viên \& Hoạt động
+### Nhân viên \& Hoạt động
 
 | Method | Endpoint | Mô tả |
 
@@ -404,79 +404,77 @@ Mở trình duyệt vào \*\*http://localhost:5173\*\* và điều hướng qua 
 
 
 
-\---
+---
 
 
 
-\##  Troubleshooting
+##  Troubleshooting
 
 
 
-\*\*Backend không start — lỗi kết nối DB\*\*
+*\*Backend không start — lỗi kết nối DB\*\*
 
-\- Kiểm tra MySQL đang chạy: `mysql -u root -p`
+- Kiểm tra MySQL đang chạy: `mysql -u root -p`
 
-\- Kiểm tra đúng tên DB `CRMOnline` (phân biệt hoa/thường)
+- Kiểm tra đúng tên DB `CRMOnline` (phân biệt hoa/thường)
 
-\- Đảm bảo `username` và `password` trong `application.yml` đúng
-
-
-
-\*\*Lỗi compile `does not override abstract method`\*\*
-
-\- Chạy `mvn clean` rồi build lại
-
-\- Kiểm tra tất cả method trong interface domain đã được implement ở adapter tương ứng trong `crm-persistence`
+- Đảm bảo `username` và `password` trong `application.yml` đúng
 
 
 
-\*\*Frontend lỗi CORS\*\*
+*\*Lỗi compile `does not override abstract method`\*\*
 
-\- Tất cả controller đã có `@CrossOrigin(origins = "\*")` nên không cần cấu hình thêm
+- Chạy `mvn clean` rồi build lại
 
-\- Nếu vẫn lỗi, kiểm tra URL trong `VITE\_API\_BASE\_URL` có đúng port không
-
-
-
-\*\*Frontend không thấy data\*\*
-
-\- Mở DevTools → Network, kiểm tra request có trả về 200 không
-
-\- Kiểm tra backend đang chạy tại đúng port (mặc định 8081)
+- Kiểm tra tất cả method trong interface domain đã được implement ở adapter tương ứng trong `crm-persistence`
 
 
+*\*Frontend lỗi CORS\*\*
 
-\---
+- Tất cả controller đã có `@CrossOrigin(origins = "\*")` nên không cần cấu hình thêm
+
+- Nếu vẫn lỗi, kiểm tra URL trong `VITE\_API\_BASE\_URL` có đúng port không
 
 
 
-\##  Build production
+*\*Frontend không thấy data\*\*
+
+- Mở DevTools → Network, kiểm tra request có trả về 200 không
+
+- Kiểm tra backend đang chạy tại đúng port (mặc định 8081)
+
+
+
+---
+
+
+
+##  Build production
 
 
 
 ```bash
 
-\# Build frontend
+# Build frontend
 
 cd frontend
 
 npm run build
-
-\# Output tại frontend/dist/
-
+# Output tại frontend/dist/
 
 
-\# Build backend JAR
+
+# Build backend JAR
 
 cd ..
 
 mvn clean package -DskipTests
 
-\# Output tại crm-api/target/crm-api-1.0-SNAPSHOT.jar
+# Output tại crm-api/target/crm-api-1.0-SNAPSHOT.jar
 
 
 
-\# Chạy JAR
+# Chạy JAR
 
 java -jar crm-api/target/crm-api-1.0-SNAPSHOT.jar
 
