@@ -19,7 +19,8 @@ public interface KhachHangJPARepo extends JpaRepository<KhachHangJpaEntity, Long
 
     Optional<KhachHangJpaEntity> findByIdAndIsDeletedFalse(Long id);
 
-    
+    List<KhachHangJpaEntity> findByLoaiKhachHangIdAndIsDeletedFalse(Integer loaiKhachHangId);
+
     @Query("SELECT k.maKhachHang FROM KhachHangJpaEntity k " +
             "WHERE k.maKhachHang LIKE 'KH%' " +
             "ORDER BY k.maKhachHang DESC LIMIT 1")

@@ -2,8 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import HopDong from "./page/HopDong";
 import TaiChinh from "./page/TaiChinh";
-import LeadManager from "./components/LeadManager";
+import LeadManager from "./page/LeadManager";
 import SanPhamManager from "./page/SanPhamManager.jsx";
+import KhachHangManager from "./page/KhachHangManager.jsx";
 
 function App() {
   return (
@@ -40,15 +41,18 @@ function App() {
             <Link to="/leads" style={linkStyle}>
               Quản lý Lead
             </Link>
+            <Link to="/khach-hang" style={linkStyle}>
+              Quản lý Khách hàng
+            </Link>
             <Link to="/hop-dong" style={linkStyle}>
               Quản lý Hợp đồng
             </Link>
             <Link to="/tai-chinh" style={linkStyle}>
               Quản lý hóa đơn
             </Link>
-              <Link to="/sanpham" style={linkStyle}>
-                  Quản lý Sản Phẩm
-              </Link>
+            <Link to="/sanpham" style={linkStyle}>
+              Quản lý Sản Phẩm
+            </Link>
           </nav>
         </aside>
 
@@ -95,14 +99,14 @@ function App() {
 
           <div style={{ padding: "20px", flex: 1, overflowY: "auto" }}>
             <Routes>
+              <Route path="/" element={<LeadManager />} />
               <Route path="/leads" element={<LeadManager />} />
+              <Route path="/khach-hang" element={<KhachHangManager />} />
               <Route path="/hop-dong" element={<HopDong />} />
               <Route path="/tai-chinh" element={<TaiChinh />} />
-              <Route path="/" element={<LeadManager />} />
-                <Route path="/sanpham" element={<SanPhamManager />} />
+              <Route path="/sanpham" element={<SanPhamManager />} />
             </Routes>
           </div>
-
         </main>
       </div>
     </Router>
@@ -115,7 +119,7 @@ const linkStyle = {
   padding: "10px",
   borderRadius: "4px",
   transition: "background-color 0.2s",
-  display: "block"
+  display: "block",
 };
 
 export default App;

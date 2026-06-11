@@ -15,7 +15,8 @@ public interface KhachHangRepo {
 
     List<KhachHang> findAll();
 
-  
+    List<KhachHang> findByLoaiKhachHangId(Integer loaiKhachHangId);
+
     Optional<String> findMaxMaKhachHang();
 
     void softDeleteById(Long id);

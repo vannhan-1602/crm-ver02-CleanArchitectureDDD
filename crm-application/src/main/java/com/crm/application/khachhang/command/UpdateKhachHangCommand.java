@@ -3,8 +3,9 @@ package com.crm.application.khachhang.command;
 import com.crm.application.common.IRequest;
 import com.crm.domain.entities.KhachHang;
 
-public class CreateKhachHangCommand implements IRequest<KhachHang> {
+public class UpdateKhachHangCommand implements IRequest<KhachHang> {
 
+    private Long id;
     private String tenKhachHang;
     private String email;
     private String soDienThoai;
@@ -13,9 +14,9 @@ public class CreateKhachHangCommand implements IRequest<KhachHang> {
     private String maSoThue;
     private Integer nhanVienPhuTrachId;
 
-    public CreateKhachHangCommand() {}
+    public UpdateKhachHangCommand() {}
 
-    public CreateKhachHangCommand(String tenKhachHang,
+    public UpdateKhachHangCommand(String tenKhachHang,
                                   String email,
                                   String soDienThoai,
                                   Integer loaiKhachHangId,
@@ -31,6 +32,8 @@ public class CreateKhachHangCommand implements IRequest<KhachHang> {
         this.nhanVienPhuTrachId  = nhanVienPhuTrachId;
     }
 
+    public Long getId()                     { return id; }
+    public void setId(Long id)              { this.id = id; }
     public String getTenKhachHang()         { return tenKhachHang; }
     public String getEmail()                { return email; }
     public String getSoDienThoai()          { return soDienThoai; }
