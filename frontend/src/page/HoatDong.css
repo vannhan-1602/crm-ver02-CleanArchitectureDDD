@@ -1,0 +1,20 @@
+/* ── HoatDong badge variants theo loại hoạt động ─────────────────────────── */
+.badge-call {
+  background: #e4f3ff;
+  color: #0d5f99;
+}
+
+.badge-meeting {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-email {
+  background: #eef3fb;
+  color: #1b3557;
+}
+
+.badge-zalo {
+  background: #e8f7ef;
+  color: #18724a;
+}

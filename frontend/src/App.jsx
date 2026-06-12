@@ -6,8 +6,12 @@ import LeadManager from "./page/LeadManager";
 import SanPhamManager from "./page/SanPhamManager.jsx";
 import KhachHangManager from "./page/KhachHangManager.jsx";
 import TicketManager from "./page/TicketManager.jsx";
+<<<<<<< HEAD
 import CoHoiManager from "./page/CoHoiManager.jsx";
 
+=======
+import HoatDongManager from "./page/HoatDongManager.jsx";
+>>>>>>> 8d143c81fff6d9f7b44272b3a0bbb6516c4dd937
 function App() {
   return (
     <Router>
@@ -45,6 +49,9 @@ function App() {
             </Link>
             <Link to="/khach-hang" style={linkStyle}>
               Quản lý Khách hàng
+            </Link>
+            <Link to="/hoat-dong" style={linkStyle}>
+              Quản lý Hoạt động
             </Link>
             <Link to="/hop-dong" style={linkStyle}>
               Quản lý Hợp đồng
@@ -114,7 +121,11 @@ function App() {
               <Route path="/tai-chinh" element={<TaiChinh />} />
               <Route path="/sanpham" element={<SanPhamManager />} />
               <Route path="/tickets" element={<TicketManager />} />
+<<<<<<< HEAD
                 <Route path="/cohoi" element={<CoHoiManager />} />
+=======
+              <Route path="/hoat-dong" element={<HoatDongManager />} />
+>>>>>>> 8d143c81fff6d9f7b44272b3a0bbb6516c4dd937
             </Routes>
           </div>
         </main>
