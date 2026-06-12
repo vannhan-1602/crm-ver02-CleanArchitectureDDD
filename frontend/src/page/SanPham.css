@@ -787,3 +787,213 @@ tbody tr.selected-row td { background: #eff6ff; }
 .sanpham-form-inner .message {
     box-sizing: border-box;
 }
+/* ── Product Detail Modal ── */
+.modal-detail {
+    width: min(900px, 95vw);
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    overflow: hidden;
+    flex: 1;
+}
+
+.detail-image-col {
+    padding: 20px;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    background: #f9fafb;
+}
+
+.detail-info-col {
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Main image */
+.detail-main-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #f3f4f6;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 12px;
+}
+
+.detail-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.detail-no-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.detail-no-img span { font-size: 40px; }
+
+/* Arrow nav */
+.detail-img-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #374151;
+    transition: background 0.15s;
+    z-index: 2;
+}
+.detail-img-arrow:hover:not(:disabled) { background: #fff; }
+.detail-img-arrow:disabled { opacity: 0.3; cursor: default; }
+.detail-img-arrow-left  { left: 8px; }
+.detail-img-arrow-right { right: 8px; }
+
+.detail-img-counter {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+
+.detail-main-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+/* Thumbnail row */
+.detail-thumb-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.detail-thumb-btn {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #f3f4f6;
+    transition: border-color 0.15s, transform 0.1s;
+    flex-shrink: 0;
+}
+
+.detail-thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-thumb-btn:hover   { border-color: #93c5fd; transform: scale(1.05); }
+.detail-thumb-btn.active  { border-color: #2563eb; }
+
+/* Info table */
+.detail-info-table {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.detail-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    border-bottom: 1px solid #f3f4f6;
+}
+.detail-info-row:last-child { border-bottom: none; }
+.detail-info-row:nth-child(even) { background: #fafafa; }
+
+.detail-info-label {
+    color: #6b7280;
+    font-size: 12.5px;
+}
+
+/* Price block */
+.detail-price-block {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.detail-price-label {
+    font-size: 13px;
+    color: #1d4ed8;
+    font-weight: 500;
+}
+
+.detail-price-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1d4ed8;
+    letter-spacing: -0.5px;
+}
+
+/* Actions */
+.detail-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .detail-body { grid-template-columns: 1fr; }
+    .detail-image-col { border-right: none; border-bottom: 1px solid #e5e7eb; }
+    .modal-detail { max-height: 95vh; overflow-y: auto; }
+}

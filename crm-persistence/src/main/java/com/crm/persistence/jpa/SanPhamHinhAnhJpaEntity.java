@@ -4,7 +4,7 @@ import com.crm.domain.entities.SanPham;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "bh_sanpham_hinhanh")
+@Table(name = "BH-SanPham_HinhAnh")
 public class SanPhamHinhAnhJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
