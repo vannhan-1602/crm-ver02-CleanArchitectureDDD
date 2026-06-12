@@ -30,4 +30,5 @@ public interface KhachHangJPARepo extends JpaRepository<KhachHangJpaEntity, Long
     @Transactional
     @Query("UPDATE KhachHangJpaEntity k SET k.isDeleted = true WHERE k.id = :id")
     void softDeleteById(@Param("id") Long id);
+
 }

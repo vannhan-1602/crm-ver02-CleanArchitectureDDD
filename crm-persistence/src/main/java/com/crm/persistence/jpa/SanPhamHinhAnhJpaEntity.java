@@ -1,14 +1,10 @@
 package com.crm.persistence.jpa;
 
-import com.crm.domain.entities.SanPham;
 import jakarta.persistence.*;
 
 @Entity
-<<<<<<< HEAD
-@Table(name = "BH-SanPham_HinhAnh")
-=======
+
 @Table(name = "BH_SanPham_HinhAnh")
->>>>>>> bfd6b2220d04eb89595e70ed04f17f6c5539f3d6
 public class SanPhamHinhAnhJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
