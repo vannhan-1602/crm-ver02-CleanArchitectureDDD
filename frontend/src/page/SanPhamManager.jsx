@@ -282,7 +282,190 @@ function ImageModal({ product, baseUrl, onClose, onRefresh, setGlobalMsg }) {
       </>
   );
 }
+/* ─────────────────────────────────────────────
+   ProductDetailModal component
+───────────────────────────────────────────── */
+function ProductDetailModal({ product, categories, baseUrl, onClose, onEdit, onManageImages }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const images = product.hinhAnh ?? [];
+  const mainImg = images[activeIdx];
 
+  const catName = (id) =>
+      categories.find((c) => String(c.id) === String(id))?.tenLoai ?? `Loại ${id}`;
+
+  const formatVND = (n) =>
+      new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setActiveIdx((i) => Math.min(i + 1, images.length - 1));
+      if (e.key === "ArrowLeft")  setActiveIdx((i) => Math.max(i - 1, 0));
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [images.length, onClose]);
+
+  return (
+      <div className="overlay" onClick={onClose}>
+        <div className="modal modal-detail" onClick={(e) => e.stopPropagation()}>
+
+          {/* Header */}
+          <div className="modal-header">
+            <div>
+              <p style={{ fontSize: 11, color: "#6b7280", margin: "0 0 2px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Chi tiết sản phẩm
+              </p>
+              <h3 style={{ margin: 0 }}>{product.tenSanPham}</h3>
+            </div>
+            <button className="modal-close" type="button" onClick={onClose}>×</button>
+          </div>
+
+          <div className="detail-body">
+
+            {/* ── Left: Image area ── */}
+            <div className="detail-image-col">
+
+              {/* Main image */}
+              <div className="detail-main-img-wrap">
+                {mainImg ? (
+                    <img
+                        className="detail-main-img"
+                        src={`${baseUrl}${mainImg.url}`}
+                        alt={product.tenSanPham}
+                        onError={(e) => { e.target.style.display = "none"; }}
+                    />
+                ) : (
+                    <div className="detail-no-img">
+                      <span>🖼️</span>
+                      <p>Chưa có hình ảnh</p>
+                    </div>
+                )}
+
+                {/* Nav arrows */}
+                {images.length > 1 && (
+                    <>
+                      <button
+                          className="detail-img-arrow detail-img-arrow-left"
+                          disabled={activeIdx === 0}
+                          onClick={() => setActiveIdx((i) => i - 1)}
+                      >‹</button>
+                      <button
+                          className="detail-img-arrow detail-img-arrow-right"
+                          disabled={activeIdx === images.length - 1}
+                          onClick={() => setActiveIdx((i) => i + 1)}
+                      >›</button>
+                      <span className="detail-img-counter">{activeIdx + 1} / {images.length}</span>
+                    </>
+                )}
+
+                {/* Main badge */}
+                {mainImg?.isMain === 1 && (
+                    <span className="detail-main-badge">✓ Ảnh chính</span>
+                )}
+              </div>
+
+              {/* Thumbnail strip */}
+              {images.length > 1 && (
+                  <div className="detail-thumb-row">
+                    {images.map((img, i) => (
+                        <button
+                            key={img.id}
+                            className={`detail-thumb-btn ${i === activeIdx ? "active" : ""}`}
+                            onClick={() => setActiveIdx(i)}
+                        >
+                          <img
+                              src={`${baseUrl}${img.url}`}
+                              alt={`Ảnh ${i + 1}`}
+                              onError={(e) => { e.target.style.display = "none"; }}
+                          />
+                        </button>
+                    ))}
+                  </div>
+              )}
+
+              {/* Image count */}
+              <p style={{ textAlign: "center", fontSize: 12, color: "#9ca3af", margin: "8px 0 0" }}>
+                {images.length > 0 ? `${images.length} hình ảnh` : "Chưa có hình ảnh nào"}
+              </p>
+            </div>
+
+            {/* ── Right: Info area ── */}
+            <div className="detail-info-col">
+
+              {/* Badges */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+                <span className="badge badge-cat">{catName(product.loaiSanPham)}</span>
+                <span className={`badge ${product.trangThai === 1 ? "badge-active" : "badge-inactive"}`}>
+                {product.trangThai === 1 ? "Đang bán" : "Ngừng bán"}
+              </span>
+                {product.slTon < 10 && (
+                    <span className="badge" style={{ background: "#fef9c3", color: "#854d0e", border: "1px solid #fde047" }}>
+                  ⚠ Tồn kho thấp
+                </span>
+                )}
+              </div>
+
+              {/* Info table */}
+              <div className="detail-info-table">
+                <div className="detail-info-row">
+                  <span className="detail-info-label">Mã sản phẩm</span>
+                  <span className="product-code">{product.maSanPham}</span>
+                </div>
+                <div className="detail-info-row">
+                  <span className="detail-info-label">Loại sản phẩm</span>
+                  <span>{catName(product.loaiSanPham)}</span>
+                </div>
+                <div className="detail-info-row">
+                  <span className="detail-info-label">Đơn vị tính</span>
+                  <span>{product.donVi || "—"}</span>
+                </div>
+                <div className="detail-info-row">
+                  <span className="detail-info-label">Số lượng tồn</span>
+                  <span className={product.slTon < 10 ? "stock-low" : "stock-ok"} style={{ fontWeight: 600 }}>
+                  {product.slTon}
+                </span>
+                </div>
+                <div className="detail-info-row">
+                  <span className="detail-info-label">Trạng thái</span>
+                  <span className={`badge ${product.trangThai === 1 ? "badge-active" : "badge-inactive"}`}>
+                  {product.trangThai === 1 ? "Đang bán" : "Ngừng bán"}
+                </span>
+                </div>
+              </div>
+
+              {/* Price highlight */}
+              <div className="detail-price-block">
+                <span className="detail-price-label">Giá bán</span>
+                <span className="detail-price-value">{formatVND(product.giaBan)}</span>
+              </div>
+
+              {/* Actions */}
+              <div className="detail-actions">
+                <button
+                    className="primary-btn"
+                    type="button"
+                    onClick={() => { onEdit(product); onClose(); }}
+                >
+                  ✏️ Chỉnh sửa
+                </button>
+                <button
+                    className="secondary-btn"
+                    type="button"
+                    onClick={() => { onManageImages(product); onClose(); }}
+                >
+                  🖼 Quản lý ảnh
+                </button>
+                <button className="ghost-btn" type="button" onClick={onClose}>
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  );
+}
 /* ─────────────────────────────────────────────
    Main component
 ───────────────────────────────────────────── */
@@ -299,7 +482,7 @@ export default function SanPhamManager() {
   const [message, setMessage]             = useState({ type: "", text: "" });
   const [imgProduct, setImgProduct]       = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-
+  const [detailProduct, setDetailProduct] = useState(null);
   /* ── fetch ── */
   const fetchAll = async () => {
     try {
@@ -555,6 +738,9 @@ export default function SanPhamManager() {
                       <td>{renderThumbs(p)}</td>
                       <td>
                         <div className="row-actions">
+                          <button className="ghost-btn" type="button" onClick={() => setDetailProduct(p)}>
+                            🔍 Chi tiết
+                          </button>
                           <button className="ghost-btn" type="button" onClick={() => setImgProduct(p)}>
                             🖼 Ảnh
                           </button>
@@ -607,6 +793,16 @@ export default function SanPhamManager() {
                 </div>
               </div>
             </div>
+        )}
+        {detailProduct && (
+            <ProductDetailModal
+                product={detailProduct}
+                categories={categories}
+                baseUrl={API_BASE_URL}
+                onClose={() => setDetailProduct(null)}
+                onEdit={openEdit}
+                onManageImages={setImgProduct}
+            />
         )}
       </main>
   );
