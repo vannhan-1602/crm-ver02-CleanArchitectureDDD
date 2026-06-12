@@ -174,3 +174,59 @@
     max-height: none;
   }
 }
+/* ── Fix form alignment ── */
+
+/* Đảm bảo ticket-form có padding giống sanpham-form-inner */
+.ticket-form {
+  padding: 0;
+}
+
+.ticket-form > *:not(.panel-head) {
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+/* two-col bên trong ticket-page không bị overflow */
+.ticket-page .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ticket-page .two-col > label {
+  min-width: 0;
+}
+
+/* Tất cả input/select/textarea trong ticket-form đều full-width và không tràn */
+.ticket-form input,
+.ticket-form select,
+.ticket-form textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Label trong ticket-form dùng display:grid thay flex để tránh lệch */
+.ticket-form label {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  min-width: 0;
+}
+
+/* actions row căn phải */
+.ticket-form .actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 4px;
+  padding-bottom: 18px;
+}
+
+/* message box full-width */
+.ticket-form .message {
+  box-sizing: border-box;
+}

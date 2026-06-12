@@ -747,3 +747,43 @@ tbody tr.selected-row td { background: #eff6ff; }
     justify-content: flex-end;
     padding: 0 24px 22px;
 }
+/* ── Fix form alignment ── */
+
+.sanpham-form-inner .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    min-width: 0;
+}
+
+.sanpham-form-inner .two-col > label {
+    min-width: 0;
+}
+
+.sanpham-form-inner label {
+    display: grid;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    min-width: 0;
+}
+
+.sanpham-form-inner input,
+.sanpham-form-inner select,
+.sanpham-form-inner textarea {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.sanpham-form-inner .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 4px;
+}
+
+.sanpham-form-inner .message {
+    box-sizing: border-box;
+}
