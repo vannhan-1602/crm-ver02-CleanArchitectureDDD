@@ -39,7 +39,13 @@ const emptyForm = {
   maSoThue: "",
   nhanVienPhuTrachId: "",
 };
-
+function formatDiaChi(diaChiList) {
+  if (!Array.isArray(diaChiList) || diaChiList.length === 0) return null;
+  const dc = diaChiList.find((d) => d.isDefault) ?? diaChiList[0];
+  return [dc.diaChiChiTiet, dc.phuongXa, dc.quanHuyen, dc.tinhThanh]
+    .filter(Boolean)
+    .join(", ");
+}
 function formatDateTime(value) {
   if (!value) return "-";
   const date = new Date(value);
@@ -485,6 +491,7 @@ function KhachHangManager() {
                   <th>Mã KH</th>
                   <th>Tên khách hàng</th>
                   <th>Liên hệ</th>
+                  <th>Địa chỉ</th>
                   <th>Loại</th>
                   <th>Tình trạng</th>
                   <th>NV phụ trách</th>
@@ -495,7 +502,7 @@ function KhachHangManager() {
               <tbody>
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="empty-row">
+                    <td colSpan="9" className="empty-row">
                       {loading
                         ? "Đang tải dữ liệu..."
                         : "Không có dữ liệu phù hợp"}
@@ -529,6 +536,20 @@ function KhachHangManager() {
                           )}
                           {!item.email && !item.soDienThoai && (
                             <span style={{ color: "#aaa" }}>—</span>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="stacked-cell">
+                          {formatDiaChi(item.diaChiList) ? (
+                            <span>{formatDiaChi(item.diaChiList)}</span>
+                          ) : (
+                            <span style={{ color: "#aaa" }}>—</span>
+                          )}
+                          {item.diaChiList?.length > 1 && (
+                            <span style={{ color: "#6d7c91", fontSize: 12 }}>
+                              +{item.diaChiList.length - 1} địa chỉ khác
+                            </span>
                           )}
                         </div>
                       </td>
