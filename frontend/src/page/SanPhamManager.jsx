@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const API = "http://localhost:8081/api";
+const API = "http://localhost:8081/api/sanpham";
 
 const ax = axios.create({ baseURL: API });
 
