@@ -20,4 +20,9 @@ public interface LeadRepo {
 
  
     void softDeleteById(Long id);
+    default Optional<String> findTenById(Integer id) {
+        if (id == null) return Optional.empty();
+        return findById(Long.valueOf(id))
+                .map(Lead::getTenLead);
+    }
 }

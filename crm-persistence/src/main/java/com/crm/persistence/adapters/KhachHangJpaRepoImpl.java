@@ -43,7 +43,13 @@ public class KhachHangJpaRepoImpl implements KhachHangRepo {
                 .map(KhachHangMapper::toDomain)
                 .toList();
     }
-
+    @Override
+    public List<KhachHang> findByLoaiKhachHangId(Integer loaiKhachHangId) {
+        return jpaRepo.findByLoaiKhachHangIdAndIsDeletedFalse(loaiKhachHangId)
+                .stream()
+                .map(KhachHangMapper::toDomain)
+                .toList();
+    }
     @Override
     public Optional<String> findMaxMaKhachHang() {
         return jpaRepo.findMaxMaKhachHang();

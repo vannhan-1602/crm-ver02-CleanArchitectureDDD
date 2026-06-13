@@ -24,6 +24,7 @@ function formatDateTime(value) {
 
 function HopDong() {
   const [items, setItems] = useState([]);
+  const [khachHangList, setKhachHangList] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -67,8 +68,23 @@ function HopDong() {
     }
   };
 
+  const loadKhachHangList = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/khach-hang`);
+      if (!response.ok) return;
+      const data = await response.json();
+      setKhachHangList(Array.isArray(data) ? data : []);
+    } catch {
+      // Danh sách khách hàng chỉ phục vụ dropdown, không chặn form nếu lỗi.
+    }
+  };
+
   useEffect(() => {
-    loadHopDong();
+    const initialize = async () => {
+      await Promise.all([loadHopDong(), loadKhachHangList()]);
+    };
+
+    void initialize();
   }, []);
 
   const resetForm = () => {
@@ -86,7 +102,7 @@ function HopDong() {
 
   const validateForm = () => {
     if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
-    if (!form.khachHangId.trim()) return "Mã khách hàng không được rỗng";
+    if (!form.khachHangId.trim()) return "Khách hàng không được rỗng";
     if (!form.ngayKy) return "Ngày ký không được rỗng";
     if (!form.thoiHan.trim()) return "Thời hạn không được rỗng";
     return "";
@@ -262,15 +278,19 @@ function HopDong() {
           </label>
 
           <label>
-            Mã khách hàng
-            <input
+            Tên khách hàng
+            <select
               name="khachHangId"
-              type="number"
-              min="1"
               value={form.khachHangId}
               onChange={handleChange}
-              placeholder="1"
-            />
+            >
+              <option value="">-- Chọn khách hàng --</option>
+              {khachHangList.map((khachHang) => (
+                <option key={khachHang.id} value={khachHang.id}>
+                  {khachHang.tenKhachHang ?? `Khách hàng #${khachHang.id}`}
+                </option>
+              ))}
+            </select>
           </label>
 
           <div className="two-col">
@@ -365,9 +385,6 @@ function HopDong() {
                       <td>
                         <div className="stacked-cell">
                           <strong>{item.tenKhachHang || 'Không có tên'}</strong>
-                          <span style={{ color: '#6d7c91', fontSize: '12px' }}>
-                            {item.khachHangId ?? '-'}
-                          </span>
                         </div>
                       </td>
                       <td>{item.ngayKy ?? "-"}</td>

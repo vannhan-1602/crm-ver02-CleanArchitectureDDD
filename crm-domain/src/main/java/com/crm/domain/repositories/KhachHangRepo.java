@@ -15,8 +15,14 @@ public interface KhachHangRepo {
 
     List<KhachHang> findAll();
 
-  
+    List<KhachHang> findByLoaiKhachHangId(Integer loaiKhachHangId);
+
     Optional<String> findMaxMaKhachHang();
 
     void softDeleteById(Long id);
+    default Optional<String> findTenById(Integer id) {
+        if (id == null) return Optional.empty();
+        return findById(Long.valueOf(id))
+                .map(KhachHang::getTenKhachHang);
+    }
 }

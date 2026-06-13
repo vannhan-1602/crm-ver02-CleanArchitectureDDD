@@ -21,9 +21,8 @@ public class SanPhamJpaRepoIml implements SanPhamRepo {
     }
 
     @Override
-    @Transactional
     public List<SanPham> findAll() {
-        return jpaRepo.findAll().stream()
+        return jpaRepo.findAllWithHinhAnh().stream()
                 .map(SanPhamMapper::toDomain)
                 .toList();
     }

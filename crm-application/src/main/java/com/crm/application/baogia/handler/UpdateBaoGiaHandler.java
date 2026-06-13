@@ -36,12 +36,13 @@ public class UpdateBaoGiaHandler implements IRequestHandler<UpdateBaoGiaCommand,
                 .orElseThrow(() -> new IllegalArgumentException("Khong tim thay bao gia: " + request.getId()));
 
         Long khachHangId = request.getKhachHangId() != null ? request.getKhachHangId() : existing.getKhachHangId();
+        Integer nhanVienId = request.getNhanVienId() != null ? request.getNhanVienId() : existing.getNhanVienId();
         validateKhachHang(khachHangId);
 
         existing.capNhatThongTin(
                 request.getMaBaoGia(),
-                request.getKhachHangId(),
-                request.getNhanVienId(),
+                khachHangId,
+                nhanVienId,
                 parseTrangThai(request.getTrangThai())
         );
 
