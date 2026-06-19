@@ -7,43 +7,44 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.5)
 
-2026-06-10T11:30:10.137+07:00  INFO 23364 --- [           main] com.crm.api.CrmApplication               : Starting CrmApplication using Java 17.0.12 with PID 23364 (C:\Users\Admin\Desktop\CacDoAnLon\ProjectCaNhan\VT1 DDD v2\crm-ver02-CleanArchitectureDDD\crm-api\target\classes started by Admin in C:\Users\Admin\Desktop\CacDoAnLon\ProjectCaNhan\VT1 DDD v2\crm-ver02-CleanArchitectureDDD\crm-api)
-2026-06-10T11:30:10.141+07:00  INFO 23364 --- [           main] com.crm.api.CrmApplication               : No active profile set, falling back to 1 default profile: "default"
-2026-06-10T11:30:10.141+07:00 DEBUG 23364 --- [           main] o.s.boot.SpringApplication               : Loading source class com.crm.api.CrmApplication
-2026-06-10T11:30:10.186+07:00 DEBUG 23364 --- [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@2049a9c1
-2026-06-10T11:30:10.523+07:00  INFO 23364 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-10T11:30:10.570+07:00  INFO 23364 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 39 ms. Found 8 JPA repository interfaces.
-2026-06-10T11:30:11.086+07:00 DEBUG 23364 --- [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\Admin\.m2\repository\org\springframework\boot\spring-boot\3.2.5\spring-boot-3.2.5.jar
-2026-06-10T11:30:11.087+07:00 DEBUG 23364 --- [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\Admin\.m2\repository\org\springframework\boot\spring-boot\3.2.5\spring-boot-3.2.5.jar
-2026-06-10T11:30:11.087+07:00 DEBUG 23364 --- [           main] .s.b.w.e.t.TomcatServletWebServerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
-2026-06-10T11:30:11.103+07:00  INFO 23364 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
-2026-06-10T11:30:11.114+07:00  INFO 23364 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-10T11:30:11.114+07:00  INFO 23364 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
-2026-06-10T11:30:11.169+07:00  INFO 23364 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-10T11:30:11.170+07:00 DEBUG 23364 --- [           main] w.s.c.ServletWebServerApplicationContext : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2026-06-10T11:30:11.172+07:00  INFO 23364 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 984 ms
-2026-06-10T11:30:11.184+07:00 DEBUG 23364 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105
-2026-06-10T11:30:11.186+07:00 DEBUG 23364 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
-2026-06-10T11:30:11.203+07:00 DEBUG 23364 --- [           main] o.s.b.w.s.f.OrderedRequestContextFilter  : Filter 'requestContextFilter' configured for use
-2026-06-10T11:30:11.206+07:00 DEBUG 23364 --- [           main] s.b.w.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
-2026-06-10T11:30:11.206+07:00 DEBUG 23364 --- [           main] o.s.b.w.s.f.OrderedFormContentFilter     : Filter 'formContentFilter' configured for use
-2026-06-10T11:30:11.291+07:00  INFO 23364 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-10T11:30:11.334+07:00  INFO 23364 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
-2026-06-10T11:30:11.361+07:00  INFO 23364 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-10T11:30:11.545+07:00  INFO 23364 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-10T11:30:11.568+07:00  INFO 23364 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-10T11:30:11.684+07:00  INFO 23364 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@205159dc
-2026-06-10T11:30:11.687+07:00  INFO 23364 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-10T11:30:12.534+07:00  INFO 23364 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-10T11:30:12.538+07:00  INFO 23364 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-10T11:30:12.744+07:00  INFO 23364 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-06-10T11:30:13.317+07:00 DEBUG 23364 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 40 mappings in 'requestMappingHandlerMapping'
-2026-06-10T11:30:13.343+07:00 DEBUG 23364 --- [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.crm.api'. Automatic @Repository and @Entity scanning is enabled.
-2026-06-10T11:30:13.402+07:00 DEBUG 23364 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2026-06-10T11:30:13.433+07:00 DEBUG 23364 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2026-06-10T11:30:13.463+07:00 DEBUG 23364 --- [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
-2026-06-10T11:30:13.548+07:00  INFO 23364 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path ''
-2026-06-10T11:30:13.558+07:00 DEBUG 23364 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-06-14T03:25:58.477+07:00  INFO 23928 --- [           main] com.crm.api.CrmApplication               : Starting CrmApplication using Java 17.0.12 with PID 23928 (C:\Users\Admin\Desktop\CacDoAnLon\ProjectCaNhan\VT1 DDD v2\crm-ver02-CleanArchitectureDDD\crm-api\target\classes started by Admin in C:\Users\Admin\Desktop\CacDoAnLon\ProjectCaNhan\VT1 DDD v2\crm-ver02-CleanArchitectureDDD\crm-api)
+2026-06-14T03:25:58.481+07:00  INFO 23928 --- [           main] com.crm.api.CrmApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-06-14T03:25:58.487+07:00 DEBUG 23928 --- [           main] o.s.boot.SpringApplication               : Loading source class com.crm.api.CrmApplication
+2026-06-14T03:25:58.549+07:00 DEBUG 23928 --- [           main] ConfigServletWebServerApplicationContext : Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@1205bd62
+2026-06-14T03:25:59.052+07:00  INFO 23928 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-14T03:25:59.118+07:00  INFO 23928 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 10 JPA repository interfaces.
+2026-06-14T03:25:59.995+07:00 DEBUG 23928 --- [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\Admin\.m2\repository\org\springframework\boot\spring-boot\3.2.5\spring-boot-3.2.5.jar
+2026-06-14T03:25:59.996+07:00 DEBUG 23928 --- [           main] .s.b.w.e.t.TomcatServletWebServerFactory : Code archive: C:\Users\Admin\.m2\repository\org\springframework\boot\spring-boot\3.2.5\spring-boot-3.2.5.jar
+2026-06-14T03:25:59.997+07:00 DEBUG 23928 --- [           main] .s.b.w.e.t.TomcatServletWebServerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2026-06-14T03:26:00.033+07:00  INFO 23928 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2026-06-14T03:26:00.050+07:00  INFO 23928 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-14T03:26:00.051+07:00  INFO 23928 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-06-14T03:26:00.142+07:00  INFO 23928 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-14T03:26:00.142+07:00 DEBUG 23928 --- [           main] w.s.c.ServletWebServerApplicationContext : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2026-06-14T03:26:00.144+07:00  INFO 23928 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1593 ms
+2026-06-14T03:26:00.171+07:00 DEBUG 23928 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping filters: characterEncodingFilter urls=[/*] order=-2147483648, formContentFilter urls=[/*] order=-9900, requestContextFilter urls=[/*] order=-105, corsFilter urls=[/*] order=2147483647
+2026-06-14T03:26:00.172+07:00 DEBUG 23928 --- [           main] o.s.b.w.s.ServletContextInitializerBeans : Mapping servlets: dispatcherServlet urls=[/]
+2026-06-14T03:26:00.197+07:00 DEBUG 23928 --- [           main] o.s.b.w.s.f.OrderedRequestContextFilter  : Filter 'requestContextFilter' configured for use
+2026-06-14T03:26:00.200+07:00 DEBUG 23928 --- [           main] o.springframework.web.filter.CorsFilter  : Filter 'corsFilter' configured for use
+2026-06-14T03:26:00.201+07:00 DEBUG 23928 --- [           main] s.b.w.s.f.OrderedCharacterEncodingFilter : Filter 'characterEncodingFilter' configured for use
+2026-06-14T03:26:00.201+07:00 DEBUG 23928 --- [           main] o.s.b.w.s.f.OrderedFormContentFilter     : Filter 'formContentFilter' configured for use
+2026-06-14T03:26:00.338+07:00  INFO 23928 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-14T03:26:00.411+07:00  INFO 23928 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-06-14T03:26:00.450+07:00  INFO 23928 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-14T03:26:00.749+07:00  INFO 23928 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-14T03:26:00.794+07:00  INFO 23928 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-14T03:26:01.041+07:00  INFO 23928 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@27261190
+2026-06-14T03:26:01.044+07:00  INFO 23928 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-14T03:26:02.558+07:00  INFO 23928 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-14T03:26:02.562+07:00  INFO 23928 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-14T03:26:02.877+07:00  INFO 23928 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-06-14T03:26:03.942+07:00 DEBUG 23928 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 49 mappings in 'requestMappingHandlerMapping'
+2026-06-14T03:26:03.975+07:00 DEBUG 23928 --- [           main] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.crm.api'. Automatic @Repository and @Entity scanning is enabled.
+2026-06-14T03:26:04.044+07:00 DEBUG 23928 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /uploads/**] in 'resourceHandlerMapping'
+2026-06-14T03:26:04.097+07:00 DEBUG 23928 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-06-14T03:26:04.146+07:00 DEBUG 23928 --- [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-06-14T03:26:04.285+07:00  INFO 23928 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path ''
+2026-06-14T03:26:04.301+07:00 DEBUG 23928 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 
 ============================
@@ -751,7 +752,7 @@ Negative matches:
 
    JpaRepositoriesAutoConfiguration:
       Did not match:
-         - @ConditionalOnMissingBean (types: org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean,org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension; SearchStrategy: all) found beans of type 'org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean' &hopDongEntityRepository, &phieuThuChiEntityRepository, &khachHangJPARepo, &sanPhamJPARepo, &hoaDonEntityRepository, &loaiSanPhamJPArepo, &leadJPARepo, &htUserJPARepo and found beans of type 'org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension' org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension#0 (OnBeanCondition)
+         - @ConditionalOnMissingBean (types: org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean,org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension; SearchStrategy: all) found beans of type 'org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean' &khachHangJPARepo, &phieuThuChiEntityRepository, &sanPhamHinhAnhJpaRepo, &baoGiaJPARepo, &hopDongEntityRepository, &hoaDonEntityRepository, &htUserJPARepo, &sanPhamJPARepo, &leadJPARepo, &loaiSanPhamJPArepo and found beans of type 'org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension' org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension#0 (OnBeanCondition)
       Matched:
          - @ConditionalOnClass found required class 'org.springframework.data.jpa.repository.JpaRepository' (OnClassCondition)
          - @ConditionalOnProperty (spring.data.jpa.repositories.enabled=true) matched (OnPropertyCondition)
@@ -1146,22 +1147,92 @@ Unconditional classes:
 
 
 
-2026-06-10T11:30:13.560+07:00  INFO 23364 --- [           main] com.crm.api.CrmApplication               : Started CrmApplication in 3.738 seconds (process running for 4.015)
-2026-06-10T11:30:13.562+07:00 DEBUG 23364 --- [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
-2026-06-10T11:30:13.563+07:00 DEBUG 23364 --- [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
-2026-06-10T11:30:27.722+07:00  INFO 23364 --- [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-10T11:30:27.723+07:00  INFO 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-10T11:30:27.724+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
-2026-06-10T11:30:27.725+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
-2026-06-10T11:30:27.725+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
-2026-06-10T11:30:27.726+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@4b391e45
-2026-06-10T11:30:27.727+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@14501070
-2026-06-10T11:30:27.728+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2026-06-10T11:30:27.728+07:00  INFO 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
-2026-06-10T11:30:27.736+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/hoa-don", parameters={}
-2026-06-10T11:30:27.748+07:00 DEBUG 23364 --- [nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HoaDonController#getAll()
-2026-06-10T11:30:27.848+07:00 DEBUG 23364 --- [nio-8081-exec-1] org.hibernate.SQL                        : select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0
+2026-06-14T03:26:04.304+07:00  INFO 23928 --- [           main] com.crm.api.CrmApplication               : Started CrmApplication in 6.263 seconds (process running for 6.67)
+2026-06-14T03:26:04.306+07:00 DEBUG 23928 --- [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
+2026-06-14T03:26:04.309+07:00 DEBUG 23928 --- [           main] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2026-06-14T03:26:18.665+07:00  INFO 23928 --- [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-14T03:26:18.671+07:00  INFO 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-14T03:26:18.672+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2026-06-14T03:26:18.673+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2026-06-14T03:26:18.673+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2026-06-14T03:26:18.675+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@690b6292
+2026-06-14T03:26:18.675+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@74691a1f
+2026-06-14T03:26:18.675+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-06-14T03:26:18.677+07:00  INFO 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-06-14T03:26:18.687+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/tai-chinh/thong-ke", parameters={}
+2026-06-14T03:26:18.702+07:00 DEBUG 23928 --- [nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.TaiChinhController#thongKe(LocalDate, LocalDate)
+2026-06-14T03:26:18.847+07:00 DEBUG 23928 --- [nio-8081-exec-1] org.hibernate.SQL                        : select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0 where (? is null or hdje1_0.CreatedAt>=?) and (? is null or hdje1_0.CreatedAt<=?)
+Hibernate: select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0 where (? is null or hdje1_0.CreatedAt>=?) and (? is null or hdje1_0.CreatedAt<=?)
+2026-06-14T03:26:18.881+07:00 DEBUG 23928 --- [nio-8081-exec-1] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T03:26:18.888+07:00 DEBUG 23928 --- [nio-8081-exec-1] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T03:26:18.950+07:00 DEBUG 23928 --- [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T03:26:18.957+07:00 DEBUG 23928 --- [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [TaiChinhThongKe[tongHoaDon=45000000.00, tongDaThu=11000000.00, tongConNo=34000000.00, tongPhieuThu=1 (truncated)...]
+2026-06-14T03:26:18.984+07:00 DEBUG 23928 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T03:26:36.966+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/", parameters={}
+2026-06-14T03:26:36.972+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [URL [file:uploads/], classpath [static/], ServletContext [/]]
+2026-06-14T03:26:36.974+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
+2026-06-14T03:26:36.981+07:00 DEBUG 23928 --- [nio-8081-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .]
+2026-06-14T03:26:36.981+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2026-06-14T03:26:36.991+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}
+2026-06-14T03:26:36.992+07:00 DEBUG 23928 --- [nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
+2026-06-14T03:26:37.014+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
+2026-06-14T03:26:37.023+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+2026-06-14T03:26:37.102+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/favicon.ico", parameters={}
+2026-06-14T03:26:37.106+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [URL [file:uploads/], classpath [static/], ServletContext [/]]
+2026-06-14T03:26:37.109+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
+2026-06-14T03:26:37.109+07:00 DEBUG 23928 --- [nio-8081-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2026-06-14T03:26:37.110+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND
+2026-06-14T03:26:37.111+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}
+2026-06-14T03:26:37.111+07:00 DEBUG 23928 --- [nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2026-06-14T03:26:37.121+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json;q=0.8', given [image/avif, image/webp, image/apng, image/svg+xml, image/*, */*;q=0.8] and supported [application/json, application/*+json]
+2026-06-14T03:26:37.124+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Sun Jun 14 03:26:37 ICT 2026, status=404, error=Not Found, path=/favicon.ico}]
+2026-06-14T03:26:37.136+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+2026-06-14T03:26:44.178+07:00 DEBUG 23928 --- [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/tai-chinh/thong-ke", parameters={}
+2026-06-14T03:26:44.178+07:00 DEBUG 23928 --- [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/hop-dong", parameters={}
+2026-06-14T03:26:44.178+07:00 DEBUG 23928 --- [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/phieu-thu", parameters={}
+2026-06-14T03:26:44.180+07:00 DEBUG 23928 --- [nio-8081-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HopDongController#getAll()
+2026-06-14T03:26:44.178+07:00 DEBUG 23928 --- [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/phieu-chi", parameters={}
+2026-06-14T03:26:44.178+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/hoa-don", parameters={}
+2026-06-14T03:26:44.180+07:00 DEBUG 23928 --- [nio-8081-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.TaiChinhController#thongKe(LocalDate, LocalDate)
+2026-06-14T03:26:44.180+07:00 DEBUG 23928 --- [nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.PhieuThuController#getAll()
+2026-06-14T03:26:44.181+07:00 DEBUG 23928 --- [nio-8081-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.PhieuChiController#getAll()
+2026-06-14T03:26:44.181+07:00 DEBUG 23928 --- [nio-8081-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HoaDonController#getAll()
+2026-06-14T03:26:44.183+07:00 DEBUG 23928 --- [nio-8081-exec-9] org.hibernate.SQL                        : select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0 where (? is null or hdje1_0.CreatedAt>=?) and (? is null or hdje1_0.CreatedAt<=?)
+Hibernate: select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0 where (? is null or hdje1_0.CreatedAt>=?) and (? is null or hdje1_0.CreatedAt<=?)
+2026-06-14T03:26:44.188+07:00 DEBUG 23928 --- [nio-8081-exec-9] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T03:26:44.194+07:00 DEBUG 23928 --- [nio-8081-exec-9] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T03:26:44.197+07:00 DEBUG 23928 --- [nio-8081-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T03:26:44.198+07:00 DEBUG 23928 --- [nio-8081-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [TaiChinhThongKe[tongHoaDon=45000000.00, tongDaThu=11000000.00, tongConNo=34000000.00, tongPhieuThu=1 (truncated)...]
+2026-06-14T03:26:44.204+07:00 DEBUG 23928 --- [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T03:26:44.208+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+2026-06-14T03:26:44.211+07:00 DEBUG 23928 --- [nio-8081-exec-6] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+2026-06-14T03:26:44.213+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+Hibernate: select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+2026-06-14T03:26:44.214+07:00 DEBUG 23928 --- [nio-8081-exec-5] org.hibernate.SQL                        : select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0
 Hibernate: select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0
-2026-06-10T11:30:27.886+07:00 DEBUG 23364 --- [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
-2026-06-10T11:30:27.889+07:00 DEBUG 23364 --- [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HoaDonController$HoaDonResponse@8ea67a4]]
-2026-06-10T11:30:27.956+07:00 DEBUG 23364 --- [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T03:26:44.222+07:00 DEBUG 23928 --- [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T03:26:44.223+07:00 DEBUG 23928 --- [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.PhieuThuController$PhieuThuResponse@76d95012, com.crm.presentation (truncated)...]
+2026-06-14T03:26:44.224+07:00 DEBUG 23928 --- [nio-8081-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T03:26:44.227+07:00 DEBUG 23928 --- [nio-8081-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [[]]
+2026-06-14T03:26:44.229+07:00 DEBUG 23928 --- [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T03:26:44.229+07:00 DEBUG 23928 --- [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T03:26:44.246+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T03:26:44.247+07:00 DEBUG 23928 --- [nio-8081-exec-5] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T03:26:44.255+07:00 DEBUG 23928 --- [nio-8081-exec-5] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T03:26:44.255+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T03:26:44.259+07:00 DEBUG 23928 --- [nio-8081-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T03:26:44.259+07:00 DEBUG 23928 --- [nio-8081-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T03:26:44.259+07:00 DEBUG 23928 --- [nio-8081-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HoaDonController$HoaDonResponse@5450c8ba, com.crm.presentation.con (truncated)...]
+2026-06-14T03:26:44.260+07:00 DEBUG 23928 --- [nio-8081-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HopDongController$HopDongResponse@114f77dd, com.crm.presentation.c (truncated)...]
+2026-06-14T03:26:44.263+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T03:26:44.263+07:00 DEBUG 23928 --- [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
