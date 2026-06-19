@@ -102,7 +102,7 @@ function HopDong() {
 
   const validateForm = () => {
     if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
-    if (!form.khachHangId.trim()) return "Khách hàng không được rỗng";
+    if (!String(form.khachHangId.trim())) return "Khách hàng không được rỗng";
     if (!form.ngayKy) return "Ngày ký không được rỗng";
     if (!form.thoiHan.trim()) return "Thời hạn không được rỗng";
     return "";
