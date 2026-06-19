@@ -156,12 +156,55 @@ function LoginScreen({ onLogin }) {
 }
 
 function AdminUsers() {
+  const readSelectedUserId = () => {
+    const raw = localStorage.getItem("crm_admin_selected_user_id")
+    return raw ? Number(raw) : null
+  }
+
+  const readPermissionDrafts = () => {
+    try {
+      const raw = localStorage.getItem("crm_admin_permissions_drafts")
+      if (!raw) return {}
+      const drafts = JSON.parse(raw)
+      return drafts && typeof drafts === "object" ? drafts : {}
+    } catch {
+      return {}
+    }
+  }
+
+  const writePermissionDrafts = (drafts) => {
+    localStorage.setItem("crm_admin_permissions_drafts", JSON.stringify(drafts))
+  }
+
   const [users, setUsers] = useState([])
   const [modules, setModules] = useState({})
-  const [selectedUserId, setSelectedUserId] = useState(null)
+  const [selectedUserId, setSelectedUserId] = useState(() => readSelectedUserId())
   const [permissions, setPermissions] = useState([])
+  const [permissionDrafts, setPermissionDrafts] = useState(() => readPermissionDrafts())
+  const [savingPermissions, setSavingPermissions] = useState(false)
   const [form, setForm] = useState({ username: "", password: "", roleId: 3, hoTen: "", email: "", soDienThoai: "" })
   const [message, setMessage] = useState("")
+
+  useEffect(() => {
+    if (!selectedUserId) return
+
+    const draft = permissionDrafts[selectedUserId]
+    if (Array.isArray(draft)) {
+      setPermissions(draft)
+      return
+    }
+
+    const loadSelectedPermissions = async () => {
+      try {
+        const response = await api.get(`/api/admin/users/${selectedUserId}/permissions`)
+        setPermissions(response.data)
+      } catch {
+        // Leave the current view alone; load() below still populates users/modules.
+      }
+    }
+
+    loadSelectedPermissions()
+  }, [selectedUserId, permissionDrafts])
 
   const load = async () => {
     const [usersRes, modulesRes] = await Promise.all([api.get("/api/admin/users"), api.get("/api/admin/modules")])
@@ -175,16 +218,33 @@ function AdminUsers() {
 
   const selectUser = async (id) => {
     setSelectedUserId(id)
-    const response = await api.get(`/api/admin/users/${id}/permissions`)
-    setPermissions(response.data)
+    localStorage.setItem("crm_admin_selected_user_id", String(id))
+    setMessage("")
+
+    const draft = permissionDrafts[id]
+    if (Array.isArray(draft)) {
+      setPermissions(draft)
+      return
+    }
+
+    try {
+      const response = await api.get(`/api/admin/users/${id}/permissions`)
+      setPermissions(response.data)
+    } catch (err) {
+      setMessage(err.response?.data?.message || `Không thể tải phân quyền (${err.response?.status ?? err.message})`)
+    }
   }
 
   const createUser = async (event) => {
     event.preventDefault()
-    await api.post("/api/admin/users", { ...form, roleId: Number(form.roleId) })
-    setForm({ username: "", password: "", roleId: 3, hoTen: "", email: "", soDienThoai: "" })
-    setMessage("Đã tạo tài khoản")
-    await load()
+    try {
+      await api.post("/api/admin/users", { ...form, roleId: Number(form.roleId) })
+      setForm({ username: "", password: "", roleId: 3, hoTen: "", email: "", soDienThoai: "" })
+      setMessage("Đã tạo tài khoản")
+      await load()
+    } catch (err) {
+      setMessage(err.response?.data?.message || `Không thể tạo tài khoản (${err.response?.status ?? err.message})`)
+    }
   }
 
   const permissionFor = (moduleKey) =>
@@ -193,12 +253,43 @@ function AdminUsers() {
   const togglePermission = (moduleKey, field) => {
     const current = permissionFor(moduleKey)
     const next = { ...current, [field]: !current[field] }
-    setPermissions((items) => [...items.filter((item) => item.moduleKey !== moduleKey), next])
+    setPermissions((items) => {
+      const updated = [...items.filter((item) => item.moduleKey !== moduleKey), next]
+      if (selectedUserId) {
+        setPermissionDrafts((prev) => {
+          const nextDrafts = { ...prev, [selectedUserId]: updated }
+          writePermissionDrafts(nextDrafts)
+          return nextDrafts
+        })
+      }
+      return updated
+    })
   }
 
   const savePermissions = async () => {
-    await api.put(`/api/admin/users/${selectedUserId}/permissions`, { permissions })
-    setMessage("Đã cập nhật phân quyền")
+    if (!selectedUserId) {
+      setMessage("Vui lòng chọn một tài khoản trước")
+      return
+    }
+
+    setSavingPermissions(true)
+    setMessage("")
+    try {
+      await api.put(`/api/admin/users/${selectedUserId}/permissions`, { permissions })
+      const response = await api.get(`/api/admin/users/${selectedUserId}/permissions`)
+      setPermissions(response.data)
+      setPermissionDrafts((prev) => {
+        const nextDrafts = { ...prev }
+        delete nextDrafts[selectedUserId]
+        writePermissionDrafts(nextDrafts)
+        return nextDrafts
+      })
+      setMessage("Đã cập nhật phân quyền")
+    } catch (err) {
+      setMessage(err.response?.data?.message || `Không thể lưu phân quyền (${err.response?.status ?? err.message})`)
+    } finally {
+      setSavingPermissions(false)
+    }
   }
 
   return (
@@ -263,8 +354,13 @@ function AdminUsers() {
                 })}
               </tbody>
             </table>
-            <button style={{ ...primaryButtonStyle, marginTop: 16 }} type="button" onClick={savePermissions}>
-              Lưu phân quyền
+            <button
+              style={{ ...primaryButtonStyle, marginTop: 16 }}
+              type="button"
+              onClick={savePermissions}
+              disabled={savingPermissions}
+            >
+              {savingPermissions ? "Đang lưu..." : "Lưu phân quyền"}
             </button>
           </>
         )}

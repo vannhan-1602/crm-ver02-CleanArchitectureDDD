@@ -17,6 +17,9 @@ export function clearSession() {
   localStorage.removeItem("crm_token");
   localStorage.removeItem("crm_user");
   localStorage.removeItem("crm_permissions");
+  localStorage.removeItem("crm_admin_selected_user_id");
+  localStorage.removeItem("crm_admin_permissions_drafts");
+  localStorage.removeItem("crm_admin_permissions_draft");
 }
 
 export function getCurrentUser() {
