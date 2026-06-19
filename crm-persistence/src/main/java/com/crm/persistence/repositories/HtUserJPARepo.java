@@ -29,31 +29,54 @@ public interface HtUserJPARepo extends JpaRepository<HtUserJpaEntity,Integer> {
 
     @Query(value = """
             SELECT u.Id AS id,
-                   u.Username AS username,
-                   u.NhanSu_Id AS nhanSuId,
                    ns.HoTen AS hoTen,
-                   u.Role_Id AS roleId,
-                   r.TenRole AS roleName,
-                   u.TrangThai AS trangThai
+                   a.Username AS username,
+                   a.PasswordHash AS passwordHash,
+                   COALESCE(a.RoleCode, 'sale') AS roleCode,
+                   a.ChucVu AS chucVu,
+                   a.PhongBan AS phongBan,
+                   COALESCE(a.Active, 0) AS active
             FROM HT_User u
-            LEFT JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
-            LEFT JOIN HT_Role r ON u.Role_Id = r.Id
-            ORDER BY u.Id
+            INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+            LEFT JOIN CRM_UserAuth a ON a.User_Id = u.Id
+            WHERE u.Id = :userId
             """, nativeQuery = true)
-    List<UserSummaryProjection> findAllUserSummaries();
+    Optional<UserAuthProjection> findUserWithAuthById(@Param("userId") Integer userId);
+
+    @Query(value = """
+            SELECT u.Id AS id,
+                   ns.HoTen AS hoTen,
+                   a.Username AS username,
+                   a.PasswordHash AS passwordHash,
+                   COALESCE(a.RoleCode, 'sale') AS roleCode,
+                   a.ChucVu AS chucVu,
+                   a.PhongBan AS phongBan,
+                   COALESCE(a.Active, 0) AS active
+            FROM HT_User u
+            INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+            LEFT JOIN CRM_UserAuth a ON a.User_Id = u.Id
+            WHERE (:roleCode IS NULL OR :roleCode = '' OR a.RoleCode = :roleCode)
+              AND (:chucVu IS NULL OR :chucVu = '' OR a.ChucVu = :chucVu)
+              AND (:phongBan IS NULL OR :phongBan = '' OR a.PhongBan = :phongBan)
+            ORDER BY ns.HoTen
+            """, nativeQuery = true)
+    List<UserAuthProjection> findUsersWithAuth(@Param("roleCode") String roleCode,
+                                               @Param("chucVu") String chucVu,
+                                               @Param("phongBan") String phongBan);
 
     interface NhanVienProjection {
         Integer getId();
         String  getHoTen();
     }
 
-    interface UserSummaryProjection {
+    interface UserAuthProjection {
         Integer getId();
-        String getUsername();
-        Integer getNhanSuId();
         String getHoTen();
-        Integer getRoleId();
-        String getRoleName();
-        String getTrangThai();
+        String getUsername();
+        String getPasswordHash();
+        String getRoleCode();
+        String getChucVu();
+        String getPhongBan();
+        Integer getActive();
     }
 }
