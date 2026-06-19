@@ -24,8 +24,57 @@ public interface HtUserJPARepo extends JpaRepository<HtUserJpaEntity,Integer> {
             ORDER BY ns.HoTen
             """, nativeQuery = true)
     List<NhanVienProjection> findAllWithHoTen();
+
+    @Query(value = """
+            SELECT u.Id AS id,
+                   ns.HoTen AS hoTen,
+                   a.Username AS username,
+                   a.PasswordHash AS passwordHash,
+                   COALESCE(a.RoleCode, 'sale') AS roleCode,
+                   a.ChucVu AS chucVu,
+                   a.PhongBan AS phongBan,
+                   COALESCE(a.Active, 0) AS active
+            FROM HT_User u
+            INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+            LEFT JOIN CRM_UserAuth a ON a.User_Id = u.Id
+            WHERE u.Id = :userId
+            """, nativeQuery = true)
+    Optional<UserAuthProjection> findUserWithAuthById(@Param("userId") Integer userId);
+
+    @Query(value = """
+            SELECT u.Id AS id,
+                   ns.HoTen AS hoTen,
+                   a.Username AS username,
+                   a.PasswordHash AS passwordHash,
+                   COALESCE(a.RoleCode, 'sale') AS roleCode,
+                   a.ChucVu AS chucVu,
+                   a.PhongBan AS phongBan,
+                   COALESCE(a.Active, 0) AS active
+            FROM HT_User u
+            INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+            LEFT JOIN CRM_UserAuth a ON a.User_Id = u.Id
+            WHERE (:roleCode IS NULL OR :roleCode = '' OR a.RoleCode = :roleCode)
+              AND (:chucVu IS NULL OR :chucVu = '' OR a.ChucVu = :chucVu)
+              AND (:phongBan IS NULL OR :phongBan = '' OR a.PhongBan = :phongBan)
+            ORDER BY ns.HoTen
+            """, nativeQuery = true)
+    List<UserAuthProjection> findUsersWithAuth(@Param("roleCode") String roleCode,
+                                               @Param("chucVu") String chucVu,
+                                               @Param("phongBan") String phongBan);
+
     interface NhanVienProjection {
         Integer getId();
         String  getHoTen();
+    }
+
+    interface UserAuthProjection {
+        Integer getId();
+        String getHoTen();
+        String getUsername();
+        String getPasswordHash();
+        String getRoleCode();
+        String getChucVu();
+        String getPhongBan();
+        Integer getActive();
     }
 }

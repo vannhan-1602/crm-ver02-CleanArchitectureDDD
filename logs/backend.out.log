@@ -1236,3 +1236,200 @@ Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,k
 2026-06-14T03:26:44.260+07:00 DEBUG 23928 --- [nio-8081-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HopDongController$HopDongResponse@114f77dd, com.crm.presentation.c (truncated)...]
 2026-06-14T03:26:44.263+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
 2026-06-14T03:26:44.263+07:00 DEBUG 23928 --- [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:30:59.594+07:00 DEBUG 23928 --- [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/leads", parameters={}
+2026-06-14T11:30:59.594+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/nhan-vien", parameters={}
+2026-06-14T11:30:59.612+07:00 DEBUG 23928 --- [nio-8081-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.NhanVienController#getAll()
+2026-06-14T11:30:59.620+07:00 DEBUG 23928 --- [nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.LeadController#getAll()
+2026-06-14T11:30:59.694+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : select lje1_0.Id,lje1_0.CreatedAt,lje1_0.Email,lje1_0.IsDeleted,lje1_0.NhanVienPhuTrach_Id,lje1_0.SoDienThoai,lje1_0.TenCongTy,lje1_0.TenLead,lje1_0.TinhTrang,lje1_0.UpdatedAt from KH_Lead lje1_0 where not(lje1_0.IsDeleted)
+Hibernate: select lje1_0.Id,lje1_0.CreatedAt,lje1_0.Email,lje1_0.IsDeleted,lje1_0.NhanVienPhuTrach_Id,lje1_0.SoDienThoai,lje1_0.TenCongTy,lje1_0.TenLead,lje1_0.TinhTrang,lje1_0.UpdatedAt from KH_Lead lje1_0 where not(lje1_0.IsDeleted)
+2026-06-14T11:30:59.830+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.830+07:00 DEBUG 23928 --- [nio-8081-exec-5] org.hibernate.SQL                        : SELECT u.Id   AS id,
+       ns.HoTen AS hoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+ORDER BY ns.HoTen
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT u.Id   AS id,
+       ns.HoTen AS hoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+ORDER BY ns.HoTen
+
+2026-06-14T11:30:59.849+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.852+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.854+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.856+07:00 DEBUG 23928 --- [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:30:59.857+07:00 DEBUG 23928 --- [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.LeadController$LeadResponse@2b6602a5, com.crm.presentation.control (truncated)...]
+2026-06-14T11:30:59.863+07:00 DEBUG 23928 --- [nio-8081-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:30:59.864+07:00 DEBUG 23928 --- [nio-8081-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.NhanVienController$NhanVienResponse@2ae427b7, com.crm.presentation (truncated)...]
+2026-06-14T11:30:59.869+07:00 DEBUG 23928 --- [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:30:59.869+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:30:59.873+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/nhan-vien", parameters={}
+2026-06-14T11:30:59.873+07:00 DEBUG 23928 --- [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/leads", parameters={}
+2026-06-14T11:30:59.873+07:00 DEBUG 23928 --- [nio-8081-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.NhanVienController#getAll()
+2026-06-14T11:30:59.873+07:00 DEBUG 23928 --- [nio-8081-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.LeadController#getAll()
+2026-06-14T11:30:59.875+07:00 DEBUG 23928 --- [nio-8081-exec-5] org.hibernate.SQL                        : SELECT u.Id   AS id,
+       ns.HoTen AS hoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+ORDER BY ns.HoTen
+
+Hibernate: SELECT u.Id   AS id,
+       ns.HoTen AS hoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+ORDER BY ns.HoTen
+
+2026-06-14T11:30:59.876+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : select lje1_0.Id,lje1_0.CreatedAt,lje1_0.Email,lje1_0.IsDeleted,lje1_0.NhanVienPhuTrach_Id,lje1_0.SoDienThoai,lje1_0.TenCongTy,lje1_0.TenLead,lje1_0.TinhTrang,lje1_0.UpdatedAt from KH_Lead lje1_0 where not(lje1_0.IsDeleted)
+Hibernate: select lje1_0.Id,lje1_0.CreatedAt,lje1_0.Email,lje1_0.IsDeleted,lje1_0.NhanVienPhuTrach_Id,lje1_0.SoDienThoai,lje1_0.TenCongTy,lje1_0.TenLead,lje1_0.TinhTrang,lje1_0.UpdatedAt from KH_Lead lje1_0 where not(lje1_0.IsDeleted)
+2026-06-14T11:30:59.878+07:00 DEBUG 23928 --- [nio-8081-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:30:59.878+07:00 DEBUG 23928 --- [nio-8081-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.NhanVienController$NhanVienResponse@126245e1, com.crm.presentation (truncated)...]
+2026-06-14T11:30:59.879+07:00 DEBUG 23928 --- [nio-8081-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:30:59.880+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.883+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.884+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.887+07:00 DEBUG 23928 --- [nio-8081-exec-7] org.hibernate.SQL                        : SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+Hibernate: SELECT ns.HoTen
+FROM HT_User u
+INNER JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+WHERE u.Id = ?
+
+2026-06-14T11:30:59.890+07:00 DEBUG 23928 --- [nio-8081-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:30:59.891+07:00 DEBUG 23928 --- [nio-8081-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.LeadController$LeadResponse@5012b173, com.crm.presentation.control (truncated)...]
+2026-06-14T11:30:59.892+07:00 DEBUG 23928 --- [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:02.368+07:00 DEBUG 23928 --- [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/api/hop-dong", parameters={}
+2026-06-14T11:31:02.368+07:00 DEBUG 23928 --- [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/hoa-don", parameters={}
+2026-06-14T11:31:02.368+07:00 DEBUG 23928 --- [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/phieu-thu", parameters={}
+2026-06-14T11:31:02.368+07:00 DEBUG 23928 --- [io-8081-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HopDongController#getAll()
+2026-06-14T11:31:02.369+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/tai-chinh/thong-ke", parameters={}
+2026-06-14T11:31:02.368+07:00 DEBUG 23928 --- [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/phieu-chi", parameters={}
+2026-06-14T11:31:02.370+07:00 DEBUG 23928 --- [nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.TaiChinhController#thongKe(LocalDate, LocalDate)
+2026-06-14T11:31:02.369+07:00 DEBUG 23928 --- [nio-8081-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HoaDonController#getAll()
+2026-06-14T11:31:02.369+07:00 DEBUG 23928 --- [nio-8081-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.PhieuThuController#getAll()
+2026-06-14T11:31:02.370+07:00 DEBUG 23928 --- [nio-8081-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.PhieuChiController#getAll()
+2026-06-14T11:31:02.373+07:00 DEBUG 23928 --- [nio-8081-exec-2] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+2026-06-14T11:31:02.374+07:00 DEBUG 23928 --- [nio-8081-exec-6] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=?
+2026-06-14T11:31:02.375+07:00 DEBUG 23928 --- [io-8081-exec-10] org.hibernate.SQL                        : select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+Hibernate: select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+2026-06-14T11:31:02.375+07:00 DEBUG 23928 --- [nio-8081-exec-9] org.hibernate.SQL                        : select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0
+2026-06-14T11:31:02.375+07:00 DEBUG 23928 --- [nio-8081-exec-3] org.hibernate.SQL                        : select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0 where (? is null or hdje1_0.CreatedAt>=?) and (? is null or hdje1_0.CreatedAt<=?)
+Hibernate: select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0
+Hibernate: select hdje1_0.Id,hdje1_0.CreatedAt,hdje1_0.HopDong_Id,hdje1_0.KhachHang_Id,hdje1_0.MaHoaDon,hdje1_0.SoTienDaThu,hdje1_0.TongTien,hdje1_0.TrangThaiThanhToan,hdje1_0.UpdatedAt from KT_HoaDon hdje1_0 where (? is null or hdje1_0.CreatedAt>=?) and (? is null or hdje1_0.CreatedAt<=?)
+2026-06-14T11:31:02.380+07:00 DEBUG 23928 --- [nio-8081-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:02.381+07:00 DEBUG 23928 --- [nio-8081-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:02.381+07:00 DEBUG 23928 --- [nio-8081-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [[]]
+2026-06-14T11:31:02.381+07:00 DEBUG 23928 --- [nio-8081-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.PhieuThuController$PhieuThuResponse@58a96e6, com.crm.presentation. (truncated)...]
+2026-06-14T11:31:02.383+07:00 DEBUG 23928 --- [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:02.383+07:00 DEBUG 23928 --- [nio-8081-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:02.386+07:00 DEBUG 23928 --- [io-8081-exec-10] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:02.386+07:00 DEBUG 23928 --- [nio-8081-exec-9] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:02.387+07:00 DEBUG 23928 --- [nio-8081-exec-3] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T11:31:02.390+07:00 DEBUG 23928 --- [nio-8081-exec-3] org.hibernate.SQL                        : select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T11:31:02.390+07:00 DEBUG 23928 --- [nio-8081-exec-9] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select ptcje1_0.Id,ptcje1_0.HoaDon_Id,ptcje1_0.KhachHang_Id,ptcje1_0.LoaiPhieu,ptcje1_0.MaPhieu,ptcje1_0.NgayTao,ptcje1_0.NguoiLap_Id,ptcje1_0.SoTien,ptcje1_0.UpdatedAt from KT_PhieuThuChi ptcje1_0 where ptcje1_0.LoaiPhieu=? and (? is null or ptcje1_0.NgayTao>=?) and (? is null or ptcje1_0.NgayTao<=?)
+2026-06-14T11:31:02.390+07:00 DEBUG 23928 --- [io-8081-exec-10] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:02.395+07:00 DEBUG 23928 --- [nio-8081-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:02.396+07:00 DEBUG 23928 --- [nio-8081-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [TaiChinhThongKe[tongHoaDon=45000000.00, tongDaThu=11000000.00, tongConNo=34000000.00, tongPhieuThu=1 (truncated)...]
+2026-06-14T11:31:02.396+07:00 DEBUG 23928 --- [nio-8081-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:02.396+07:00 DEBUG 23928 --- [io-8081-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:02.397+07:00 DEBUG 23928 --- [nio-8081-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HoaDonController$HoaDonResponse@373948df, com.crm.presentation.con (truncated)...]
+2026-06-14T11:31:02.397+07:00 DEBUG 23928 --- [io-8081-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HopDongController$HopDongResponse@7781e3e, com.crm.presentation.co (truncated)...]
+2026-06-14T11:31:02.397+07:00 DEBUG 23928 --- [nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:02.398+07:00 DEBUG 23928 --- [nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:02.398+07:00 DEBUG 23928 --- [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:04.138+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/hop-dong", parameters={}
+2026-06-14T11:31:04.139+07:00 DEBUG 23928 --- [nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HopDongController#getAll()
+2026-06-14T11:31:04.142+07:00 DEBUG 23928 --- [nio-8081-exec-4] org.hibernate.SQL                        : select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+Hibernate: select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+2026-06-14T11:31:04.146+07:00 DEBUG 23928 --- [nio-8081-exec-4] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:04.149+07:00 DEBUG 23928 --- [nio-8081-exec-4] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:04.152+07:00 DEBUG 23928 --- [nio-8081-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:04.153+07:00 DEBUG 23928 --- [nio-8081-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HopDongController$HopDongResponse@6fb33c14, com.crm.presentation.c (truncated)...]
+2026-06-14T11:31:04.156+07:00 DEBUG 23928 --- [nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-06-14T11:31:04.158+07:00 DEBUG 23928 --- [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/hop-dong", parameters={}
+2026-06-14T11:31:04.159+07:00 DEBUG 23928 --- [nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.crm.presentation.controllers.HopDongController#getAll()
+2026-06-14T11:31:04.161+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+Hibernate: select hdje1_0.id,hdje1_0.CreatedAt,hdje1_0.KhachHang_Id,hdje1_0.MaHopDong,hdje1_0.NgayKy,hdje1_0.ThoiHan,hdje1_0.TrangThai,hdje1_0.UpdatedAt from HD_HopDong hdje1_0
+2026-06-14T11:31:04.168+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:04.171+07:00 DEBUG 23928 --- [nio-8081-exec-8] org.hibernate.SQL                        : select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+Hibernate: select khje1_0.Id,khje1_0.CreatedAt,khje1_0.Email,khje1_0.IsDeleted,khje1_0.LoaiKhachHang_Id,khje1_0.MaKhachHang,khje1_0.MaSoThue,khje1_0.NhanVienPhuTrach_Id,khje1_0.SoDienThoai,khje1_0.TenKhachHang,khje1_0.TinhTrang_Id,khje1_0.UpdatedAt from KH_KhachHang khje1_0 where khje1_0.Id=?
+2026-06-14T11:31:04.178+07:00 DEBUG 23928 --- [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-06-14T11:31:04.178+07:00 DEBUG 23928 --- [nio-8081-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [[com.crm.presentation.controllers.HopDongController$HopDongResponse@f62fc39, com.crm.presentation.co (truncated)...]
+2026-06-14T11:31:04.180+07:00 DEBUG 23928 --- [nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
