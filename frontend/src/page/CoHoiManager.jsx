@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import { api as ax } from "../apiClient";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
-const ax = axios.create({ baseURL: API_BASE_URL });
 import "./Cohoimanager.css"
 const formatVND = (n) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n ?? 0);

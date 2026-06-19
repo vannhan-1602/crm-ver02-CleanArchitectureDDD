@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import { api as ax } from "../apiClient";
 import "./HopDong.css";
 import "./TicketManager.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
-const ax = axios.create({ baseURL: API_BASE_URL });
 
 const PRIORITIES = [
   ["Thap", "Thấp"],

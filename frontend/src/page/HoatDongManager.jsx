@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "../apiClient";
 import "./HopDong.css";
 import "./KhachHang.css";
 import "./HoatDong.css";
@@ -119,7 +120,7 @@ function HoatDongManager() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/hoat-dong`);
+      const res = await authFetch(`${API_BASE_URL}/api/hoat-dong`);
       if (!res.ok)
         throw new Error(`Không thể tải danh sách hoạt động (${res.status})`);
       const data = await res.json();
@@ -133,7 +134,7 @@ function HoatDongManager() {
 
   const loadKhachHang = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/khach-hang`);
+      const res = await authFetch(`${API_BASE_URL}/api/khach-hang`);
       if (!res.ok) return;
       const data = await res.json();
       setKhachHangList(Array.isArray(data) ? data : []);
@@ -144,7 +145,7 @@ function HoatDongManager() {
 
   const loadLead = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/lead`);
+      const res = await authFetch(`${API_BASE_URL}/api/leads`);
       if (!res.ok) return;
       const data = await res.json();
       setLeadList(Array.isArray(data) ? data : []);
@@ -155,7 +156,7 @@ function HoatDongManager() {
 
   const loadNhanVien = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/nhan-vien`);
+      const res = await authFetch(`${API_BASE_URL}/api/nhan-vien`);
       if (!res.ok) return;
       const data = await res.json();
       setNhanVienList(Array.isArray(data) ? data : []);
@@ -255,7 +256,7 @@ function HoatDongManager() {
     };
 
     try {
-      const res = await fetch(
+      const res = await authFetch(
         editingId
           ? `${API_BASE_URL}/api/hoat-dong/${editingId}`
           : `${API_BASE_URL}/api/hoat-dong`,
@@ -306,7 +307,7 @@ function HoatDongManager() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/hoat-dong/${id}`, {
+      const res = await authFetch(`${API_BASE_URL}/api/hoat-dong/${id}`, {
         method: "DELETE",
       });
       if (!res.ok && res.status !== 204)

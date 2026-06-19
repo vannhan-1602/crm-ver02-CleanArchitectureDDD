@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { authFetch, getCurrentUser, getPermissions } from "../apiClient";
 import "./HopDong.css";
 
 const API_BASE_URL =
@@ -118,6 +119,16 @@ async function throwIfRequestFailed(response, fallbackMessage) {
 }
 
 function TaiChinh() {
+  const currentUser = getCurrentUser();
+  const userPermissions = getPermissions();
+  const canAccessModule = (moduleKey) => {
+    if (currentUser?.admin || currentUser?.roleId === 1 || currentUser?.roleName === "Admin") {
+      return true;
+    }
+    const permission = userPermissions.find((item) => item.moduleKey === moduleKey);
+    return Boolean(permission?.canView || permission?.canRead || permission?.canWrite);
+  };
+
   const [activeTab, setActiveTab] = useState("hoaDon");
   const [hoaDons, setHoaDons] = useState([]);
   const [hopDongs, setHopDongs] = useState([]);
@@ -142,22 +153,59 @@ function TaiChinh() {
     setLoading(true);
     setError("");
     try {
-      const [hoaDonRes, hopDongRes, phieuThuRes, phieuChiRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/hoa-don`),
-        fetch(`${API_BASE_URL}/api/hop-dong`),
-        fetch(`${API_BASE_URL}/api/phieu-thu`),
-        fetch(`${API_BASE_URL}/api/phieu-chi`),
-      ]);
+      const requests = [];
 
-      if (!hoaDonRes.ok) throw new Error(`Tải hóa đơn thất bại (${hoaDonRes.status})`);
-      if (!hopDongRes.ok) throw new Error(`Tải hợp đồng thất bại (${hopDongRes.status})`);
-      if (!phieuThuRes.ok) throw new Error(`Tải phiếu thu thất bại (${phieuThuRes.status})`);
-      if (!phieuChiRes.ok) throw new Error(`Tải phiếu chi thất bại (${phieuChiRes.status})`);
+      if (canAccessModule("HOA_DON")) {
+        requests.push(
+          authFetch(`${API_BASE_URL}/api/hoa-don`).then(async (response) => {
+            if (!response.ok) throw new Error(`Tải hóa đơn thất bại (${response.status})`);
+            return { key: "hoaDons", data: await response.json() };
+          }),
+        );
+      } else {
+        setHoaDons([]);
+      }
 
-      setHoaDons(await hoaDonRes.json());
-      setHopDongs(await hopDongRes.json());
-      setPhieuThus(await phieuThuRes.json());
-      setPhieuChis(await phieuChiRes.json());
+      if (canAccessModule("HOP_DONG")) {
+        requests.push(
+          authFetch(`${API_BASE_URL}/api/hop-dong`).then(async (response) => {
+            if (!response.ok) throw new Error(`Tải hợp đồng thất bại (${response.status})`);
+            return { key: "hopDongs", data: await response.json() };
+          }),
+        );
+      } else {
+        setHopDongs([]);
+      }
+
+      if (canAccessModule("PHIEU_THU")) {
+        requests.push(
+          authFetch(`${API_BASE_URL}/api/phieu-thu`).then(async (response) => {
+            if (!response.ok) throw new Error(`Tải phiếu thu thất bại (${response.status})`);
+            return { key: "phieuThus", data: await response.json() };
+          }),
+        );
+      } else {
+        setPhieuThus([]);
+      }
+
+      if (canAccessModule("PHIEU_CHI")) {
+        requests.push(
+          authFetch(`${API_BASE_URL}/api/phieu-chi`).then(async (response) => {
+            if (!response.ok) throw new Error(`Tải phiếu chi thất bại (${response.status})`);
+            return { key: "phieuChis", data: await response.json() };
+          }),
+        );
+      } else {
+        setPhieuChis([]);
+      }
+
+      const results = await Promise.all(requests);
+      results.forEach((result) => {
+        if (result.key === "hoaDons") setHoaDons(result.data);
+        if (result.key === "hopDongs") setHopDongs(result.data);
+        if (result.key === "phieuThus") setPhieuThus(result.data);
+        if (result.key === "phieuChis") setPhieuChis(result.data);
+      });
     } catch (err) {
       setError(err.message || "Tải dữ liệu thất bại");
     } finally {
@@ -169,11 +217,16 @@ function TaiChinh() {
     setThongKeLoading(true);
     setThongKeError("");
     try {
+      if (!canAccessModule("TAI_CHINH")) {
+        setThongKe(emptyThongKe);
+        setThongKeError("Bạn không có quyền xem thống kê tài chính");
+        return;
+      }
       const params = new URLSearchParams();
       if (thongKeFilter.from) params.set("from", thongKeFilter.from);
       if (thongKeFilter.to) params.set("to", thongKeFilter.to);
       const query = params.toString();
-      const response = await fetch(
+      const response = await authFetch(
         `${API_BASE_URL}/api/tai-chinh/thong-ke${query ? `?${query}` : ""}`,
       );
       await throwIfRequestFailed(response, "Tải thống kê tài chính thất bại");
@@ -271,6 +324,15 @@ function TaiChinh() {
   };
 
   const switchTab = (tab) => {
+    if (
+      (tab === "hoaDon" && !canAccessModule("HOA_DON")) ||
+      (tab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
+      (tab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+    ) {
+      setError("Bạn không có quyền truy cập tab này");
+      setSuccess("");
+      return;
+    }
     setActiveTab(tab);
     setError("");
     setSuccess("");
@@ -363,7 +425,7 @@ function TaiChinh() {
       tongTien: Number(hoaDonForm.tongTien),
       trangThaiThanhToan: hoaDonForm.trangThaiThanhToan,
     };
-    const response = await fetch(
+    const response = await authFetch(
       editing.type === "hoaDon"
         ? `${API_BASE_URL}/api/hoa-don/${editing.id}`
         : `${API_BASE_URL}/api/hoa-don`,
@@ -385,7 +447,7 @@ function TaiChinh() {
       soTien: Number(phieuThuForm.soTien),
       nguoiLapId: toNumberOrNull(phieuThuForm.nguoiLapId),
     };
-    const response = await fetch(
+    const response = await authFetch(
       editing.type === "phieuThu"
         ? `${API_BASE_URL}/api/phieu-thu/${editing.id}`
         : `${API_BASE_URL}/api/phieu-thu`,
@@ -407,7 +469,7 @@ function TaiChinh() {
       soTien: Number(phieuChiForm.soTien),
       nguoiLapId: toNumberOrNull(phieuChiForm.nguoiLapId),
     };
-    const response = await fetch(
+    const response = await authFetch(
       editing.type === "phieuChi"
         ? `${API_BASE_URL}/api/phieu-chi/${editing.id}`
         : `${API_BASE_URL}/api/phieu-chi`,
@@ -422,6 +484,15 @@ function TaiChinh() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (
+      (activeTab === "hoaDon" && !canAccessModule("HOA_DON")) ||
+      (activeTab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
+      (activeTab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+    ) {
+      setError("Bạn không có quyền lưu dữ liệu ở tab này");
+      setSuccess("");
+      return;
+    }
     const validationMessage =
       activeTab === "hoaDon"
         ? validateHoaDon()
@@ -454,6 +525,15 @@ function TaiChinh() {
   };
 
   const handleEdit = (item) => {
+    if (
+      (activeTab === "hoaDon" && !canAccessModule("HOA_DON")) ||
+      (activeTab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
+      (activeTab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+    ) {
+      setError("Bạn không có quyền sửa dữ liệu ở tab này");
+      setSuccess("");
+      return;
+    }
     setError("");
     setSuccess("");
     if (activeTab === "hoaDon") {
@@ -489,6 +569,15 @@ function TaiChinh() {
   };
 
   const handleDelete = async (id) => {
+    if (
+      (activeTab === "hoaDon" && !canAccessModule("HOA_DON")) ||
+      (activeTab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
+      (activeTab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+    ) {
+      setError("Bạn không có quyền xóa dữ liệu ở tab này");
+      setSuccess("");
+      return;
+    }
     const labels = {
       hoaDon: "hóa đơn",
       phieuThu: "phiếu thu",
@@ -504,7 +593,7 @@ function TaiChinh() {
     }[activeTab];
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/${endpoint}/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/api/${endpoint}/${id}`, {
         method: "DELETE",
       });
       await throwIfRequestFailed(response, "Xóa thất bại");
@@ -887,6 +976,11 @@ function TaiChinh() {
             type="button"
             className={`finance-tab${activeTab === tab.id ? " active" : ""}`}
             onClick={() => switchTab(tab.id)}
+            disabled={
+              (tab.id === "hoaDon" && !canAccessModule("HOA_DON")) ||
+              (tab.id === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
+              (tab.id === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+            }
           >
             {tab.label}
           </button>

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 
+import { api, clearSession, getCurrentUser, getPermissions, setSession } from "./apiClient"
 import HopDong from "./page/HopDong"
 import TaiChinh from "./page/TaiChinh"
 import LeadManager from "./page/LeadManager"
@@ -13,6 +14,25 @@ import BaoGia from "./page/BaoGia.jsx"
 import BaoCaoThongKe from "./page/BaoCaoThongKe.jsx"
 import LoginPage from "./page/LoginPage.jsx"
 import UserPermissionManager from "./page/UserPermissionManager.jsx"
+
+const NAV_ITEMS = [
+  { to: "/leads", label: "Quản lý Lead", moduleKey: "LEAD", element: <LeadManager /> },
+  { to: "/khach-hang", label: "Quản lý Khách hàng", moduleKey: "KHACH_HANG", element: <KhachHangManager /> },
+  { to: "/hoat-dong", label: "Quản lý Hoạt động", moduleKey: "HOAT_DONG", element: <HoatDongManager /> },
+  { to: "/hop-dong", label: "Quản lý Hợp đồng", moduleKey: "HOP_DONG", element: <HopDong /> },
+  { to: "/tai-chinh", label: "Quản lý Hóa đơn", moduleKey: "TAI_CHINH", element: <TaiChinh /> },
+  { to: "/sanpham", label: "Quản lý Sản phẩm", moduleKey: "SAN_PHAM", element: <SanPhamManager /> },
+  { to: "/tickets", label: "Quản lý Ticket", moduleKey: "TICKET", element: <TicketManager /> },
+  { to: "/cohoi", label: "Quản lý Cơ hội", moduleKey: "CO_HOI", element: <CoHoiManager /> },
+  { to: "/baogia", label: "Quản lý Báo giá", moduleKey: "BAO_GIA", element: <BaoGia /> },
+  { to: "/bao-cao-thong-ke", label: "Báo cáo thống kê", moduleKey: "BAO_CAO", element: <BaoCaoThongKe /> },
+]
+
+function canOpen(user, permissions, moduleKey) {
+  if (user?.admin || user?.roleId === 1 || user?.roleName === "Admin") return true
+  const permission = permissions.find((p) => p.moduleKey === moduleKey)
+  return Boolean(permission?.canView || permission?.canRead || permission?.canWrite)
+}
 
 function App() {
   const [auth, setAuth] = useState(() => {
@@ -165,13 +185,45 @@ function AppShell({ auth, onLogin, onLogout }) {
   )
 }
 
-const linkStyle = {
-  color: "#b1b9c3",
-  textDecoration: "none",
-  padding: "10px",
-  borderRadius: "4px",
-  transition: "background-color 0.2s",
-  display: "block",
+function LoginScreen({ onLogin }) {
+  const [form, setForm] = useState({ username: "admin", password: "123456" })
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const submit = async (event) => {
+    event.preventDefault()
+    setLoading(true)
+    setError("")
+    try {
+      const response = await api.post("/api/auth/login", form)
+      onLogin(response.data)
+    } catch (err) {
+      setError(err.response?.data?.message || "Đăng nhập thất bại")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <main style={loginPageStyle}>
+      <form onSubmit={submit} style={loginCardStyle}>
+        <h1 style={{ margin: 0, fontSize: 28 }}>CRM SYSTEM</h1>
+        <p style={{ marginTop: 8, color: "#5d6b82" }}>Đăng nhập để tiếp tục</p>
+        <label style={fieldStyle}>
+          Tên đăng nhập
+          <input style={inputStyle} value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+        </label>
+        <label style={fieldStyle}>
+          Mật khẩu
+          <input style={inputStyle} type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+        </label>
+        {error && <div style={errorStyle}>{error}</div>}
+        <button style={primaryButtonStyle} disabled={loading}>
+          {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+        </button>
+      </form>
+    </main>
+  )
 }
 
 const loginLinkStyle = {

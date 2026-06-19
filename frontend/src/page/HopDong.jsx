@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "../apiClient";
 import "./HopDong.css";
 
 const API_BASE_URL =
@@ -53,7 +54,7 @@ function HopDong() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`${API_BASE_URL}/api/hop-dong`);
+      const response = await authFetch(`${API_BASE_URL}/api/hop-dong`);
       if (!response.ok) {
         throw new Error(
           `Không thể tải danh sách hợp đồng (${response.status})`,
@@ -70,7 +71,7 @@ function HopDong() {
 
   const loadKhachHangList = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/khach-hang`);
+      const response = await authFetch(`${API_BASE_URL}/api/khach-hang`);
       if (!response.ok) return;
       const data = await response.json();
       setKhachHangList(Array.isArray(data) ? data : []);
@@ -101,10 +102,10 @@ function HopDong() {
   };
 
   const validateForm = () => {
-    if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
-    if (!form.khachHangId.trim()) return "Khách hàng không được rỗng";
+    if (!String(form.maHopDong ?? "").trim()) return "Mã hợp đồng không được rỗng";
+    if (!String(form.khachHangId ?? "").trim()) return "Khách hàng không được rỗng";
     if (!form.ngayKy) return "Ngày ký không được rỗng";
-    if (!form.thoiHan.trim()) return "Thời hạn không được rỗng";
+    if (!String(form.thoiHan ?? "").trim()) return "Thời hạn không được rỗng";
     return "";
   };
 
@@ -130,7 +131,7 @@ function HopDong() {
     };
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         editingId
           ? `${API_BASE_URL}/api/hop-dong/${editingId}`
           : `${API_BASE_URL}/api/hop-dong`,
@@ -167,9 +168,9 @@ function HopDong() {
     setEditingId(item.id);
     setForm({
       maHopDong: item.maHopDong ?? "",
-      khachHangId: item.khachHangId ?? "",
+      khachHangId: item.khachHangId != null ? String(item.khachHangId) : "",
       ngayKy: item.ngayKy ?? "",
-      thoiHan: item.thoiHan ?? "",
+      thoiHan: item.thoiHan != null ? String(item.thoiHan) : "",
       trangThai: item.trangThai ?? "DangThucHien",
     });
     setError("");
@@ -184,7 +185,7 @@ function HopDong() {
     setSuccess("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/hop-dong/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/api/hop-dong/${id}`, {
         method: "DELETE",
       });
 
@@ -257,8 +258,7 @@ function HopDong() {
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
-              <h2>{editingId ? "Cap nhat hop dong" : "Tao hop dong moi"}</h2>
-              <p>Dữ liệu sẽ gọi vào API `api/hop-dong`.</p>
+              <h2>{editingId ? "Cập nhật hợp đồng" : "Tạo hợp đồng mới"}</h2>
             </div>
             {editingId ? (
               <button className="ghost-btn" type="button" onClick={resetForm}>
@@ -428,3 +428,4 @@ function HopDong() {
 }
 
 export default HopDong;
+

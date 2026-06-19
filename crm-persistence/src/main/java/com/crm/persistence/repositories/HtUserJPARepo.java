@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HtUserJPARepo extends JpaRepository<HtUserJpaEntity,Integer> {
+    Optional<HtUserJpaEntity> findByUsername(String username);
+
     @Query(value = """
             SELECT ns.HoTen
             FROM HT_User u
