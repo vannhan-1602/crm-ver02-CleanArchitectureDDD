@@ -51,7 +51,7 @@ public class CoHoiBanHangJpaRepoIml implements CoiHoiBanHangRepo {
         existing.setDoanhThuKyVong(cohoi.getDoanhThuKyVong());
         existing.setGhiChu(cohoi.getGhiChu());
         existing.setNgayDuKien(cohoi.getNgayDuKien());
-        existing.setNhanVienPhuTrach_Id(cohoi.getNhanVienPhuTrach_Id());
+        existing.setNhanVienPhuTrach_Id(cohoi.getNhanVienPhuTrach_Id()  );
         existing.setUpdatedAt(LocalDateTime.now());
 
         return CoHoiBanHangMapper.toDomain(repo.save(existing));
