@@ -104,7 +104,7 @@ function HopDong() {
     if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
     if (!String(form.khachHangId.trim())) return "Khách hàng không được rỗng";
     if (!form.ngayKy) return "Ngày ký không được rỗng";
-    if (!form.thoiHan.trim()) return "Thời hạn không được rỗng";
+    if (!String(form.thoiHan ?? "").trim()) return "Thời hạn không được rỗng";
     return "";
   };
 
@@ -167,9 +167,9 @@ function HopDong() {
     setEditingId(item.id);
     setForm({
       maHopDong: item.maHopDong ?? "",
-      khachHangId: item.khachHangId ?? "",
+      khachHangId: item.khachHangId != null ? String(item.khachHangId) : "",
       ngayKy: item.ngayKy ?? "",
-      thoiHan: item.thoiHan ?? "",
+      thoiHan: item.thoiHan != null ? String(item.thoiHan) : "",
       trangThai: item.trangThai ?? "DangThucHien",
     });
     setError("");
@@ -217,7 +217,6 @@ function HopDong() {
         <div>
           <p className="eyebrow">CRM / Hop dong</p>
           <h1>Quản lý hợp đồng</h1>
-          
         </div>
 
         <div className="toolbar">
@@ -257,8 +256,7 @@ function HopDong() {
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
-              <h2>{editingId ? "Cap nhat hop dong" : "Tao hop dong moi"}</h2>
-              <p>Dữ liệu sẽ gọi vào API `api/hop-dong`.</p>
+              <h2>{editingId ? "Cập nhật hợp đồng" : "Tạo hợp đồng mới"}</h2>
             </div>
             {editingId ? (
               <button className="ghost-btn" type="button" onClick={resetForm}>
@@ -384,7 +382,7 @@ function HopDong() {
                       <td>{item.maHopDong}</td>
                       <td>
                         <div className="stacked-cell">
-                          <strong>{item.tenKhachHang || 'Không có tên'}</strong>
+                          <strong>{item.tenKhachHang || "Không có tên"}</strong>
                         </div>
                       </td>
                       <td>{item.ngayKy ?? "-"}</td>

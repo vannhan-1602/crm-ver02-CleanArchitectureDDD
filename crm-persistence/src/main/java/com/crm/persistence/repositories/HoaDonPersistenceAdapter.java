@@ -6,6 +6,7 @@ import com.crm.domain.valueobjects.MaHoaDon;
 import com.crm.persistence.entities.HoaDonJpaEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,14 @@ public class HoaDonPersistenceAdapter implements HoaDonRepo {
     @Override
     public List<HoaDon> findAll() {
         return entityRepository.findAll()
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<HoaDon> findByCreatedAtBetween(LocalDateTime from, LocalDateTime to) {
+        return entityRepository.findByCreatedAtRange(from, to)
                 .stream()
                 .map(this::toDomain)
                 .toList();

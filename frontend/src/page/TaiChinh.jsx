@@ -16,6 +16,25 @@ const PAYMENT_STATUS_LABEL = {
   HoanTat: "Hoàn tất",
 };
 
+const PAYMENT_STATUS_OPTIONS = [
+  { value: "all", label: "Tất cả" },
+  { value: "ChuaThanhToan", label: PAYMENT_STATUS_LABEL.ChuaThanhToan },
+  { value: "ThanhToan1Phan", label: PAYMENT_STATUS_LABEL.ThanhToan1Phan },
+  { value: "HoanTat", label: PAYMENT_STATUS_LABEL.HoanTat },
+];
+
+const emptyThongKe = {
+  tongHoaDon: 0,
+  tongDaThu: 0,
+  tongConNo: 0,
+  tongPhieuThu: 0,
+  tongPhieuChi: 0,
+  soHoaDon: 0,
+  soPhieuThu: 0,
+  soPhieuChi: 0,
+  soGiaoDich: 0,
+};
+
 const emptyHoaDonForm = {
   maHoaDon: "",
   hopDongId: "",
@@ -56,12 +75,22 @@ function formatMoney(value) {
   return new Intl.NumberFormat("vi-VN").format(amount);
 }
 
-function formatHoaDonOption(hoaDon) {
-  return `#${hoaDon.id} - ${hoaDon.maHoaDon} - KH ${hoaDon.khachHangId} - ${formatMoney(hoaDon.tongTien)}`;
+function formatCustomerName(record) {
+  if (record?.tenKhachHang) return record.tenKhachHang;
+  if (record?.khachHangId) return `KH ${record.khachHangId}`;
+  return "-";
 }
 
-function formatKhachHangOption(hoaDon) {
-  return `KH ${hoaDon.khachHangId} - từ ${hoaDon.maHoaDon}`;
+function formatHoaDonOption(hoaDon) {
+  return `#${hoaDon.id} - ${hoaDon.maHoaDon} - ${formatCustomerName(hoaDon)} - ${formatMoney(hoaDon.tongTien)}`;
+}
+
+function formatPhieuThuHoaDonOption(hoaDon) {
+  return `${hoaDon.id} - ${hoaDon.maHoaDon}`;
+}
+
+function formatHopDongOption(hopDong) {
+  return `${hopDong.maHopDong || `HD ${hopDong.id}`} - ${formatCustomerName(hopDong)}`;
 }
 
 function toNumberOrNull(value) {
@@ -72,7 +101,7 @@ function toNumberOrNull(value) {
 async function throwIfRequestFailed(response, fallbackMessage) {
   if (response.ok) return;
 
-  let message = fallbackMessage;
+  let message;
   try {
     const data = await response.json();
     message = data.message || data.error || fallbackMessage;
@@ -85,12 +114,13 @@ async function throwIfRequestFailed(response, fallbackMessage) {
     }
   }
 
-  throw new Error(`${message} (${response.status})`);
+  throw new Error(`${message || fallbackMessage} (${response.status})`);
 }
 
 function TaiChinh() {
   const [activeTab, setActiveTab] = useState("hoaDon");
   const [hoaDons, setHoaDons] = useState([]);
+  const [hopDongs, setHopDongs] = useState([]);
   const [phieuThus, setPhieuThus] = useState([]);
   const [phieuChis, setPhieuChis] = useState([]);
   const [hoaDonForm, setHoaDonForm] = useState(emptyHoaDonForm);
@@ -102,22 +132,30 @@ function TaiChinh() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [search, setSearch] = useState("");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("all");
+  const [thongKe, setThongKe] = useState(emptyThongKe);
+  const [thongKeFilter, setThongKeFilter] = useState({ from: "", to: "" });
+  const [thongKeLoading, setThongKeLoading] = useState(false);
+  const [thongKeError, setThongKeError] = useState("");
 
   const loadAll = async () => {
     setLoading(true);
     setError("");
     try {
-      const [hoaDonRes, phieuThuRes, phieuChiRes] = await Promise.all([
+      const [hoaDonRes, hopDongRes, phieuThuRes, phieuChiRes] = await Promise.all([
         fetch(`${API_BASE_URL}/api/hoa-don`),
+        fetch(`${API_BASE_URL}/api/hop-dong`),
         fetch(`${API_BASE_URL}/api/phieu-thu`),
         fetch(`${API_BASE_URL}/api/phieu-chi`),
       ]);
 
       if (!hoaDonRes.ok) throw new Error(`Tải hóa đơn thất bại (${hoaDonRes.status})`);
+      if (!hopDongRes.ok) throw new Error(`Tải hợp đồng thất bại (${hopDongRes.status})`);
       if (!phieuThuRes.ok) throw new Error(`Tải phiếu thu thất bại (${phieuThuRes.status})`);
       if (!phieuChiRes.ok) throw new Error(`Tải phiếu chi thất bại (${phieuChiRes.status})`);
 
       setHoaDons(await hoaDonRes.json());
+      setHopDongs(await hopDongRes.json());
       setPhieuThus(await phieuThuRes.json());
       setPhieuChis(await phieuChiRes.json());
     } catch (err) {
@@ -127,18 +165,46 @@ function TaiChinh() {
     }
   };
 
+  const loadThongKe = async () => {
+    setThongKeLoading(true);
+    setThongKeError("");
+    try {
+      const params = new URLSearchParams();
+      if (thongKeFilter.from) params.set("from", thongKeFilter.from);
+      if (thongKeFilter.to) params.set("to", thongKeFilter.to);
+      const query = params.toString();
+      const response = await fetch(
+        `${API_BASE_URL}/api/tai-chinh/thong-ke${query ? `?${query}` : ""}`,
+      );
+      await throwIfRequestFailed(response, "Tải thống kê tài chính thất bại");
+      setThongKe({ ...emptyThongKe, ...(await response.json()) });
+    } catch (err) {
+      setThongKeError(err.message || "Không thể tải thống kê tài chính");
+    } finally {
+      setThongKeLoading(false);
+    }
+  };
+
+  const reloadTaiChinhData = async () => {
+    await Promise.all([loadAll(), loadThongKe()]);
+  };
+
   useEffect(() => {
     const timerId = window.setTimeout(() => {
-      loadAll();
+      reloadTaiChinhData();
     }, 0);
     return () => window.clearTimeout(timerId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const activeItems = useMemo(() => {
     if (activeTab === "phieuThu") return phieuThus;
     if (activeTab === "phieuChi") return phieuChis;
+    if (paymentStatusFilter !== "all") {
+      return hoaDons.filter((hoaDon) => hoaDon.trangThaiThanhToan === paymentStatusFilter);
+    }
     return hoaDons;
-  }, [activeTab, hoaDons, phieuChis, phieuThus]);
+  }, [activeTab, hoaDons, paymentStatusFilter, phieuChis, phieuThus]);
 
   const filteredItems = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -148,6 +214,7 @@ function TaiChinh() {
         item.maHoaDon,
         item.maPhieuThu,
         item.maPhieuChi,
+        item.tenKhachHang,
         item.khachHangId,
         item.hopDongId,
         item.hoaDonId,
@@ -158,33 +225,43 @@ function TaiChinh() {
     );
   }, [activeItems, search]);
 
-  const stats = useMemo(() => {
-    const tongHoaDon = hoaDons.reduce(
-      (sum, item) => sum + Number(item.tongTien || 0),
-      0,
-    );
-    const tongThu = phieuThus.reduce(
-      (sum, item) => sum + Number(item.soTien || 0),
-      0,
-    );
-    return {
-      hoaDon: hoaDons.length,
-      phieuThu: phieuThus.length,
-      phieuChi: phieuChis.length,
-      conNo: Math.max(tongHoaDon - tongThu, 0),
-    };
-  }, [hoaDons, phieuChis, phieuThus]);
-
   const activeTabLabel = TABS.find((tab) => tab.id === activeTab)?.label;
-  const khachHangOptions = useMemo(() => {
-    const seen = new Set();
-    return hoaDons.filter((hoaDon) => {
-      const khachHangId = String(hoaDon.khachHangId ?? "");
-      if (!khachHangId || seen.has(khachHangId)) return false;
-      seen.add(khachHangId);
-      return true;
+  const customerNameById = useMemo(() => {
+    const names = new Map();
+    hopDongs.forEach((hopDong) => {
+      const khachHangId = String(hopDong.khachHangId ?? "");
+      if (khachHangId && hopDong.tenKhachHang) {
+        names.set(khachHangId, hopDong.tenKhachHang);
+      }
     });
-  }, [hoaDons]);
+    hoaDons.forEach((hoaDon) => {
+      const khachHangId = String(hoaDon.khachHangId ?? "");
+      if (khachHangId && hoaDon.tenKhachHang) {
+        names.set(khachHangId, hoaDon.tenKhachHang);
+      }
+    });
+    return names;
+  }, [hoaDons, hopDongs]);
+
+  const getCustomerDisplayName = (khachHangId) => {
+    if (!khachHangId) return "-";
+    return customerNameById.get(String(khachHangId)) || `KH ${khachHangId}`;
+  };
+
+  const getHoaDonCustomerDisplayName = (hoaDonId, fallbackKhachHangId) => {
+    const hoaDon = findHoaDonById(hoaDonId);
+    return hoaDon ? formatCustomerName(hoaDon) : getCustomerDisplayName(fallbackKhachHangId);
+  };
+
+  const findHopDongById = (hopDongId) =>
+    hopDongs.find((hopDong) => String(hopDong.id) === String(hopDongId));
+
+  const findHoaDonById = (hoaDonId) =>
+    hoaDons.find((hoaDon) => String(hoaDon.id) === String(hoaDonId));
+
+  const selectedHoaDonHopDong = findHopDongById(hoaDonForm.hopDongId);
+  const selectedPhieuThuHoaDon = findHoaDonById(phieuThuForm.hoaDonId);
+  const selectedPhieuChiHoaDon = findHoaDonById(phieuChiForm.hoaDonId);
 
   const resetForms = () => {
     setHoaDonForm(emptyHoaDonForm);
@@ -200,9 +277,24 @@ function TaiChinh() {
     resetForms();
   };
 
+  const handleThongKeFilterChange = (event) => {
+    const { name, value } = event.target;
+    setThongKeFilter((current) => ({ ...current, [name]: value }));
+  };
+
   const handleHoaDonChange = (event) => {
     const { name, value } = event.target;
     setHoaDonForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleHoaDonHopDongChange = (event) => {
+    const { value } = event.target;
+    const selectedHopDong = findHopDongById(value);
+    setHoaDonForm((current) => ({
+      ...current,
+      hopDongId: value,
+      khachHangId: selectedHopDong?.khachHangId ? String(selectedHopDong.khachHangId) : "",
+    }));
   };
 
   const handlePhieuThuChange = (event) => {
@@ -237,7 +329,8 @@ function TaiChinh() {
 
   const validateHoaDon = () => {
     if (!hoaDonForm.maHoaDon.trim()) return "Mã hóa đơn không được rỗng";
-    if (!hoaDonForm.khachHangId.trim()) return "Khách hàng ID không được rỗng";
+    if (!hoaDonForm.hopDongId.trim()) return "Hợp đồng không được rỗng";
+    if (!selectedHoaDonHopDong?.khachHangId) return "Hợp đồng chưa có khách hàng hợp lệ";
     if (!hoaDonForm.tongTien.trim()) return "Tổng tiền không được rỗng";
     if (Number(hoaDonForm.tongTien) <= 0) return "Tổng tiền phải lớn hơn 0";
     return "";
@@ -246,6 +339,7 @@ function TaiChinh() {
   const validatePhieuThu = () => {
     if (!phieuThuForm.maPhieuThu.trim()) return "Mã phiếu thu không được rỗng";
     if (!phieuThuForm.hoaDonId.trim()) return "Hóa đơn ID không được rỗng";
+    if (!selectedPhieuThuHoaDon?.khachHangId) return "Hóa đơn chưa có khách hàng hợp lệ";
     if (!phieuThuForm.soTien.trim()) return "Số tiền không được rỗng";
     if (Number(phieuThuForm.soTien) <= 0) return "Số tiền phải lớn hơn 0";
     return "";
@@ -254,16 +348,18 @@ function TaiChinh() {
   const validatePhieuChi = () => {
     if (!phieuChiForm.maPhieuChi.trim()) return "Mã phiếu chi không được rỗng";
     if (!phieuChiForm.hoaDonId.trim()) return "Hóa đơn ID không được rỗng";
+    if (!selectedPhieuChiHoaDon?.khachHangId) return "Hóa đơn chưa có khách hàng hợp lệ";
     if (!phieuChiForm.soTien.trim()) return "Số tiền không được rỗng";
     if (Number(phieuChiForm.soTien) <= 0) return "Số tiền phải lớn hơn 0";
     return "";
   };
 
   const submitHoaDon = async () => {
+    const selectedHopDong = findHopDongById(hoaDonForm.hopDongId);
     const payload = {
       maHoaDon: hoaDonForm.maHoaDon.trim(),
-      hopDongId: toNumberOrNull(hoaDonForm.hopDongId),
-      khachHangId: Number(hoaDonForm.khachHangId),
+      hopDongId: Number(hoaDonForm.hopDongId),
+      khachHangId: Number(selectedHopDong?.khachHangId),
       tongTien: Number(hoaDonForm.tongTien),
       trangThaiThanhToan: hoaDonForm.trangThaiThanhToan,
     };
@@ -281,9 +377,10 @@ function TaiChinh() {
   };
 
   const submitPhieuThu = async () => {
+    const selectedHoaDon = findHoaDonById(phieuThuForm.hoaDonId);
     const payload = {
       maPhieuThu: phieuThuForm.maPhieuThu.trim(),
-      khachHangId: toNumberOrNull(phieuThuForm.khachHangId),
+      khachHangId: toNumberOrNull(selectedHoaDon?.khachHangId),
       hoaDonId: Number(phieuThuForm.hoaDonId),
       soTien: Number(phieuThuForm.soTien),
       nguoiLapId: toNumberOrNull(phieuThuForm.nguoiLapId),
@@ -302,9 +399,10 @@ function TaiChinh() {
   };
 
   const submitPhieuChi = async () => {
+    const selectedHoaDon = findHoaDonById(phieuChiForm.hoaDonId);
     const payload = {
       maPhieuChi: phieuChiForm.maPhieuChi.trim(),
-      khachHangId: toNumberOrNull(phieuChiForm.khachHangId),
+      khachHangId: toNumberOrNull(selectedHoaDon?.khachHangId),
       hoaDonId: Number(phieuChiForm.hoaDonId),
       soTien: Number(phieuChiForm.soTien),
       nguoiLapId: toNumberOrNull(phieuChiForm.nguoiLapId),
@@ -345,7 +443,7 @@ function TaiChinh() {
       if (activeTab === "hoaDon") await submitHoaDon();
       if (activeTab === "phieuThu") await submitPhieuThu();
       if (activeTab === "phieuChi") await submitPhieuChi();
-      await loadAll();
+      await reloadTaiChinhData();
       resetForms();
       setSuccess(editing.id ? "Cập nhật thành công" : "Tạo mới thành công");
     } catch (err) {
@@ -410,7 +508,7 @@ function TaiChinh() {
         method: "DELETE",
       });
       await throwIfRequestFailed(response, "Xóa thất bại");
-      await loadAll();
+      await reloadTaiChinhData();
       if (editing.id === id && editing.type === activeTab) resetForms();
       setSuccess("Xóa thành công");
       setError("");
@@ -435,25 +533,30 @@ function TaiChinh() {
           </label>
           <div className="two-col">
             <label>
-              Khách hàng ID
-              <input
-                name="khachHangId"
-                type="number"
-                min="1"
-                value={hoaDonForm.khachHangId}
-                onChange={handleHoaDonChange}
-                placeholder="1"
-              />
+              Hợp đồng
+              <select
+                name="hopDongId"
+                value={hoaDonForm.hopDongId}
+                onChange={handleHoaDonHopDongChange}
+              >
+                <option value="">Chọn hợp đồng</option>
+                {hopDongs.map((hopDong) => (
+                  <option key={hopDong.id} value={hopDong.id}>
+                    {formatHopDongOption(hopDong)}
+                  </option>
+                ))}
+              </select>
             </label>
             <label>
-              Hợp đồng ID
+              Khách hàng
               <input
-                name="hopDongId"
-                type="number"
-                min="1"
-                value={hoaDonForm.hopDongId}
-                onChange={handleHoaDonChange}
-                placeholder="1"
+                readOnly
+                value={
+                  selectedHoaDonHopDong
+                    ? formatCustomerName(selectedHoaDonHopDong)
+                    : getCustomerDisplayName(hoaDonForm.khachHangId)
+                }
+                placeholder="Chọn hợp đồng"
               />
             </label>
           </div>
@@ -507,25 +610,22 @@ function TaiChinh() {
                 <option value="">Chọn hóa đơn</option>
                 {hoaDons.map((hoaDon) => (
                   <option key={hoaDon.id} value={hoaDon.id}>
-                    {formatHoaDonOption(hoaDon)}
+                    {formatPhieuThuHoaDonOption(hoaDon)}
                   </option>
                 ))}
               </select>
             </label>
             <label>
               Khách hàng
-              <select
-                name="khachHangId"
-                value={phieuThuForm.khachHangId}
-                onChange={handlePhieuThuChange}
-              >
-                <option value="">Chọn khách hàng</option>
-                {khachHangOptions.map((hoaDon) => (
-                  <option key={hoaDon.khachHangId} value={hoaDon.khachHangId}>
-                    {formatKhachHangOption(hoaDon)}
-                  </option>
-                ))}
-              </select>
+              <input
+                readOnly
+                value={
+                  selectedPhieuThuHoaDon
+                    ? formatCustomerName(selectedPhieuThuHoaDon)
+                    : getCustomerDisplayName(phieuThuForm.khachHangId)
+                }
+                placeholder="Chọn hóa đơn"
+              />
             </label>
           </div>
           <div className="two-col">
@@ -585,18 +685,15 @@ function TaiChinh() {
           </label>
           <label>
             Khách hàng
-            <select
-              name="khachHangId"
-              value={phieuChiForm.khachHangId}
-              onChange={handlePhieuChiChange}
-            >
-              <option value="">Chọn khách hàng</option>
-              {khachHangOptions.map((hoaDon) => (
-                <option key={hoaDon.khachHangId} value={hoaDon.khachHangId}>
-                  {formatKhachHangOption(hoaDon)}
-                </option>
-              ))}
-            </select>
+            <input
+              readOnly
+              value={
+                selectedPhieuChiHoaDon
+                  ? formatCustomerName(selectedPhieuChiHoaDon)
+                  : getCustomerDisplayName(phieuChiForm.khachHangId)
+              }
+              placeholder="Chọn hóa đơn"
+            />
           </label>
         </div>
         <div className="two-col">
@@ -643,7 +740,7 @@ function TaiChinh() {
         <tr key={item.id}>
           <td>{item.id}</td>
           <td>{item.maHoaDon}</td>
-          <td>{item.khachHangId}</td>
+          <td>{formatCustomerName(item)}</td>
           <td>{item.hopDongId ?? "-"}</td>
           <td>{formatMoney(item.tongTien)}</td>
           <td>{formatMoney(item.soTienDaThu)}</td>
@@ -674,7 +771,7 @@ function TaiChinh() {
           <td>{item.id}</td>
           <td>{maPhieu}</td>
           <td>{item.hoaDonId}</td>
-          <td>{item.khachHangId ?? "-"}</td>
+          <td>{getHoaDonCustomerDisplayName(item.hoaDonId, item.khachHangId)}</td>
           <td>{formatMoney(item.soTien)}</td>
           <td>{item.nguoiLapId ?? "-"}</td>
           <td>{formatDateTime(item.ngayTao)}</td>
@@ -713,28 +810,73 @@ function TaiChinh() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
-          <button className="secondary-btn" type="button" onClick={loadAll}>
+          <button className="secondary-btn" type="button" onClick={reloadTaiChinhData}>
             Tải lại
           </button>
         </div>
       </section>
 
+      <section className="stats-controls" aria-label="Lọc thống kê tài chính">
+        <label>
+          Từ ngày
+          <input
+            type="date"
+            name="from"
+            value={thongKeFilter.from}
+            onChange={handleThongKeFilterChange}
+          />
+        </label>
+        <label>
+          Đến ngày
+          <input
+            type="date"
+            name="to"
+            value={thongKeFilter.to}
+            onChange={handleThongKeFilterChange}
+          />
+        </label>
+        <button className="secondary-btn" type="button" onClick={loadThongKe} disabled={thongKeLoading}>
+          {thongKeLoading ? "Đang tải..." : "Tải thống kê"}
+        </button>
+        {thongKeError ? <span className="stats-error">{thongKeError}</span> : null}
+      </section>
+
       <section className="stats-row">
         <article className="stat-card">
           <span>Hóa đơn</span>
-          <strong>{stats.hoaDon}</strong>
+          <strong>{thongKe.soHoaDon}</strong>
         </article>
         <article className="stat-card">
           <span>Phiếu thu</span>
-          <strong>{stats.phieuThu}</strong>
+          <strong>{thongKe.soPhieuThu}</strong>
         </article>
         <article className="stat-card">
           <span>Phiếu chi</span>
-          <strong>{stats.phieuChi}</strong>
+          <strong>{thongKe.soPhieuChi}</strong>
         </article>
         <article className="stat-card">
           <span>Còn phải thu</span>
-          <strong>{formatMoney(stats.conNo)}</strong>
+          <strong>{formatMoney(thongKe.tongConNo)}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Tổng hóa đơn</span>
+          <strong>{formatMoney(thongKe.tongHoaDon)}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Đã thu</span>
+          <strong>{formatMoney(thongKe.tongDaThu)}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Tổng phiếu thu</span>
+          <strong>{formatMoney(thongKe.tongPhieuThu)}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Tổng phiếu chi</span>
+          <strong>{formatMoney(thongKe.tongPhieuChi)}</strong>
+        </article>
+        <article className="stat-card">
+          <span>Giao dịch</span>
+          <strong>{thongKe.soGiaoDich}</strong>
         </article>
       </section>
 
@@ -750,6 +892,24 @@ function TaiChinh() {
           </button>
         ))}
       </section>
+
+      {activeTab === "hoaDon" ? (
+        <section className="finance-filter" aria-label="Lọc trạng thái thanh toán">
+          <label>
+            Trạng thái thanh toán
+            <select
+              value={paymentStatusFilter}
+              onChange={(event) => setPaymentStatusFilter(event.target.value)}
+            >
+              {PAYMENT_STATUS_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </section>
+      ) : null}
 
       <section className="content-grid">
         <form className="panel form-panel" onSubmit={handleSubmit}>
