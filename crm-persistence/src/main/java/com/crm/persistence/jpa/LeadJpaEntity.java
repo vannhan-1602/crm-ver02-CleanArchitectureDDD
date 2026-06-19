@@ -1,5 +1,6 @@
 package com.crm.persistence.jpa;
 
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

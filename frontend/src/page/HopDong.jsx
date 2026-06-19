@@ -101,8 +101,8 @@ function HopDong() {
   };
 
   const validateForm = () => {
-    if (!String(form.maHopDong ?? "").trim()) return "Mã hợp đồng không được rỗng";
-    if (!String(form.khachHangId ?? "").trim()) return "Khách hàng không được rỗng";
+    if (!form.maHopDong.trim()) return "Mã hợp đồng không được rỗng";
+    if (!String(form.khachHangId.trim())) return "Khách hàng không được rỗng";
     if (!form.ngayKy) return "Ngày ký không được rỗng";
     if (!String(form.thoiHan ?? "").trim()) return "Thời hạn không được rỗng";
     return "";
@@ -217,7 +217,6 @@ function HopDong() {
         <div>
           <p className="eyebrow">CRM / Hop dong</p>
           <h1>Quản lý hợp đồng</h1>
-          
         </div>
 
         <div className="toolbar">
@@ -383,7 +382,7 @@ function HopDong() {
                       <td>{item.maHopDong}</td>
                       <td>
                         <div className="stacked-cell">
-                          <strong>{item.tenKhachHang || 'Không có tên'}</strong>
+                          <strong>{item.tenKhachHang || "Không có tên"}</strong>
                         </div>
                       </td>
                       <td>{item.ngayKy ?? "-"}</td>
@@ -427,4 +426,3 @@ function HopDong() {
 }
 
 export default HopDong;
-

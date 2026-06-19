@@ -18,7 +18,7 @@ public class LoaiSanPhamJpaEntity {
     @Column(name = "TenLoai")
     private String tenLoai;
 
-    @Column(name = "Mota")
+    @Column(name = "MoTa")
     private String moTa;
 
     public Integer getId() {
