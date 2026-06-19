@@ -19,7 +19,8 @@ public interface KhachHangJPARepo extends JpaRepository<KhachHangJpaEntity, Long
 
     Optional<KhachHangJpaEntity> findByIdAndIsDeletedFalse(Long id);
 
-    
+    List<KhachHangJpaEntity> findByLoaiKhachHangIdAndIsDeletedFalse(Integer loaiKhachHangId);
+
     @Query("SELECT k.maKhachHang FROM KhachHangJpaEntity k " +
             "WHERE k.maKhachHang LIKE 'KH%' " +
             "ORDER BY k.maKhachHang DESC LIMIT 1")
@@ -29,4 +30,5 @@ public interface KhachHangJPARepo extends JpaRepository<KhachHangJpaEntity, Long
     @Transactional
     @Query("UPDATE KhachHangJpaEntity k SET k.isDeleted = true WHERE k.id = :id")
     void softDeleteById(@Param("id") Long id);
+
 }

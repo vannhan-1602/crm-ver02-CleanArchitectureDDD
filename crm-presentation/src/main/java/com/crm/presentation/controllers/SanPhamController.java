@@ -24,7 +24,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/sanpham")
-@CrossOrigin(origins = "http://localhost:5173")
 public class SanPhamController {
 
     private final Mediator mediator;

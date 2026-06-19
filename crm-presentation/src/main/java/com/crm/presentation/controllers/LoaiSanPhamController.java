@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/loaisanpham")
-@CrossOrigin(origins = "http://localhost:5173")
 public class LoaiSanPhamController {
 
     private final Mediator mediator;

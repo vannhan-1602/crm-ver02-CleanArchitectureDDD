@@ -17,7 +17,7 @@ public class ApiExceptionHandler {
     public ErrorResponse handleIllegalArgument(IllegalArgumentException exception) {
         return new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Dữ liệu không hợp lệ",
+                "Du lieu khong hop le",
                 exception.getMessage()
         );
     }
@@ -27,7 +27,7 @@ public class ApiExceptionHandler {
     public ErrorResponse handleNotFound(NoSuchElementException exception) {
         return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                "Không tìm thấy dữ liệu",
+                "Khong tim thay du lieu",
                 exception.getMessage()
         );
     }
@@ -37,8 +37,18 @@ public class ApiExceptionHandler {
     public ErrorResponse handleDataIntegrityViolation() {
         return new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                "Dữ liệu bị trùng hoặc ID liên kết không hợp lệ",
-                "Vui lòng kiểm tra mã phiếu, khách hàng, hóa đơn và người lập."
+                "Du lieu bi trung hoac ID lien ket khong hop le",
+                "Vui long kiem tra ma phieu, khach hang, hoa don va nguoi lap."
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleUnexpected(Exception exception) {
+        return new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Loi he thong",
+                exception.getMessage() != null ? exception.getMessage() : "Unknown error"
         );
     }
 

@@ -1,0 +1,70 @@
+/* ── KhachHang extra styles ─────────────────────────────────────────────── */
+
+/* Filter selects in toolbar */
+.kh-page .kh-select-sm {
+  min-width: 160px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #d6deea;
+  background: #fff;
+  font-size: 14px;
+  color: #162033;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Required asterisk */
+.kh-req {
+  color: #d84d5b;
+}
+
+/* Mã khách hàng */
+.kh-ma {
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #315efb;
+  background: #eef3ff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* Nhân viên phụ trách name */
+.kh-nv {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d3557;
+}
+
+/* ── Badge variants cho loại khách hàng ──────────────────────────────────── */
+.badge-canhan {
+  background: #eef3fb;
+  color: #1b3557;
+}
+
+.badge-doanhnghiep {
+  background: #e4f3ff;
+  color: #0d5f99;
+}
+
+.badge-vip {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ── Badge variants cho tình trạng ──────────────────────────────────────── */
+.badge-hoatdong {
+  background: #e8f7ef;
+  color: #18724a;
+}
+
+.badge-tiemnang {
+  background: #f3e5f5;
+  color: #6a1b9a;
+}
+
+.badge-khonghoatdong {
+  background: #f3f4f6;
+  color: #6b7280;
+}

@@ -1,0 +1,232 @@
+.ticket-page textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: 1px solid #d6deea;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  outline: none;
+  color: #162033;
+  font: inherit;
+}
+
+.ticket-page textarea:focus {
+  border-color: #4a78ff;
+  box-shadow: 0 0 0 4px rgba(74, 120, 255, 0.12);
+}
+
+.ticket-filter {
+  min-width: 170px;
+}
+
+.ticket-grid {
+  grid-template-columns: 420px minmax(0, 1fr);
+}
+
+.ticket-form {
+  max-height: calc(100vh - 110px);
+  overflow: auto;
+}
+
+.ticket-main-column {
+  display: grid;
+  gap: 18px;
+}
+
+.ticket-req {
+  color: #d84d5b;
+}
+
+.ticket-code {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: #eef3ff;
+  color: #315efb;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ticket-title-cell {
+  display: grid;
+  gap: 4px;
+}
+
+.ticket-title-cell span {
+  color: #6d7c91;
+  font-size: 12px;
+}
+
+.ticket-selected-row {
+  background: #f3f7ff;
+}
+
+.ticket-priority-Thap {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.ticket-priority-TrungBinh,
+.ticket-status-Moi {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.ticket-priority-Cao,
+.ticket-status-ChoPhanHoi {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.ticket-priority-KhanCap {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.ticket-status-DangXuLy {
+  color: #115e59;
+  background: #ccfbf1;
+}
+
+.ticket-status-Dong {
+  color: #4b5563;
+  background: #e5e7eb;
+}
+
+.ticket-feedback-panel select,
+.ticket-feedback-panel input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d6deea;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  outline: none;
+  color: #162033;
+}
+
+.ticket-feedback-form {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.ticket-feedback-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: #40506b;
+}
+
+.ticket-timeline {
+  display: grid;
+  gap: 10px;
+}
+
+.ticket-timeline-item {
+  border: 1px solid #e5ebf3;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fbfdff;
+}
+
+.ticket-timeline-item > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.ticket-timeline-item strong {
+  color: #162033;
+}
+
+.ticket-timeline-item span,
+.ticket-timeline-item small {
+  color: #6d7c91;
+  font-size: 12px;
+}
+
+.ticket-timeline-item p {
+  margin: 0 0 8px;
+  color: #26344d;
+  line-height: 1.5;
+}
+
+.ticket-empty-feedback {
+  padding: 24px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #6d7c91;
+  text-align: center;
+  background: #f8fafc;
+}
+
+@media (max-width: 1200px) {
+  .ticket-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-form {
+    max-height: none;
+  }
+}
+/* ── Fix form alignment ── */
+
+/* Đảm bảo ticket-form có padding giống sanpham-form-inner */
+.ticket-form {
+  padding: 0;
+}
+
+.ticket-form > *:not(.panel-head) {
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+/* two-col bên trong ticket-page không bị overflow */
+.ticket-page .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ticket-page .two-col > label {
+  min-width: 0;
+}
+
+/* Tất cả input/select/textarea trong ticket-form đều full-width và không tràn */
+.ticket-form input,
+.ticket-form select,
+.ticket-form textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Label trong ticket-form dùng display:grid thay flex để tránh lệch */
+.ticket-form label {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  min-width: 0;
+}
+
+/* actions row căn phải */
+.ticket-form .actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 4px;
+  padding-bottom: 18px;
+}
+
+/* message box full-width */
+.ticket-form .message {
+  box-sizing: border-box;
+}
