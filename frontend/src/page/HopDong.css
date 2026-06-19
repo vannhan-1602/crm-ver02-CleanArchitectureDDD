@@ -46,7 +46,9 @@
 
 .search,
 .form-panel input,
-.form-panel select {
+.form-panel select,
+.stats-controls input,
+.finance-filter select {
   width: 100%;
   min-width: 0;
   border: 1px solid #d6deea;
@@ -62,14 +64,39 @@
 
 .search:focus,
 .form-panel input:focus,
-.form-panel select:focus {
+.form-panel select:focus,
+.stats-controls input:focus,
+.finance-filter select:focus {
   border-color: #4a78ff;
   box-shadow: 0 0 0 4px rgba(74, 120, 255, 0.12);
 }
 
+.stats-controls {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.stats-controls label,
+.finance-filter label {
+  display: grid;
+  gap: 6px;
+  min-width: 180px;
+  color: #40506b;
+  font-size: 14px;
+}
+
+.stats-error {
+  color: #8d1325;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 14px;
   margin-bottom: 24px;
 }
@@ -82,6 +109,12 @@
   border: 1px solid #dbe3ef;
   border-radius: 12px;
   background: #eef3fb;
+}
+
+.finance-filter {
+  display: flex;
+  justify-content: flex-end;
+  margin: -6px 0 18px;
 }
 
 .finance-tab {

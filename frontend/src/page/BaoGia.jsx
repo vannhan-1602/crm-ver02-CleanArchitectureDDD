@@ -38,6 +38,8 @@ function formatDateTime(value) {
 function BaoGia() {
   const [items, setItems] = useState([])
   const [products, setProducts] = useState([])
+  const [khachHangList, setKhachHangList] = useState([])
+  const [nhanVienList, setNhanVienList] = useState([])
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -49,6 +51,39 @@ function BaoGia() {
   const productMap = useMemo(() => {
     return new Map(products.map((product) => [String(product.sanPhamId ?? product.id), product]))
   }, [products])
+
+  const khachHangMap = useMemo(
+    () =>
+      new Map(
+        khachHangList.map((item) => [String(item.id), item.tenKhachHang ?? `KH #${item.id}`]),
+      ),
+    [khachHangList],
+  )
+
+  const nhanVienMap = useMemo(
+    () =>
+      new Map(
+        nhanVienList.map((item) => [
+          String(item.id),
+          item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`,
+        ]),
+      ),
+    [nhanVienList],
+  )
+
+  const findKhachHangIdByName = (tenKhachHang) => {
+    if (!tenKhachHang) return ''
+    const match = khachHangList.find((item) => item.tenKhachHang === tenKhachHang)
+    return match?.id ?? ''
+  }
+
+  const findNhanVienIdByName = (tenNhanVien) => {
+    if (!tenNhanVien) return ''
+    const match = nhanVienList.find(
+      (item) => (item.hoTen ?? item.tenNhanVien) === tenNhanVien,
+    )
+    return match?.id ?? ''
+  }
 
   const enrichedItems = useMemo(() => {
     return items.map((item) => {
@@ -70,8 +105,10 @@ function BaoGia() {
     return enrichedItems.filter((item) =>
       [
         item.maBaoGia,
-        item.khachHangId,
-        item.nhanVienId,
+        item.tenKhachHang,
+        item.tenNhanVien,
+        khachHangMap.get(String(item.khachHangId)),
+        nhanVienMap.get(String(item.nhanVienId)),
         item.trangThai,
         item.tongTien,
         ...(item.chiTiets || []).flatMap((line) => [
@@ -83,7 +120,7 @@ function BaoGia() {
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(keyword)),
     )
-  }, [enrichedItems, search])
+  }, [enrichedItems, search, khachHangMap, nhanVienMap])
 
   const loadProducts = async () => {
     try {
@@ -98,11 +135,35 @@ function BaoGia() {
     }
   }
 
+  const loadKhachHang = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/khach-hang`)
+      if (!response.ok) return
+      const data = await response.json()
+      setKhachHangList(Array.isArray(data) ? data : [])
+    } catch {
+      // Dropdown khách hàng chỉ là dữ liệu hỗ trợ.
+    }
+  }
+
+  const loadNhanVien = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/nhan-vien`)
+      if (!response.ok) return
+      const data = await response.json()
+      setNhanVienList(Array.isArray(data) ? data : [])
+    } catch {
+      // Dropdown nhân viên chỉ là dữ liệu hỗ trợ.
+    }
+  }
+
   const loadBaoGia = async () => {
     setLoading(true)
     setError('')
     try {
-      const response = await fetch(`${API_BASE_URL}/api/bao-gia`)
+      const response = await fetch(`${API_BASE_URL}/api/bao-gia`, {
+        cache: 'no-store',
+      })
       if (!response.ok) {
         throw new Error(`Khong the tai danh sach bao gia (${response.status})`)
       }
@@ -116,8 +177,11 @@ function BaoGia() {
   }
 
   useEffect(() => {
-    loadProducts()
-    loadBaoGia()
+    const initialize = async () => {
+      await Promise.all([loadProducts(), loadKhachHang(), loadNhanVien(), loadBaoGia()])
+    }
+
+    void initialize()
   }, [])
 
   const resetForm = () => {
@@ -163,8 +227,8 @@ function BaoGia() {
   }
 
   const validateForm = () => {
-    if (!form.maBaoGia.trim()) return 'Ma bao gia khong duoc rong'
-    if (!form.khachHangId.trim()) return 'Khach hang ID khong duoc rong'
+    if (!String(form.maBaoGia ?? '').trim()) return 'Ma bao gia khong duoc rong'
+    if (!String(form.khachHangId ?? '').trim()) return 'Khach hang khong duoc rong'
     const validLines = form.chiTiets.filter((line) => line.sanPhamId)
     if (validLines.length === 0) return 'Bao gia phai co it nhat 1 san pham'
     for (const line of validLines) {
@@ -202,9 +266,9 @@ function BaoGia() {
     setSuccess('')
 
     const payload = {
-      maBaoGia: form.maBaoGia.trim(),
-      khachHangId: Number(form.khachHangId),
-      nhanVienId: form.nhanVienId ? Number(form.nhanVienId) : null,
+      maBaoGia: String(form.maBaoGia ?? '').trim(),
+      khachHangId: Number(String(form.khachHangId)),
+      nhanVienId: String(form.nhanVienId ?? '') ? Number(String(form.nhanVienId)) : null,
       trangThai: form.trangThai,
       chiTiets: normalizedLines,
     }
@@ -229,7 +293,29 @@ function BaoGia() {
         )
       }
 
+      const savedItem = await response.json()
+      const selectedKhachHang = khachHangMap.get(String(form.khachHangId))
+      const selectedNhanVien = String(form.nhanVienId ?? '')
+        ? nhanVienMap.get(String(form.nhanVienId))
+        : null
+      const updatedItem = {
+        ...savedItem,
+        maBaoGia: String(form.maBaoGia ?? '').trim(),
+        khachHangId: Number(String(form.khachHangId)),
+        nhanVienId: String(form.nhanVienId ?? '') ? Number(String(form.nhanVienId)) : null,
+        tenKhachHang: selectedKhachHang ?? savedItem.tenKhachHang,
+        tenNhanVien: selectedNhanVien ?? savedItem.tenNhanVien,
+        trangThai: form.trangThai,
+        chiTiets: normalizedLines.map((line) => ({ ...line })),
+        tongTien: totalDraft,
+      }
+
       await loadBaoGia()
+      setItems((current) =>
+        current.map((item) =>
+          String(item.id) === String(updatedItem.id) ? updatedItem : item,
+        ),
+      )
       resetForm()
       setSuccess(editingId ? 'Cap nhat bao gia thanh cong' : 'Tao bao gia thanh cong')
     } catch (err) {
@@ -243,8 +329,12 @@ function BaoGia() {
     setEditingId(item.id)
     setForm({
       maBaoGia: item.maBaoGia ?? '',
-      khachHangId: item.khachHangId ?? '',
-      nhanVienId: item.nhanVienId ?? '',
+      khachHangId: String(
+        item.khachHangId ?? findKhachHangIdByName(item.tenKhachHang) ?? '',
+      ),
+      nhanVienId: String(
+        item.nhanVienId ?? findNhanVienIdByName(item.tenNhanVien) ?? '',
+      ),
       trangThai: item.trangThai ?? 'Nhap',
       chiTiets:
         item.chiTiets?.length > 0
@@ -365,27 +455,35 @@ function BaoGia() {
 
           <div className="two-col">
             <label>
-              Khach hang ID
-              <input
+              Khach hang
+              <select
                 name="khachHangId"
-                type="number"
-                min="1"
                 value={form.khachHangId}
                 onChange={handleFieldChange}
-                placeholder="1"
-              />
+              >
+                <option value="">Chon khach hang</option>
+                {khachHangList.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.tenKhachHang ?? `KH #${item.id}`}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label>
-              Nhan vien ID
-              <input
+              Nhan vien
+              <select
                 name="nhanVienId"
-                type="number"
-                min="1"
                 value={form.nhanVienId}
                 onChange={handleFieldChange}
-                placeholder="3"
-              />
+              >
+                <option value="">Chon nhan vien</option>
+                {nhanVienList.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`}
+                  </option>
+                ))}
+              </select>
             </label>
           </div>
 
@@ -506,6 +604,7 @@ function BaoGia() {
                   <th>ID</th>
                   <th>Ma bao gia</th>
                   <th>Khach hang</th>
+                  <th>Nhan vien</th>
                   <th>San pham</th>
                   <th>Tong tien</th>
                   <th>Trang thai</th>
@@ -516,7 +615,7 @@ function BaoGia() {
               <tbody>
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="empty-row">
+                    <td colSpan="9" className="empty-row">
                       {loading ? 'Dang tai du lieu...' : 'Khong co du lieu phu hop'}
                     </td>
                   </tr>
@@ -525,7 +624,8 @@ function BaoGia() {
                     <tr key={item.id}>
                       <td>{item.id}</td>
                       <td>{item.maBaoGia}</td>
-                      <td>{item.khachHangId}</td>
+                      <td>{item.tenKhachHang ?? khachHangMap.get(String(item.khachHangId)) ?? item.khachHangId ?? '-'}</td>
+                      <td>{item.tenNhanVien ?? nhanVienMap.get(String(item.nhanVienId)) ?? item.nhanVienId ?? '-'}</td>
                       <td>
                         <div className="stacked-cell">
                           {(item.chiTiets || []).map((line) => (

@@ -2,8 +2,9 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import axios from "axios";
 import "./SanPham.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
-const ax = axios.create({ baseURL: API_BASE_URL });
+const API = "http://localhost:8081/api";
+
+const ax = axios.create({ baseURL: API });
 
 const formatVND = (n) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);

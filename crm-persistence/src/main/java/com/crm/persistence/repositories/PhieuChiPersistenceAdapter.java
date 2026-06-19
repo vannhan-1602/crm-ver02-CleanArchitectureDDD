@@ -7,6 +7,7 @@ import com.crm.domain.valueobjects.MaPhieuChi;
 import com.crm.persistence.entities.PhieuThuChiJpaEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +43,14 @@ public class PhieuChiPersistenceAdapter implements PhieuChiRepo {
     @Override
     public List<PhieuChi> findByHoaDonId(Long hoaDonId) {
         return entityRepository.findByHoaDonIdAndLoaiPhieu(hoaDonId, LoaiPhieuThuChi.Chi)
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<PhieuChi> findByNgayTaoBetween(LocalDateTime from, LocalDateTime to) {
+        return entityRepository.findByLoaiPhieuAndNgayTaoRange(LoaiPhieuThuChi.Chi, from, to)
                 .stream()
                 .map(this::toDomain)
                 .toList();

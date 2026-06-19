@@ -7,6 +7,8 @@ import com.crm.application.hoadon.command.UpdateHoaDonCommand;
 import com.crm.application.hoadon.query.GetAllHoaDonQuery;
 import com.crm.application.hoadon.query.GetHoaDonByIdQuery;
 import com.crm.domain.entities.HoaDon;
+import com.crm.domain.entities.KhachHang;
+import com.crm.domain.repositories.KhachHangRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,9 +30,11 @@ import java.util.List;
 @RequestMapping("/api/hoa-don")
 public class HoaDonController {
     private final Mediator mediator;
+    private final KhachHangRepo khachHangRepo;
 
-    public HoaDonController(Mediator mediator) {
+    public HoaDonController(Mediator mediator, KhachHangRepo khachHangRepo) {
         this.mediator = mediator;
+        this.khachHangRepo = khachHangRepo;
     }
 
     @PostMapping
@@ -44,20 +48,20 @@ public class HoaDonController {
                 request.getSoTienDaThu(),
                 request.getTrangThaiThanhToan()
         ));
-        return HoaDonResponse.from(hoaDon);
+        return HoaDonResponse.from(hoaDon, khachHangRepo);
     }
 
     @GetMapping
     public List<HoaDonResponse> getAll() {
         List<HoaDon> hoaDons = mediator.send(new GetAllHoaDonQuery());
         return hoaDons.stream()
-                .map(HoaDonResponse::from)
+                .map(hoaDon -> HoaDonResponse.from(hoaDon, khachHangRepo))
                 .toList();
     }
 
     @GetMapping("/{id}")
     public HoaDonResponse getById(@PathVariable Long id) {
-        return HoaDonResponse.from(mediator.send(new GetHoaDonByIdQuery(id)));
+        return HoaDonResponse.from(mediator.send(new GetHoaDonByIdQuery(id)), khachHangRepo);
     }
 
     @PutMapping("/{id}")
@@ -70,7 +74,7 @@ public class HoaDonController {
                 request.getTrangThaiThanhToan()
         );
         command.setId(id);
-        return HoaDonResponse.from(mediator.send(command));
+        return HoaDonResponse.from(mediator.send(command), khachHangRepo);
     }
 
     @DeleteMapping("/{id}")
@@ -145,18 +149,24 @@ public class HoaDonController {
         private String maHoaDon;
         private Long hopDongId;
         private Long khachHangId;
+        private String tenKhachHang;
         private BigDecimal tongTien;
         private BigDecimal soTienDaThu;
         private String trangThaiThanhToan;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        public static HoaDonResponse from(HoaDon hoaDon) {
+        public static HoaDonResponse from(HoaDon hoaDon, KhachHangRepo khachHangRepo) {
             HoaDonResponse response = new HoaDonResponse();
             response.id = hoaDon.getId();
             response.maHoaDon = hoaDon.getMaHoaDon().getValue();
             response.hopDongId = hoaDon.getHopDongId();
             response.khachHangId = hoaDon.getKhachHangId();
+            response.tenKhachHang = hoaDon.getKhachHangId() != null
+                    ? khachHangRepo.findByIdIncludingDeleted(hoaDon.getKhachHangId())
+                    .map(KhachHang::getTenKhachHang)
+                    .orElse(null)
+                    : null;
             response.tongTien = hoaDon.getTongTien();
             response.soTienDaThu = hoaDon.getSoTienDaThu();
             response.trangThaiThanhToan = hoaDon.getTrangThaiThanhToan().name();
@@ -179,6 +189,10 @@ public class HoaDonController {
 
         public Long getKhachHangId() {
             return khachHangId;
+        }
+
+        public String getTenKhachHang() {
+            return tenKhachHang;
         }
 
         public BigDecimal getTongTien() {
