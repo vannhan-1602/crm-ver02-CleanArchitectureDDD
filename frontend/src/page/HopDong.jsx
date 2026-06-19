@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "../apiClient";
 import "./HopDong.css";
 
 const API_BASE_URL =
@@ -53,7 +54,7 @@ function HopDong() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`${API_BASE_URL}/api/hop-dong`);
+      const response = await authFetch(`${API_BASE_URL}/api/hop-dong`);
       if (!response.ok) {
         throw new Error(
           `Không thể tải danh sách hợp đồng (${response.status})`,
@@ -70,7 +71,7 @@ function HopDong() {
 
   const loadKhachHangList = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/khach-hang`);
+      const response = await authFetch(`${API_BASE_URL}/api/khach-hang`);
       if (!response.ok) return;
       const data = await response.json();
       setKhachHangList(Array.isArray(data) ? data : []);
@@ -130,7 +131,7 @@ function HopDong() {
     };
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         editingId
           ? `${API_BASE_URL}/api/hop-dong/${editingId}`
           : `${API_BASE_URL}/api/hop-dong`,
@@ -184,7 +185,7 @@ function HopDong() {
     setSuccess("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/hop-dong/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/api/hop-dong/${id}`, {
         method: "DELETE",
       });
 

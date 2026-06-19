@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { authFetch } from '../apiClient'
 import './BaoGia.css'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081'
@@ -124,7 +125,7 @@ function BaoGia() {
 
   const loadProducts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/sanpham`)
+      const response = await authFetch(`${API_BASE_URL}/api/sanpham`)
       if (!response.ok) {
         throw new Error(`Khong the tai san pham (${response.status})`)
       }
@@ -137,7 +138,7 @@ function BaoGia() {
 
   const loadKhachHang = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/khach-hang`)
+      const response = await authFetch(`${API_BASE_URL}/api/khach-hang`)
       if (!response.ok) return
       const data = await response.json()
       setKhachHangList(Array.isArray(data) ? data : [])
@@ -148,7 +149,7 @@ function BaoGia() {
 
   const loadNhanVien = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/nhan-vien`)
+      const response = await authFetch(`${API_BASE_URL}/api/nhan-vien`)
       if (!response.ok) return
       const data = await response.json()
       setNhanVienList(Array.isArray(data) ? data : [])
@@ -161,7 +162,7 @@ function BaoGia() {
     setLoading(true)
     setError('')
     try {
-      const response = await fetch(`${API_BASE_URL}/api/bao-gia`, {
+      const response = await authFetch(`${API_BASE_URL}/api/bao-gia`, {
         cache: 'no-store',
       })
       if (!response.ok) {
@@ -274,7 +275,7 @@ function BaoGia() {
     }
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         editingId ? `${API_BASE_URL}/api/bao-gia/${editingId}` : `${API_BASE_URL}/api/bao-gia`,
         {
           method: editingId ? 'PUT' : 'POST',
@@ -357,7 +358,7 @@ function BaoGia() {
     setSuccess('')
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/bao-gia/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/api/bao-gia/${id}`, {
         method: 'DELETE',
       })
       if (!response.ok && response.status !== 204) {

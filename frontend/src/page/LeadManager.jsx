@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { authFetch } from "../apiClient";
 import "./LeadManager.css";
 
 const API_BASE_URL =
@@ -60,7 +61,7 @@ function LeadManager() {
   const loadLeads = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/leads`);
+      const response = await authFetch(`${API_BASE_URL}/api/leads`);
       if (!response.ok)
         throw new Error(`Không thể tải danh sách Lead (${response.status})`);
       const data = await response.json();
@@ -74,7 +75,7 @@ function LeadManager() {
 
   const loadNhanVien = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/nhan-vien`);
+      const response = await authFetch(`${API_BASE_URL}/api/nhan-vien`);
       if (!response.ok) throw new Error("HTTP " + response.status);
       const data = await response.json();
       setNhanVienList(Array.isArray(data) ? data : []);
@@ -152,7 +153,7 @@ function LeadManager() {
     };
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         editingId
           ? `${API_BASE_URL}/api/leads/${editingId}`
           : `${API_BASE_URL}/api/leads`,
@@ -196,7 +197,7 @@ function LeadManager() {
     setError("");
     setSuccess("");
     try {
-      const response = await fetch(`${API_BASE_URL}/api/leads/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/api/leads/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Xóa thất bại");
@@ -217,7 +218,7 @@ function LeadManager() {
       return;
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/leads/${id}/convert`, {
+      const response = await authFetch(`${API_BASE_URL}/api/leads/${id}/convert`, {
         method: "POST",
       });
       if (!response.ok) throw new Error("Chuyển đổi thất bại");
@@ -241,7 +242,7 @@ function LeadManager() {
     }
     setLoading(true);
     try {
-      const response = await fetch(
+      const response = await authFetch(
         `${API_BASE_URL}/api/leads/${statusModal.lead.id}/status`,
         {
           method: "PATCH",

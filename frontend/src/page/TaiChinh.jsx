@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "../apiClient";
 import "./HopDong.css";
 
 const API_BASE_URL =
@@ -143,10 +144,10 @@ function TaiChinh() {
     setError("");
     try {
       const [hoaDonRes, hopDongRes, phieuThuRes, phieuChiRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/hoa-don`),
-        fetch(`${API_BASE_URL}/api/hop-dong`),
-        fetch(`${API_BASE_URL}/api/phieu-thu`),
-        fetch(`${API_BASE_URL}/api/phieu-chi`),
+        authFetch(`${API_BASE_URL}/api/hoa-don`),
+        authFetch(`${API_BASE_URL}/api/hop-dong`),
+        authFetch(`${API_BASE_URL}/api/phieu-thu`),
+        authFetch(`${API_BASE_URL}/api/phieu-chi`),
       ]);
 
       if (!hoaDonRes.ok) throw new Error(`Tải hóa đơn thất bại (${hoaDonRes.status})`);
@@ -173,7 +174,7 @@ function TaiChinh() {
       if (thongKeFilter.from) params.set("from", thongKeFilter.from);
       if (thongKeFilter.to) params.set("to", thongKeFilter.to);
       const query = params.toString();
-      const response = await fetch(
+      const response = await authFetch(
         `${API_BASE_URL}/api/tai-chinh/thong-ke${query ? `?${query}` : ""}`,
       );
       await throwIfRequestFailed(response, "Tải thống kê tài chính thất bại");
@@ -363,7 +364,7 @@ function TaiChinh() {
       tongTien: Number(hoaDonForm.tongTien),
       trangThaiThanhToan: hoaDonForm.trangThaiThanhToan,
     };
-    const response = await fetch(
+    const response = await authFetch(
       editing.type === "hoaDon"
         ? `${API_BASE_URL}/api/hoa-don/${editing.id}`
         : `${API_BASE_URL}/api/hoa-don`,
@@ -385,7 +386,7 @@ function TaiChinh() {
       soTien: Number(phieuThuForm.soTien),
       nguoiLapId: toNumberOrNull(phieuThuForm.nguoiLapId),
     };
-    const response = await fetch(
+    const response = await authFetch(
       editing.type === "phieuThu"
         ? `${API_BASE_URL}/api/phieu-thu/${editing.id}`
         : `${API_BASE_URL}/api/phieu-thu`,
@@ -407,7 +408,7 @@ function TaiChinh() {
       soTien: Number(phieuChiForm.soTien),
       nguoiLapId: toNumberOrNull(phieuChiForm.nguoiLapId),
     };
-    const response = await fetch(
+    const response = await authFetch(
       editing.type === "phieuChi"
         ? `${API_BASE_URL}/api/phieu-chi/${editing.id}`
         : `${API_BASE_URL}/api/phieu-chi`,
@@ -504,7 +505,7 @@ function TaiChinh() {
     }[activeTab];
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/${endpoint}/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/api/${endpoint}/${id}`, {
         method: "DELETE",
       });
       await throwIfRequestFailed(response, "Xóa thất bại");

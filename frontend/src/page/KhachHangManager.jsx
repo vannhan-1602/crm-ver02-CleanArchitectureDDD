@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "../apiClient";
 import "./HopDong.css";
 import "./KhachHang.css";
 
@@ -90,7 +91,7 @@ function KhachHangManager() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/khach-hang`);
+      const res = await authFetch(`${API_BASE_URL}/api/khach-hang`);
       if (!res.ok)
         throw new Error(`Không thể tải danh sách khách hàng (${res.status})`);
       const data = await res.json();
@@ -104,7 +105,7 @@ function KhachHangManager() {
 
   const loadNhanVien = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/nhan-vien`);
+      const res = await authFetch(`${API_BASE_URL}/api/nhan-vien`);
       if (!res.ok) return;
       const data = await res.json();
       setNhanVienList(Array.isArray(data) ? data : []);
@@ -199,7 +200,7 @@ function KhachHangManager() {
     };
 
     try {
-      const res = await fetch(
+      const res = await authFetch(
         editingId
           ? `${API_BASE_URL}/api/khach-hang/${editingId}`
           : `${API_BASE_URL}/api/khach-hang`,
@@ -250,7 +251,7 @@ function KhachHangManager() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/khach-hang/${id}`, {
+      const res = await authFetch(`${API_BASE_URL}/api/khach-hang/${id}`, {
         method: "DELETE",
       });
       if (!res.ok && res.status !== 204)

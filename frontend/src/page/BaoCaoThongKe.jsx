@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { authFetch } from "../apiClient"
 import "./BaoCaoThongKe.css"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081"
@@ -54,7 +55,7 @@ function BaoCaoThongKe() {
     setLoading(true)
     setError("")
     try {
-      const response = await fetch(`${API_BASE_URL}/api/bao-cao-thong-ke`, {
+      const response = await authFetch(`${API_BASE_URL}/api/bao-cao-thong-ke`, {
         cache: "no-store",
       })
       if (!response.ok) {

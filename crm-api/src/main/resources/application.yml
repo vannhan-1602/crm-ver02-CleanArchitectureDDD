@@ -20,3 +20,7 @@ spring:
     show-sql: true
 server:
   port: 8081
+auth:
+  token:
+    secret: change-this-secret-in-production
+    ttl-seconds: 86400
