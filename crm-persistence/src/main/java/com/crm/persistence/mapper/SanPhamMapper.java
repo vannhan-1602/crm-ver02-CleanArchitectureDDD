@@ -1,7 +1,6 @@
 package com.crm.persistence.mapper;
 
 import com.crm.domain.entities.SanPham;
-import com.crm.domain.entities.SanPhamHinhAnh;
 import com.crm.persistence.jpa.SanPhamHinhAnhJpaEntity;
 import com.crm.persistence.jpa.SanPhamJpaEntity;
 

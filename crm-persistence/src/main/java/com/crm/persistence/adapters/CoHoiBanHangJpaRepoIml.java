@@ -4,7 +4,6 @@ import com.crm.domain.entities.CoHoiBanHang;
 import com.crm.domain.repositories.CoiHoiBanHangRepo;
 import com.crm.persistence.jpa.CoHoiBanHangJpaEntity;
 import com.crm.persistence.mapper.CoHoiBanHangMapper;
-import com.crm.persistence.mapper.SanPhamMapper;
 import com.crm.persistence.repositories.CoHoiBanHangJpaRepo;
 import org.springframework.stereotype.Repository;
 

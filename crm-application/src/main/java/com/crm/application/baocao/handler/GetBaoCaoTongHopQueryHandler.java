@@ -80,6 +80,7 @@ public class GetBaoCaoTongHopQueryHandler implements IRequestHandler<GetBaoCaoTo
     }
 
     @Override
+    @SuppressWarnings("unused")
     public BaoCaoTongHopResponse handle(GetBaoCaoTongHopQuery query) {
         List<Lead> leads = safeLoad("lead", () -> leadRepo.findAll());
         List<HopDong> hopDongs = safeLoad("hop dong", () -> hopDongRepo.findAll());

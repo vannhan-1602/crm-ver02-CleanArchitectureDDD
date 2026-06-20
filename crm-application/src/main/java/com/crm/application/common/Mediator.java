@@ -15,7 +15,7 @@ public class Mediator {
         this.context = context;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public <TResponse> TResponse send(IRequest<TResponse> request) {
         Map<String, IRequestHandler> handlers = context.getBeansOfType(IRequestHandler.class);
 

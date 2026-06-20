@@ -3,7 +3,6 @@ package com.crm.persistence.adapters;
 import com.crm.domain.entities.SanPhamHinhAnh;
 import com.crm.domain.repositories.SanPhamHinhAnhRepo;
 import com.crm.persistence.mapper.SanPhamHinhAnhMapper;
-import com.crm.persistence.mapper.SanPhamMapper;
 import com.crm.persistence.repositories.SanPhamHinhAnhJpaRepo;
 import org.springframework.stereotype.Repository;
 

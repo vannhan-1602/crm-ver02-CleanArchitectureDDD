@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -32,8 +31,8 @@ public class AdminUserController {
     }
 
     @GetMapping("/modules")
-    public Map<String, String> modules() {
-        return moduleRegistry.getPathToModule();
+    public List<ModuleRegistry.ModuleInfo> modules() {
+        return moduleRegistry.getModules();
     }
 
     @GetMapping("/users")

@@ -1,33 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 
 const API_BASE_URL = "http://localhost:8081";
-const ROLES = ["admin", "manager", "sale", "accountant"];
 const ACTIONS = [
   ["canView", "Xem"],
-  ["canCreate", "Tạo"],
-  ["canUpdate", "Sửa"],
-  ["canDelete", "Xóa"],
+  ["canRead", "Đọc"],
+  ["canWrite", "Ghi"],
 ];
 const FALLBACK_MODULES = [
-  { code: "leads", name: "Quản lý Lead" },
-  { code: "khach-hang", name: "Quản lý Khách hàng" },
-  { code: "hoat-dong", name: "Quản lý Hoạt động" },
-  { code: "hop-dong", name: "Quản lý Hợp đồng" },
-  { code: "tai-chinh", name: "Quản lý Hóa đơn" },
-  { code: "sanpham", name: "Quản lý Sản phẩm" },
-  { code: "tickets", name: "Quản lý Ticket" },
-  { code: "cohoi", name: "Quản lý Cơ hội bán hàng" },
-  { code: "baogia", name: "Quản lý Báo giá" },
-  { code: "bao-cao-thong-ke", name: "Báo cáo thống kê" },
+  { moduleKey: "LEAD", name: "Quản lý Lead", path: "/api/leads" },
+  { moduleKey: "KHACH_HANG", name: "Quản lý Khách hàng", path: "/api/khach-hang" },
+  { moduleKey: "CO_HOI", name: "Quản lý Cơ hội bán hàng", path: "/api/cohoi" },
+  { moduleKey: "HOAT_DONG", name: "Quản lý Hoạt động", path: "/api/hoat-dong" },
+  { moduleKey: "BAO_GIA", name: "Quản lý Báo giá", path: "/api/bao-gia" },
+  { moduleKey: "HOP_DONG", name: "Quản lý Hợp đồng", path: "/api/hop-dong" },
+  { moduleKey: "HOA_DON", name: "Quản lý Hóa đơn", path: "/api/hoa-don" },
+  { moduleKey: "TAI_CHINH", name: "Quản lý Tài chính", path: "/api/tai-chinh" },
+  { moduleKey: "BAO_CAO", name: "Báo cáo thống kê", path: "/api/bao-cao-thong-ke" },
+  { moduleKey: "SAN_PHAM", name: "Quản lý Sản phẩm", path: "/api/sanpham" },
+  { moduleKey: "TICKET", name: "Quản lý Ticket", path: "/api/tickets" },
+  { moduleKey: "NHAN_VIEN", name: "Quản lý Nhân viên", path: "/api/nhan-vien" },
 ];
 
 export default function UserPermissionManager({ token }) {
   const [users, setUsers] = useState([]);
   const [modules, setModules] = useState(FALLBACK_MODULES);
   const [selected, setSelected] = useState(null);
-  const [filters, setFilters] = useState({ roleCode: "", chucVu: "", phongBan: "" });
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   const authHeaders = useMemo(
@@ -38,67 +37,96 @@ export default function UserPermissionManager({ token }) {
     [token],
   );
 
-  const loadModules = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/permissions/modules`, { headers: authHeaders });
-      if (res.ok) setModules(await res.json());
-    } catch {
-      setModules(FALLBACK_MODULES);
-    }
-  };
-
   const loadUsers = async () => {
     setLoading(true);
     setMessage({ type: "", text: "" });
-    const query = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) query.set(key, value);
-    });
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users?${query.toString()}`, { headers: authHeaders });
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, { headers: authHeaders });
       if (!res.ok) throw new Error(`Không thể tải user (${res.status})`);
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
       if (selected && !data.some((item) => item.id === selected.id)) setSelected(null);
     } catch (err) {
-      setMessage({ type: "error", text: err.message || "Tải user thất bại" });
+      setMessage({ type: "error", text: err.message || "Tải người dùng thất bại" });
     } finally {
       setLoading(false);
     }
   };
 
-  const loadUserDetail = async (id) => {
+  const selectUser = async (user) => {
+    setMessage({ type: "", text: "" });
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/${id}`, { headers: authHeaders });
-      if (!res.ok) throw new Error(`Không thể tải chi tiết user (${res.status})`);
-      setSelected(await res.json());
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${user.id}/permissions`, { headers: authHeaders });
+      if (!res.ok) throw new Error(`Không thể tải quyền (${res.status})`);
+      const permissions = await res.json();
+      setSelected({ ...user, permissions: Array.isArray(permissions) ? permissions : [] });
     } catch (err) {
-      setMessage({ type: "error", text: err.message || "Tải chi tiết thất bại" });
+      setMessage({ type: "error", text: err.message || "Tải quyền thất bại" });
     }
   };
 
   useEffect(() => {
-    loadModules();
-  }, []);
+    let ignore = false;
 
-  useEffect(() => {
-    loadUsers();
-  }, [filters.roleCode, filters.chucVu, filters.phongBan]);
+    const loadInitialData = async () => {
+      try {
+        const moduleRes = await fetch(`${API_BASE_URL}/api/admin/modules`, { headers: authHeaders });
+        if (moduleRes.ok && !ignore) {
+          const data = await moduleRes.json();
+          setModules(Array.isArray(data) ? data : FALLBACK_MODULES);
+        }
+      } catch {
+        if (!ignore) setModules(FALLBACK_MODULES);
+      }
+
+      try {
+        const userRes = await fetch(`${API_BASE_URL}/api/admin/users`, { headers: authHeaders });
+        if (!userRes.ok) throw new Error(`Không thể tải user (${userRes.status})`);
+        const data = await userRes.json();
+        if (!ignore) setUsers(Array.isArray(data) ? data : []);
+      } catch (err) {
+        if (!ignore) setMessage({ type: "error", text: err.message || "Tải người dùng thất bại" });
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    };
+
+    void loadInitialData();
+    return () => {
+      ignore = true;
+    };
+  }, [authHeaders]);
 
   const updateSelected = (patch) => setSelected((prev) => ({ ...prev, ...patch }));
 
-  const togglePermission = (moduleCode, key) => {
+  const ensurePermissions = (permissions = []) => {
+    const byKey = new Map(permissions.map((item) => [item.moduleKey, item]));
+    return modules.map((module) => ({
+      moduleKey: module.moduleKey,
+      canView: false,
+      canRead: false,
+      canWrite: false,
+      ...(byKey.get(module.moduleKey) || {}),
+    }));
+  };
+
+  const togglePermission = (moduleKey, key) => {
     setSelected((prev) => {
       const permissions = ensurePermissions(prev.permissions).map((item) => {
-        if (item.moduleCode !== moduleCode) return item;
+        if (item.moduleKey !== moduleKey) return item;
         const next = { ...item, [key]: !item[key] };
-        if (["canCreate", "canUpdate", "canDelete"].includes(key) && next[key]) {
+        if ((key === "canRead" || key === "canWrite") && next[key]) {
           next.canView = true;
         }
+        if (key === "canWrite" && next.canWrite) {
+          next.canRead = true;
+        }
+        if (key === "canRead" && !next.canRead) {
+          next.canWrite = false;
+        }
         if (key === "canView" && !next.canView) {
-          next.canCreate = false;
-          next.canUpdate = false;
-          next.canDelete = false;
+          next.canRead = false;
+          next.canWrite = false;
         }
         return next;
       });
@@ -106,46 +134,20 @@ export default function UserPermissionManager({ token }) {
     });
   };
 
-  const saveProfile = async () => {
-    if (!selected) return;
-    setSaving(true);
-    setMessage({ type: "", text: "" });
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/users/${selected.id}`, {
-        method: "PUT",
-        headers: authHeaders,
-        body: JSON.stringify({
-          username: selected.username || `user${selected.id}`,
-          roleCode: selected.roleCode || "sale",
-          chucVu: selected.chucVu || "",
-          phongBan: selected.phongBan || "",
-          active: selected.active,
-        }),
-      });
-      if (!res.ok) throw new Error(`Lưu user thất bại (${res.status})`);
-      setSelected(await res.json());
-      setMessage({ type: "success", text: "Đã lưu thông tin user" });
-      loadUsers();
-    } catch (err) {
-      setMessage({ type: "error", text: err.message || "Lưu user thất bại" });
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const savePermissions = async () => {
     if (!selected) return;
     setSaving(true);
     setMessage({ type: "", text: "" });
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/${selected.id}/permissions`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${selected.id}/permissions`, {
         method: "PUT",
         headers: authHeaders,
         body: JSON.stringify({ permissions: ensurePermissions(selected.permissions) }),
       });
       if (!res.ok) throw new Error(`Lưu quyền thất bại (${res.status})`);
-      setSelected(await res.json());
-      setMessage({ type: "success", text: "Đã lưu quyền user" });
+      const permissions = await res.json();
+      updateSelected({ permissions });
+      setMessage({ type: "success", text: "Đã lưu quyền người dùng" });
     } catch (err) {
       setMessage({ type: "error", text: err.message || "Lưu quyền thất bại" });
     } finally {
@@ -153,52 +155,14 @@ export default function UserPermissionManager({ token }) {
     }
   };
 
-  const ensurePermissions = (permissions = []) => {
-    const byCode = new Map(permissions.map((item) => [item.moduleCode, item]));
-    return modules.map((module) => ({
-      moduleCode: module.code,
-      canView: false,
-      canCreate: false,
-      canUpdate: false,
-      canDelete: false,
-      ...(byCode.get(module.code) || {}),
-    }));
-  };
-
-  const chucVuList = [...new Set(users.map((u) => u.chucVu).filter(Boolean))];
-  const phongBanList = [...new Set(users.map((u) => u.phongBan).filter(Boolean))];
-
   return (
     <div>
       <div style={styles.headerRow}>
         <div>
-          <h2 style={styles.title}>Quản lý User & Phân quyền</h2>
-          <p style={styles.subTitle}>Role cố định, quyền riêng từng user theo module.</p>
+          <h2 style={styles.title}>Quản lý người dùng & Phân quyền</h2>
+          <p style={styles.subTitle}>Nguồn quyền: HT_UserModulePermission.</p>
         </div>
         <button onClick={loadUsers} style={styles.secondaryButton}>Tải lại</button>
-      </div>
-
-      <div style={styles.filters}>
-        <select value={filters.roleCode} onChange={(e) => setFilters((p) => ({ ...p, roleCode: e.target.value }))} style={styles.input}>
-          <option value="">Tất cả role</option>
-          {ROLES.map((role) => <option key={role} value={role}>{role}</option>)}
-        </select>
-        <input
-          list="chuc-vu-list"
-          value={filters.chucVu}
-          onChange={(e) => setFilters((p) => ({ ...p, chucVu: e.target.value }))}
-          placeholder="Lọc chức vụ"
-          style={styles.input}
-        />
-        <datalist id="chuc-vu-list">{chucVuList.map((item) => <option key={item} value={item} />)}</datalist>
-        <input
-          list="phong-ban-list"
-          value={filters.phongBan}
-          onChange={(e) => setFilters((p) => ({ ...p, phongBan: e.target.value }))}
-          placeholder="Lọc phòng ban"
-          style={styles.input}
-        />
-        <datalist id="phong-ban-list">{phongBanList.map((item) => <option key={item} value={item} />)}</datalist>
       </div>
 
       {message.text && (
@@ -207,11 +171,11 @@ export default function UserPermissionManager({ token }) {
 
       <div style={styles.layout}>
         <div style={styles.userList}>
-          <div style={styles.listHeader}>Danh sách user {loading ? "(đang tải...)" : `(${users.length})`}</div>
+          <div style={styles.listHeader}>Danh sách người dùng {loading ? "(đang tải...)" : `(${users.length})`}</div>
           {users.map((user) => (
             <button
               key={user.id}
-              onClick={() => loadUserDetail(user.id)}
+              onClick={() => selectUser(user)}
               style={{
                 ...styles.userRow,
                 borderColor: selected?.id === user.id ? "#2563eb" : "#e5e7eb",
@@ -219,37 +183,29 @@ export default function UserPermissionManager({ token }) {
               }}
             >
               <strong>{user.hoTen || `User #${user.id}`}</strong>
-              <span>{user.username || "Chưa có tài khoản"} · {user.roleCode || "sale"}</span>
-              <span>{user.chucVu || "Chưa có chức vụ"} · {user.phongBan || "Chưa có phòng ban"}</span>
+              <span>{user.username} - {user.roleName || `Vai trò #${user.roleId || "-"}`}</span>
+              <span>Trạng thái: {user.trangThai || "-"}</span>
             </button>
           ))}
         </div>
 
         <div style={styles.detail}>
           {!selected ? (
-            <div style={styles.empty}>Chọn một user để chỉnh thông tin và quyền.</div>
+            <div style={styles.empty}>Chọn người dùng để chỉnh quyền.</div>
           ) : (
             <>
               <div style={styles.profileGrid}>
-                <label style={styles.fieldLabel}>Tên nhân viên<input value={selected.hoTen || ""} disabled style={styles.input} /></label>
-                <label style={styles.fieldLabel}>Username<input value={selected.username || ""} onChange={(e) => updateSelected({ username: e.target.value })} style={styles.input} /></label>
-                <label style={styles.fieldLabel}>Role
-                  <select value={selected.roleCode || "sale"} onChange={(e) => updateSelected({ roleCode: e.target.value })} style={styles.input}>
-                    {ROLES.map((role) => <option key={role} value={role}>{role}</option>)}
-                  </select>
-                </label>
-                <label style={styles.fieldLabel}>Chức vụ<input value={selected.chucVu || ""} onChange={(e) => updateSelected({ chucVu: e.target.value })} style={styles.input} /></label>
-                <label style={styles.fieldLabel}>Phòng ban<input value={selected.phongBan || ""} onChange={(e) => updateSelected({ phongBan: e.target.value })} style={styles.input} /></label>
-                <label style={styles.checkLine}>
-                  <input type="checkbox" checked={Boolean(selected.active)} onChange={(e) => updateSelected({ active: e.target.checked })} />
-                  Cho phép đăng nhập
-                </label>
+                <label style={styles.fieldLabel}>Nhân viên<input value={selected.hoTen || ""} disabled style={styles.input} /></label>
+                <label style={styles.fieldLabel}>Tên đăng nhập<input value={selected.username || ""} disabled style={styles.input} /></label>
+                <label style={styles.fieldLabel}>Vai trò<input value={selected.roleName || ""} disabled style={styles.input} /></label>
+                <label style={styles.fieldLabel}>Trạng thái<input value={selected.trangThai || ""} disabled style={styles.input} /></label>
               </div>
               <div style={styles.actions}>
-                <button onClick={saveProfile} disabled={saving} style={styles.primaryButton}>Lưu thông tin</button>
-                <button onClick={savePermissions} disabled={saving || selected.roleCode === "admin"} style={styles.primaryButton}>Lưu quyền</button>
+                <button onClick={savePermissions} disabled={saving || selected.roleId === 1} style={styles.primaryButton}>
+                  Lưu quyền
+                </button>
               </div>
-              {selected.roleCode === "admin" && <div style={styles.note}>Admin luôn có toàn quyền.</div>}
+              {selected.roleId === 1 && <div style={styles.note}>Admin luôn có toàn quyền.</div>}
               <table style={styles.table}>
                 <thead>
                   <tr>
@@ -259,17 +215,17 @@ export default function UserPermissionManager({ token }) {
                 </thead>
                 <tbody>
                   {ensurePermissions(selected.permissions).map((permission) => {
-                    const module = modules.find((item) => item.code === permission.moduleCode);
+                    const module = modules.find((item) => item.moduleKey === permission.moduleKey);
                     return (
-                      <tr key={permission.moduleCode}>
-                        <td style={styles.td}>{module?.name || permission.moduleCode}</td>
+                      <tr key={permission.moduleKey}>
+                        <td style={styles.td}>{module?.name || permission.moduleKey}</td>
                         {ACTIONS.map(([key]) => (
                           <td key={key} style={styles.tdCenter}>
                             <input
                               type="checkbox"
                               checked={Boolean(permission[key])}
-                              disabled={selected.roleCode === "admin"}
-                              onChange={() => togglePermission(permission.moduleCode, key)}
+                              disabled={selected.roleId === 1}
+                              onChange={() => togglePermission(permission.moduleKey, key)}
                             />
                           </td>
                         ))}
@@ -290,7 +246,6 @@ const styles = {
   headerRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" },
   title: { margin: 0, fontSize: "24px", color: "#111827" },
   subTitle: { margin: "6px 0 0", color: "#6b7280" },
-  filters: { display: "flex", gap: "10px", marginBottom: "14px", flexWrap: "wrap" },
   input: { padding: "9px 10px", border: "1px solid #d1d5db", borderRadius: "6px", minWidth: "160px" },
   layout: { display: "grid", gridTemplateColumns: "330px minmax(0, 1fr)", gap: "16px", alignItems: "start" },
   userList: { display: "flex", flexDirection: "column", gap: "8px" },
@@ -300,7 +255,6 @@ const styles = {
   empty: { color: "#6b7280", padding: "40px", textAlign: "center" },
   profileGrid: { display: "grid", gridTemplateColumns: "repeat(2, minmax(180px, 1fr))", gap: "12px", marginBottom: "12px" },
   fieldLabel: { display: "grid", gap: "6px", color: "#374151", fontSize: "14px" },
-  checkLine: { display: "flex", alignItems: "center", gap: "8px", color: "#374151" },
   actions: { display: "flex", gap: "10px", marginBottom: "12px" },
   primaryButton: { border: "none", borderRadius: "6px", background: "#2563eb", color: "#fff", padding: "9px 14px", cursor: "pointer", fontWeight: 700 },
   secondaryButton: { border: "1px solid #d1d5db", borderRadius: "6px", background: "#fff", color: "#374151", padding: "9px 14px", cursor: "pointer" },

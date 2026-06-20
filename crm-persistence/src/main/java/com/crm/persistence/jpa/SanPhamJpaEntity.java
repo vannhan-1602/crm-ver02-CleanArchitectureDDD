@@ -1,8 +1,6 @@
 package com.crm.persistence.jpa;
 
-import com.crm.domain.entities.SanPhamHinhAnh;
 import jakarta.persistence.*;
-import jdk.dynalink.linker.LinkerServices;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

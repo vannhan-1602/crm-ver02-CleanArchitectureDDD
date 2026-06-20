@@ -127,12 +127,12 @@ function BaoGia() {
     try {
       const response = await authFetch(`${API_BASE_URL}/api/sanpham`)
       if (!response.ok) {
-        throw new Error(`Khong the tai san pham (${response.status})`)
+        throw new Error(`Không thể tải sản phẩm (${response.status})`)
       }
       const data = await response.json()
       setProducts(Array.isArray(data) ? data : [])
     } catch (err) {
-      setError(err.message || 'Tai danh sach san pham that bai')
+      setError(err.message || 'Tải danh sách sản phẩm thất bại')
     }
   }
 
@@ -166,12 +166,12 @@ function BaoGia() {
         cache: 'no-store',
       })
       if (!response.ok) {
-        throw new Error(`Khong the tai danh sach bao gia (${response.status})`)
+        throw new Error(`Không thể tải danh sách báo giá (${response.status})`)
       }
       const data = await response.json()
       setItems(Array.isArray(data) ? data : [])
     } catch (err) {
-      setError(err.message || 'Tai danh sach bao gia that bai')
+      setError(err.message || 'Tải danh sách báo giá thất bại')
     } finally {
       setLoading(false)
     }
@@ -228,13 +228,13 @@ function BaoGia() {
   }
 
   const validateForm = () => {
-    if (!String(form.maBaoGia ?? '').trim()) return 'Ma bao gia khong duoc rong'
-    if (!String(form.khachHangId ?? '').trim()) return 'Khach hang khong duoc rong'
+    if (!String(form.maBaoGia ?? '').trim()) return 'Mã báo giá không được rỗng'
+    if (!String(form.khachHangId ?? '').trim()) return 'Khách hàng không được rỗng'
     const validLines = form.chiTiets.filter((line) => line.sanPhamId)
-    if (validLines.length === 0) return 'Bao gia phai co it nhat 1 san pham'
+    if (validLines.length === 0) return 'Báo giá phải có ít nhất 1 sản phẩm'
     for (const line of validLines) {
-      if (!line.sanPhamId) return 'Vui long chon san pham'
-      if (!Number(line.soLuong) || Number(line.soLuong) <= 0) return 'So luong phai lon hon 0'
+      if (!line.sanPhamId) return 'Vui lòng chọn sản phẩm'
+      if (!Number(line.soLuong) || Number(line.soLuong) <= 0) return 'Số lượng phải lớn hơn 0'
     }
     return ''
   }
@@ -289,8 +289,8 @@ function BaoGia() {
       if (!response.ok) {
         throw new Error(
           editingId
-            ? `Cap nhat that bai (${response.status})`
-            : `Tao moi that bai (${response.status})`,
+            ? `Cập nhật thất bại (${response.status})`
+            : `Tạo mới thất bại (${response.status})`,
         )
       }
 
@@ -318,9 +318,9 @@ function BaoGia() {
         ),
       )
       resetForm()
-      setSuccess(editingId ? 'Cap nhat bao gia thanh cong' : 'Tao bao gia thanh cong')
+      setSuccess(editingId ? 'Cập nhật báo giá thành công' : 'Tạo báo giá thành công')
     } catch (err) {
-      setError(err.message || 'Khong the luu bao gia')
+      setError(err.message || 'Không thể lưu báo giá')
     } finally {
       setSaving(false)
     }
@@ -351,7 +351,7 @@ function BaoGia() {
   }
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm('Ban co muon xoa bao gia nay khong?')
+    const confirmed = window.confirm('Bạn có muốn xóa báo giá này không?')
     if (!confirmed) return
 
     setError('')
@@ -362,13 +362,13 @@ function BaoGia() {
         method: 'DELETE',
       })
       if (!response.ok && response.status !== 204) {
-        throw new Error(`Xoa that bai (${response.status})`)
+        throw new Error(`Xóa thất bại (${response.status})`)
       }
       await loadBaoGia()
       if (editingId === id) resetForm()
-      setSuccess('Xoa bao gia thanh cong')
+      setSuccess('Xóa báo giá thành công')
     } catch (err) {
-      setError(err.message || 'Khong the xoa bao gia')
+      setError(err.message || 'Không thể xóa báo giá')
     }
   }
 
@@ -386,10 +386,10 @@ function BaoGia() {
     <main className="baogia-page">
       <section className="baogia-hero">
         <div>
-          <p className="eyebrow">CRM / Bao gia</p>
-          <h1>Quan ly bao gia</h1>
+          <p className="eyebrow">CRM / Báo giá</p>
+          <h1>Quản lý báo giá</h1>
           <p className="subtitle">
-            Tao bao gia co nhieu dong san pham, tu tinh tong tien va luu qua API backend.
+            Tạo báo giá có nhiều dòng sản phẩm, tự tính tổng tiền và lưu qua API backend.
           </p>
         </div>
 
@@ -397,35 +397,35 @@ function BaoGia() {
           <input
             className="search"
             type="search"
-            placeholder="Tim theo ma, khach hang, san pham, trang thai..."
+            placeholder="Tìm theo mã, khách hàng, sản phẩm, trạng thái..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
           <button className="secondary-btn" type="button" onClick={loadBaoGia}>
-            Tai lai
+            Tải lại
           </button>
         </div>
       </section>
 
       <section className="stats-row">
         <article className="stat-card">
-          <span>Tong so</span>
+          <span>Tổng số</span>
           <strong>{stats.total}</strong>
         </article>
         <article className="stat-card">
-          <span>Nhap</span>
+          <span>Nháp</span>
           <strong>{stats.drafts}</strong>
         </article>
         <article className="stat-card">
-          <span>Da gui</span>
+          <span>Đã gửi</span>
           <strong>{stats.sent}</strong>
         </article>
         <article className="stat-card">
-          <span>Chap nhan</span>
+          <span>Chấp nhận</span>
           <strong>{stats.accepted}</strong>
         </article>
         <article className="stat-card">
-          <span>Tu choi</span>
+          <span>Từ chối</span>
           <strong>{stats.rejected}</strong>
         </article>
       </section>
@@ -434,18 +434,18 @@ function BaoGia() {
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
-              <h2>{editingId ? 'Cap nhat bao gia' : 'Tao bao gia moi'}</h2>
-              <p>Du lieu se goi vao API `api/bao-gia`.</p>
+              <h2>{editingId ? 'Cập nhật báo giá' : 'Tạo báo giá mới'}</h2>
+              <p>Dữ liệu sẽ gọi vào API `api/bao-gia`.</p>
             </div>
             {editingId ? (
               <button className="ghost-btn" type="button" onClick={resetForm}>
-                Huy sua
+                Hủy sửa
               </button>
             ) : null}
           </div>
 
           <label>
-            Ma bao gia
+            Mã báo giá
             <input
               name="maBaoGia"
               value={form.maBaoGia}
@@ -456,13 +456,13 @@ function BaoGia() {
 
           <div className="two-col">
             <label>
-              Khach hang
+              Khách hàng
               <select
                 name="khachHangId"
                 value={form.khachHangId}
                 onChange={handleFieldChange}
               >
-                <option value="">Chon khach hang</option>
+                <option value="">Chọn khách hàng</option>
                 {khachHangList.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.tenKhachHang ?? `KH #${item.id}`}
@@ -472,13 +472,13 @@ function BaoGia() {
             </label>
 
             <label>
-              Nhan vien
+              Nhân viên
               <select
                 name="nhanVienId"
                 value={form.nhanVienId}
                 onChange={handleFieldChange}
               >
-                <option value="">Chon nhan vien</option>
+                <option value="">Chọn nhân viên</option>
                 {nhanVienList.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`}
@@ -489,22 +489,22 @@ function BaoGia() {
           </div>
 
           <label>
-            Trang thai
+            Trạng thái
             <select name="trangThai" value={form.trangThai} onChange={handleFieldChange}>
-              <option value="Nhap">Nhap</option>
-              <option value="DaGui">Da gui</option>
-              <option value="TuChoi">Tu choi</option>
-              <option value="ChapNhan">Chap nhan</option>
+              <option value="Nhap">Nháp</option>
+              <option value="DaGui">Đã gửi</option>
+              <option value="TuChoi">Từ chối</option>
+              <option value="ChapNhan">Chấp nhận</option>
             </select>
           </label>
 
           <div className="detail-header">
             <div>
-              <h3>Chi tiet san pham</h3>
-              <p>Chon san pham tu danh sach, so luong va don gia se tinh ngay ben duoi.</p>
+              <h3>Chi tiết sản phẩm</h3>
+              <p>Chọn sản phẩm từ danh sách, số lượng và đơn giá sẽ tính ngay bên dưới.</p>
             </div>
             <button type="button" className="ghost-btn" onClick={addLine}>
-              + Them dong
+              + Thêm dòng
             </button>
           </div>
 
@@ -512,12 +512,12 @@ function BaoGia() {
             {form.chiTiets.map((line, index) => (
               <div className="detail-row" key={`${index}-${line.sanPhamId}`}>
                 <label>
-                  San pham
+                  Sản phẩm
                   <select
                     value={line.sanPhamId}
                     onChange={(event) => handleLineChange(index, 'sanPhamId', event.target.value)}
                   >
-                    <option value="">Chon san pham</option>
+                    <option value="">Chọn sản phẩm</option>
                     {products.map((product) => (
                       <option
                         key={product.sanPhamId ?? product.id}
@@ -532,7 +532,7 @@ function BaoGia() {
                 </label>
 
                 <label>
-                  So luong
+                  Số lượng
                   <input
                     type="number"
                     min="1"
@@ -542,7 +542,7 @@ function BaoGia() {
                 </label>
 
                 <label>
-                  Don gia
+                  Đơn giá
                   <input
                     type="number"
                     min="0"
@@ -553,7 +553,7 @@ function BaoGia() {
                 </label>
 
                 <div className="line-total">
-                  <span>Thanh tien</span>
+                  <span>Thành tiền</span>
                   <strong>{formatCurrency(Number(line.soLuong || 0) * Number(line.donGia || 0))}</strong>
                 </div>
 
@@ -563,14 +563,14 @@ function BaoGia() {
                   onClick={() => removeLine(index)}
                   disabled={form.chiTiets.length === 1}
                 >
-                  Xoa
+                  Xóa
                 </button>
               </div>
             ))}
           </div>
 
           <div className="total-box">
-            <span>Tong tam tinh</span>
+            <span>Tổng tạm tính</span>
             <strong>{formatCurrency(totalDraft)}</strong>
           </div>
 
@@ -579,10 +579,10 @@ function BaoGia() {
 
           <div className="actions">
             <button className="primary-btn" type="submit" disabled={saving}>
-              {saving ? 'Dang luu...' : editingId ? 'Cap nhat' : 'Tao moi'}
+              {saving ? 'Đang lưu...' : editingId ? 'Cập nhật' : 'Tạo mới'}
             </button>
             <button className="secondary-btn" type="button" onClick={resetForm}>
-              Lam moi form
+              Làm mới form
             </button>
           </div>
         </form>
@@ -590,12 +590,12 @@ function BaoGia() {
         <section className="panel table-panel">
           <div className="panel-head">
             <div>
-              <h2>Danh sach bao gia</h2>
+              <h2>Danh sách báo giá</h2>
               <p>
-                Hien thi {filteredItems.length}/{items.length} ban ghi.
+                Hiển thị {filteredItems.length}/{items.length} bản ghi.
               </p>
             </div>
-            {loading ? <span className="loading">Dang tai...</span> : null}
+            {loading ? <span className="loading">Đang tải...</span> : null}
           </div>
 
           <div className="table-wrap">
@@ -603,21 +603,21 @@ function BaoGia() {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Ma bao gia</th>
-                  <th>Khach hang</th>
-                  <th>Nhan vien</th>
-                  <th>San pham</th>
-                  <th>Tong tien</th>
-                  <th>Trang thai</th>
-                  <th>Cap nhat</th>
-                  <th>Hanh dong</th>
+                  <th>Mã báo giá</th>
+                  <th>Khách hàng</th>
+                  <th>Nhân viên</th>
+                  <th>Sản phẩm</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Cập nhật</th>
+                  <th>Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredItems.length === 0 ? (
                   <tr>
                     <td colSpan="9" className="empty-row">
-                      {loading ? 'Dang tai du lieu...' : 'Khong co du lieu phu hop'}
+                      {loading ? 'Đang tải dữ liệu...' : 'Không có dữ liệu phù hợp'}
                     </td>
                   </tr>
                 ) : (
@@ -646,10 +646,10 @@ function BaoGia() {
                       <td>
                         <div className="row-actions">
                           <button type="button" className="ghost-btn" onClick={() => handleEdit(item)}>
-                            Sua
+                            Sửa
                           </button>
                           <button type="button" className="danger-btn" onClick={() => handleDelete(item.id)}>
-                            Xoa
+                            Xóa
                           </button>
                         </div>
                       </td>

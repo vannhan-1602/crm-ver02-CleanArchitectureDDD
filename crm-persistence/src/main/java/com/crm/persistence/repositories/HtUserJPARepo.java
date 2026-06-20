@@ -79,4 +79,29 @@ public interface HtUserJPARepo extends JpaRepository<HtUserJpaEntity,Integer> {
         String getPhongBan();
         Integer getActive();
     }
+
+    @Query(value = """
+            SELECT u.Id AS id,
+                   u.Username AS username,
+                   u.NhanSu_Id AS nhanSuId,
+                   ns.HoTen AS hoTen,
+                   u.Role_Id AS roleId,
+                   r.TenRole AS roleName,
+                   u.TrangThai AS trangThai
+            FROM HT_User u
+            LEFT JOIN HT_ThongTinNhanSu ns ON u.NhanSu_Id = ns.Id
+            LEFT JOIN HT_Role r ON u.Role_Id = r.Id
+            ORDER BY u.Id
+            """, nativeQuery = true)
+    List<UserSummaryProjection> findAllUserSummaries();
+
+    interface UserSummaryProjection {
+        Integer getId();
+        String getUsername();
+        Integer getNhanSuId();
+        String getHoTen();
+        Integer getRoleId();
+        String getRoleName();
+        String getTrangThai();
+    }
 }

@@ -5,10 +5,8 @@ import com.crm.domain.repositories.SanPhamRepo;
 import com.crm.persistence.mapper.SanPhamMapper;
 import com.crm.persistence.repositories.SanPhamJPARepo;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 

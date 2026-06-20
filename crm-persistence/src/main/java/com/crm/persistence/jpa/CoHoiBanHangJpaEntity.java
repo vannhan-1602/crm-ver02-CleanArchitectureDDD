@@ -50,7 +50,7 @@ public class CoHoiBanHangJpaEntity {
         GhiChu = ghiChu;
         NgayDuKien = ngayDuKien;
         NhanVienPhuTrach_Id = nhanVienPhuTrach_Id;
-        isDeleted = isDeleted;
+        this.isDeleted = isDeleted;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }

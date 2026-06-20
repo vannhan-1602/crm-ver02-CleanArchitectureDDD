@@ -2,9 +2,7 @@ package com.crm.application.sanphamhinhanh.handler;
 
 import com.crm.application.common.IRequestHandler;
 import com.crm.application.sanphamhinhanh.query.GetAllSanPhamHinhAnh;
-import com.crm.domain.entities.LoaiSanPham;
 import com.crm.domain.entities.SanPhamHinhAnh;
-import com.crm.domain.repositories.LoaiSanPhamRepo;
 import com.crm.domain.repositories.SanPhamHinhAnhRepo;
 import org.springframework.stereotype.Service;
 

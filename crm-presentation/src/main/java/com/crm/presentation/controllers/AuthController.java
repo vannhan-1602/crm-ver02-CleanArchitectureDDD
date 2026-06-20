@@ -18,9 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 
-@RestController
+//@RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/auth")
+//@RequestMapping("/api/auth")
 public class AuthController {
     private final Mediator mediator;
 
