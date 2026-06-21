@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { clearSession, setSession } from "./apiClient";
+import { clearSession, getPermissions, setSession } from "./apiClient";
 import HopDong from "./page/HopDong";
 import TaiChinh from "./page/TaiChinh";
 import LeadManager from "./page/LeadManager";
@@ -14,6 +14,36 @@ import BaoGia from "./page/BaoGia.jsx";
 import BaoCaoThongKe from "./page/BaoCaoThongKe.jsx";
 import LoginPage from "./page/LoginPage.jsx";
 import UserPermissionManager from "./page/UserPermissionManager.jsx";
+
+const APP_MODULES = [
+  { path: "/leads", moduleKeys: ["LEAD"], label: "Quản lý Lead", element: <LeadManager /> },
+  { path: "/khach-hang", moduleKeys: ["KHACH_HANG"], label: "Quản lý Khách hàng", element: <KhachHangManager /> },
+  { path: "/hoat-dong", moduleKeys: ["HOAT_DONG"], label: "Quản lý Hoạt động", element: <HoatDongManager /> },
+  { path: "/hop-dong", moduleKeys: ["HOP_DONG"], label: "Quản lý Hợp đồng", element: <HopDong /> },
+  { path: "/tai-chinh", moduleKeys: ["HOA_DON", "TAI_CHINH"], label: "Quản lý Hóa đơn", element: <TaiChinh /> },
+  { path: "/sanpham", moduleKeys: ["SAN_PHAM"], label: "Quản lý Sản phẩm", element: <SanPhamManager /> },
+  { path: "/tickets", moduleKeys: ["TICKET"], label: "Quản lý Ticket", element: <TicketManager /> },
+  { path: "/cohoi", moduleKeys: ["CO_HOI"], label: "Quản lý Cơ hội bán hàng", element: <CoHoiManager /> },
+  { path: "/baogia", moduleKeys: ["BAO_GIA"], label: "Quản lý Báo giá", element: <BaoGia /> },
+  { path: "/bao-cao-thong-ke", moduleKeys: ["BAO_CAO"], label: "Báo cáo thống kê", element: <BaoCaoThongKe /> },
+];
+
+function NoPermissionPage() {
+  return (
+    <div style={styles.noPermission}>
+      <h2 style={styles.noPermissionTitle}>Bạn chưa được cấp quyền sử dụng module nào</h2>
+      <p style={styles.noPermissionText}>Vui lòng liên hệ quản trị viên để được phân quyền.</p>
+    </div>
+  );
+}
+
+function hasAdminAccess(user) {
+  return Boolean(user?.admin || user?.roleId === 1 || user?.roleName?.toLowerCase() === "admin");
+}
+
+function canUsePermission(permission) {
+  return Boolean(permission?.canView || permission?.canRead || permission?.canWrite);
+}
 
 function App() {
   const [auth, setAuth] = useState(() => {
@@ -43,15 +73,28 @@ function App() {
 function AppShell({ auth, onLogin, onLogout }) {
   const navigate = useNavigate();
   const currentUser = auth?.user;
+  const isAdmin = hasAdminAccess(currentUser);
+  const userPermissions = Array.isArray(auth?.permissions) ? auth.permissions : getPermissions();
+
+  const canUseModule = (moduleKeys = []) => {
+    if (isAdmin) return true;
+    return moduleKeys.some((moduleKey) => {
+      const permission = userPermissions.find((item) => item.moduleKey === moduleKey);
+      return canUsePermission(permission);
+    });
+  };
+
+  const visibleModules = APP_MODULES.filter((module) => canUseModule(module.moduleKeys));
   const canManageUsers = Boolean(
-    currentUser?.admin || currentUser?.roleId === 1 || currentUser?.roleName?.toLowerCase() === "admin",
+    (isAdmin || currentUser?.roleName?.toLowerCase() === "manager") && canUseModule(["NHAN_VIEN"]),
   );
+  const firstAllowedPath = visibleModules[0]?.path || (canManageUsers ? "/users" : "/no-permission");
 
   useEffect(() => {
     if (auth && window.location.pathname === "/login") {
-      navigate("/leads");
+      navigate(firstAllowedPath);
     }
-  }, [auth, navigate]);
+  }, [auth, firstAllowedPath, navigate]);
 
   return (
     <div style={styles.shell}>
@@ -60,16 +103,11 @@ function AppShell({ auth, onLogin, onLogout }) {
         <nav style={styles.nav}>
           {auth && (
             <>
-              <Link to="/leads" style={styles.navLink}>Quản lý Lead</Link>
-              <Link to="/khach-hang" style={styles.navLink}>Quản lý Khách hàng</Link>
-              <Link to="/hoat-dong" style={styles.navLink}>Quản lý Hoạt động</Link>
-              <Link to="/hop-dong" style={styles.navLink}>Quản lý Hợp đồng</Link>
-              <Link to="/tai-chinh" style={styles.navLink}>Quản lý Hóa đơn</Link>
-              <Link to="/sanpham" style={styles.navLink}>Quản lý Sản phẩm</Link>
-              <Link to="/tickets" style={styles.navLink}>Quản lý Ticket</Link>
-              <Link to="/cohoi" style={styles.navLink}>Quản lý Cơ hội bán hàng</Link>
-              <Link to="/baogia" style={styles.navLink}>Quản lý Báo giá</Link>
-              <Link to="/bao-cao-thong-ke" style={styles.navLink}>Báo cáo thống kê</Link>
+              {visibleModules.map((module) => (
+                <Link key={module.path} to={module.path} style={styles.navLink}>
+                  {module.label}
+                </Link>
+              ))}
               {canManageUsers && <Link to="/users" style={styles.navLink}>Quản lý người dùng</Link>}
             </>
           )}
@@ -102,22 +140,21 @@ function AppShell({ auth, onLogin, onLogout }) {
             </Routes>
           ) : (
             <Routes>
-              <Route path="/" element={<LeadManager />} />
+              <Route path="/" element={<Navigate to={firstAllowedPath} replace />} />
               <Route path="/login" element={<LoginPage onLogin={onLogin} />} />
+              <Route path="/no-permission" element={<NoPermissionPage />} />
               <Route
                 path="/users"
-                element={canManageUsers ? <UserPermissionManager token={auth.token} /> : <LeadManager />}
+                element={canManageUsers ? <UserPermissionManager token={auth.token} /> : <Navigate to={firstAllowedPath} replace />}
               />
-              <Route path="/leads" element={<LeadManager />} />
-              <Route path="/khach-hang" element={<KhachHangManager />} />
-              <Route path="/hop-dong" element={<HopDong />} />
-              <Route path="/tai-chinh" element={<TaiChinh />} />
-              <Route path="/sanpham" element={<SanPhamManager />} />
-              <Route path="/tickets" element={<TicketManager />} />
-              <Route path="/cohoi" element={<CoHoiManager />} />
-              <Route path="/baogia" element={<BaoGia />} />
-              <Route path="/bao-cao-thong-ke" element={<BaoCaoThongKe />} />
-              <Route path="/hoat-dong" element={<HoatDongManager />} />
+              {APP_MODULES.map((module) => (
+                <Route
+                  key={module.path}
+                  path={module.path}
+                  element={canUseModule(module.moduleKeys) ? module.element : <Navigate to={firstAllowedPath} replace />}
+                />
+              ))}
+              <Route path="*" element={<Navigate to={firstAllowedPath} replace />} />
             </Routes>
           )}
         </div>
@@ -206,6 +243,24 @@ const styles = {
     padding: "20px",
     flex: 1,
     overflowY: "auto",
+  },
+  noPermission: {
+    minHeight: "calc(100vh - 140px)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    color: "#374151",
+  },
+  noPermissionTitle: {
+    margin: "0 0 8px",
+    fontSize: "22px",
+    color: "#111827",
+  },
+  noPermissionText: {
+    margin: 0,
+    color: "#6b7280",
   },
 };
 

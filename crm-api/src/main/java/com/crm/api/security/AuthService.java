@@ -23,19 +23,22 @@ public class AuthService {
     private final ThongTinNhanSuJPARepo nhanSuRepo;
     private final PasswordService passwordService;
     private final TokenService tokenService;
+    private final ModuleRegistry moduleRegistry;
 
     public AuthService(HtUserJPARepo userRepo,
                        HtRoleJPARepo roleRepo,
                        HtUserModulePermissionJPARepo permissionRepo,
                        ThongTinNhanSuJPARepo nhanSuRepo,
                        PasswordService passwordService,
-                       TokenService tokenService) {
+                       TokenService tokenService,
+                       ModuleRegistry moduleRegistry) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.permissionRepo = permissionRepo;
         this.nhanSuRepo = nhanSuRepo;
         this.passwordService = passwordService;
         this.tokenService = tokenService;
+        this.moduleRegistry = moduleRegistry;
     }
 
     public LoginResult login(String username, String password) {
@@ -49,7 +52,7 @@ public class AuthService {
         }
         AuthUser authUser = toAuthUser(user);
         return new LoginResult(tokenService.create(authUser), tokenService.getTtlSeconds(), authUser,
-                getPermissions(user.getId()));
+                getEffectivePermissions(authUser));
     }
 
     public AuthUser toAuthUser(HtUserJpaEntity user) {
@@ -85,6 +88,15 @@ public class AuthService {
                         Boolean.TRUE.equals(p.getCanWrite())
                 ))
                 .toList();
+    }
+
+    public List<ModulePermission> getEffectivePermissions(AuthUser user) {
+        if (user.isAdmin()) {
+            return moduleRegistry.getModules().stream()
+                    .map(module -> new ModulePermission(module.moduleKey(), true, true, true))
+                    .toList();
+        }
+        return getPermissions(user.getId());
     }
 
     public List<HtUserJPARepo.UserSummaryProjection> getUsers() {

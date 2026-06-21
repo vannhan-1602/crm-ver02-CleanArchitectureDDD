@@ -38,7 +38,7 @@ public class AuthController {
         AuthUser user = (AuthUser) request.getAttribute(AuthInterceptor.CURRENT_USER_ATTRIBUTE);
         return Map.of(
                 "user", user,
-                "permissions", authService.getPermissions(user.getId())
+                "permissions", authService.getEffectivePermissions(user)
         );
     }
 
