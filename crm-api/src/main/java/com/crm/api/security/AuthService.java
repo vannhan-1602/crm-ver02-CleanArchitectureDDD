@@ -68,12 +68,7 @@ public class AuthService {
         }
         return permissionRepo.findByUserIdAndModuleKey(user.getId(), moduleKey)
                 .map(permission -> switch (action) {
-                    case "VIEW" -> Boolean.TRUE.equals(permission.getCanView())
-                            || Boolean.TRUE.equals(permission.getCanRead())
-                            || Boolean.TRUE.equals(permission.getCanWrite());
-                    case "READ" -> Boolean.TRUE.equals(permission.getCanRead())
-                            || Boolean.TRUE.equals(permission.getCanWrite());
-                    case "WRITE" -> Boolean.TRUE.equals(permission.getCanWrite());
+                    case "VIEW", "READ", "WRITE" -> hasAllPermissions(permission);
                     default -> false;
                 })
                 .orElse(false);
@@ -147,6 +142,7 @@ public class AuthService {
         if (!userRepo.existsById(userId)) {
             throw new NoSuchElementException("User khong ton tai: " + userId);
         }
+        permissions.forEach(this::validateCompletePermissionSet);
         permissionRepo.deleteByUserId(userId);
         LocalDateTime now = LocalDateTime.now();
         List<HtUserModulePermissionJpaEntity> entities = permissions.stream()
@@ -164,6 +160,22 @@ public class AuthService {
                 .toList();
         permissionRepo.saveAll(entities);
         return getPermissions(userId);
+    }
+
+    private boolean hasAllPermissions(HtUserModulePermissionJpaEntity permission) {
+        return Boolean.TRUE.equals(permission.getCanView())
+                && Boolean.TRUE.equals(permission.getCanRead())
+                && Boolean.TRUE.equals(permission.getCanWrite());
+    }
+
+    private void validateCompletePermissionSet(ModulePermission permission) {
+        long grantedCount = List.of(permission.isCanView(), permission.isCanRead(), permission.isCanWrite()).stream()
+                .filter(Boolean::booleanValue)
+                .count();
+        if (grantedCount > 0 && grantedCount < 3) {
+            throw new IllegalArgumentException(
+                    "Module " + permission.getModuleKey() + " phai co du 3 quyen Xem, Doc, Ghi");
+        }
     }
 
     public record LoginResult(String token, long expiresInSeconds, AuthUser user,

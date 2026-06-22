@@ -126,7 +126,7 @@ function TaiChinh() {
       return true;
     }
     const permission = userPermissions.find((item) => item.moduleKey === moduleKey);
-    return Boolean(permission?.canView || permission?.canRead || permission?.canWrite);
+    return Boolean(permission?.canView && permission?.canRead && permission?.canWrite);
   };
 
   const [activeTab, setActiveTab] = useState("hoaDon");

@@ -42,7 +42,7 @@ function hasAdminAccess(user) {
 }
 
 function canUsePermission(permission) {
-  return Boolean(permission?.canView || permission?.canRead || permission?.canWrite);
+  return Boolean(permission?.canView && permission?.canRead && permission?.canWrite);
 }
 
 function App() {
