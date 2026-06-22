@@ -6,7 +6,6 @@ const ACTIONS = [
   ["canRead", "Đọc"],
   ["canWrite", "Ghi"],
 ];
-const REQUIRED_PERMISSION_KEYS = ACTIONS.map(([key]) => key);
 const FALLBACK_MODULES = [
   { moduleKey: "LEAD", name: "Quản lý Lead", path: "/api/leads" },
   { moduleKey: "KHACH_HANG", name: "Quản lý Khách hàng", path: "/api/khach-hang" },
@@ -111,11 +110,6 @@ export default function UserPermissionManager({ token }) {
     }));
   };
 
-  const hasPartialPermissions = (permission) => {
-    const checkedCount = REQUIRED_PERMISSION_KEYS.filter((key) => Boolean(permission[key])).length;
-    return checkedCount > 0 && checkedCount < REQUIRED_PERMISSION_KEYS.length;
-  };
-
   const readErrorMessage = async (res, fallback) => {
     try {
       const data = await res.json();
@@ -152,15 +146,6 @@ export default function UserPermissionManager({ token }) {
   const savePermissions = async () => {
     if (!selected) return;
     const normalizedPermissions = ensurePermissions(selected.permissions);
-    const invalidPermission = normalizedPermissions.find(hasPartialPermissions);
-    if (invalidPermission) {
-      const module = modules.find((item) => item.moduleKey === invalidPermission.moduleKey);
-      setMessage({
-        type: "error",
-        text: `${module?.name || invalidPermission.moduleKey}: phải có đủ 3 quyền Xem, Đọc, Ghi`,
-      });
-      return;
-    }
     setSaving(true);
     setMessage({ type: "", text: "" });
     try {
