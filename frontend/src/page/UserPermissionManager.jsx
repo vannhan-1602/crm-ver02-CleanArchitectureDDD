@@ -110,6 +110,15 @@ export default function UserPermissionManager({ token }) {
     }));
   };
 
+  const readErrorMessage = async (res, fallback) => {
+    try {
+      const data = await res.json();
+      return data?.message || fallback;
+    } catch {
+      return fallback;
+    }
+  };
+
   const togglePermission = (moduleKey, key) => {
     setSelected((prev) => {
       const permissions = ensurePermissions(prev.permissions).map((item) => {
@@ -136,15 +145,16 @@ export default function UserPermissionManager({ token }) {
 
   const savePermissions = async () => {
     if (!selected) return;
+    const normalizedPermissions = ensurePermissions(selected.permissions);
     setSaving(true);
     setMessage({ type: "", text: "" });
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/users/${selected.id}/permissions`, {
         method: "PUT",
         headers: authHeaders,
-        body: JSON.stringify({ permissions: ensurePermissions(selected.permissions) }),
+        body: JSON.stringify({ permissions: normalizedPermissions }),
       });
-      if (!res.ok) throw new Error(`Lưu quyền thất bại (${res.status})`);
+      if (!res.ok) throw new Error(await readErrorMessage(res, `Lưu quyền thất bại (${res.status})`));
       const permissions = await res.json();
       updateSelected({ permissions });
       setMessage({ type: "success", text: "Đã lưu quyền người dùng" });

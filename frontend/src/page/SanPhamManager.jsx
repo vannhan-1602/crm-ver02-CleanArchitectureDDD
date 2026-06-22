@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { API_BASE_URL, api as ax } from "../apiClient";
+import { API_BASE_URL, api as ax, getCurrentUser, getPermissions } from "../apiClient";
 import "./SanPham.css";
 
 const formatVND = (n) =>
@@ -439,20 +439,24 @@ function ProductDetailModal({ product, categories, baseUrl, onClose, onEdit, onM
 
               {/* Actions */}
               <div className="detail-actions">
-                <button
-                    className="primary-btn"
-                    type="button"
-                    onClick={() => { onEdit(product); onClose(); }}
-                >
-                  ✏️ Chỉnh sửa
-                </button>
-                <button
-                    className="secondary-btn"
-                    type="button"
-                    onClick={() => { onManageImages(product); onClose(); }}
-                >
-                  🖼 Quản lý ảnh
-                </button>
+                {onEdit && (
+                    <button
+                        className="primary-btn"
+                        type="button"
+                        onClick={() => { onEdit(product); onClose(); }}
+                    >
+                      ✏️ Chỉnh sửa
+                    </button>
+                )}
+                {onManageImages && (
+                    <button
+                        className="secondary-btn"
+                        type="button"
+                        onClick={() => { onManageImages(product); onClose(); }}
+                    >
+                      🖼 Quản lý ảnh
+                    </button>
+                )}
                 <button className="ghost-btn" type="button" onClick={onClose}>
                   Đóng
                 </button>
@@ -467,6 +471,12 @@ function ProductDetailModal({ product, categories, baseUrl, onClose, onEdit, onM
    Main component
 ───────────────────────────────────────────── */
 export default function SanPhamManager() {
+  const currentUser = getCurrentUser();
+  const userPermissions = getPermissions();
+  const isAdmin = Boolean(currentUser?.admin || currentUser?.roleId === 1 || currentUser?.roleName?.toLowerCase() === "admin");
+  const productPermission = userPermissions.find((item) => item.moduleKey === "SAN_PHAM");
+  const canWriteProducts = isAdmin || Boolean(productPermission?.canWrite);
+
   const [products, setProducts]           = useState([]);
   const [categories, setCategories]       = useState([]);
   const [loading, setLoading]             = useState(true);
@@ -528,6 +538,7 @@ export default function SanPhamManager() {
   const resetForm = () => { setForm(EMPTY_FORM); setEditId(null); setMessage({ type: "", text: "" }); };
 
   const openEdit = (p) => {
+    if (!canWriteProducts) return;
     setForm({ maSanPham: p.maSanPham, tenSanPham: p.tenSanPham, donVi: p.donVi,
       giaBan: p.giaBan, slTon: p.slTon, trangThai: p.trangThai, loaiSanPham: p.loaiSanPham });
     setEditId(p.sanPhamId);
@@ -549,6 +560,10 @@ export default function SanPhamManager() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!canWriteProducts) {
+      setMessage({ type: "error", text: "Bạn không có quyền ghi sản phẩm." });
+      return;
+    }
     const err = validate();
     if (err) { setMessage({ type: "error", text: err }); return; }
     setSaving(true);
@@ -566,6 +581,7 @@ export default function SanPhamManager() {
   };
 
   const handleDelete = async (p) => {
+    if (!canWriteProducts) return;
     try {
       await ax.delete(`/api/sanpham/${p.sanPhamId}`);
       setDeleteConfirm(null);
@@ -577,6 +593,10 @@ export default function SanPhamManager() {
   };
 
   /* thumbnail helper — show up to 3 mini images */
+  const openImageManager = (p) => {
+    if (canWriteProducts) setImgProduct(p);
+  };
+
   const renderThumbs = (p) => {
     const imgs = p.hinhAnh ?? [];
     if (imgs.length === 0) return <span className="thumb-empty">—</span>;
@@ -590,12 +610,17 @@ export default function SanPhamManager() {
                   src={`${API_BASE_URL}${img.url}`}
                   alt=""
                   title={`Ảnh ${i + 1}`}
-                  onClick={() => setImgProduct(p)}
+                  onClick={() => openImageManager(p)}
+                  style={!canWriteProducts ? { cursor: "default" } : undefined}
                   onError={(e) => { e.target.style.display = "none"; }}
               />
           ))}
           {imgs.length > 3 && (
-              <span className="thumb-more" onClick={() => setImgProduct(p)}>
+              <span
+                  className="thumb-more"
+                  onClick={() => openImageManager(p)}
+                  style={!canWriteProducts ? { cursor: "default" } : undefined}
+              >
             +{imgs.length - 3}
           </span>
           )}
@@ -611,7 +636,9 @@ export default function SanPhamManager() {
           <div>
             <p className="eyebrow">Danh mục / Sản phẩm</p>
             <h1>Quản lý Sản phẩm</h1>
-            <p className="subtitle">Thêm, cập nhật và quản lý hình ảnh cho từng sản phẩm.</p>
+            <p className="subtitle">
+              {canWriteProducts ? "Thêm, cập nhật và quản lý hình ảnh cho từng sản phẩm." : "Xem danh sách sản phẩm."}
+            </p>
           </div>
           <div className="toolbar">
             <input className="search" type="search" placeholder="Tìm theo tên, mã..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -629,18 +656,18 @@ export default function SanPhamManager() {
         </section>
 
         {/* ── Stats ── */}
-        <section className="stats-row">
+        {canWriteProducts && <section className="stats-row">
           <article className="stat-card"><span>Tổng sản phẩm</span><strong>{stats.total}</strong></article>
           <article className="stat-card"><span>Đang bán</span><strong>{stats.active}</strong></article>
           <article className="stat-card"><span>Tồn kho thấp</span><strong>{stats.lowStock}</strong></article>
           <article className="stat-card"><span>Loại sản phẩm</span><strong>{stats.cats}</strong></article>
-        </section>
+        </section>}
 
         {/* ── Grid ── */}
-        <section className="sanpham-grid">
+        <section className={`sanpham-grid ${canWriteProducts ? "" : "read-only"}`}>
 
           {/* Form panel */}
-          <div className="panel form-panel">
+          {canWriteProducts && <div className="panel form-panel">
             <div className="panel-head">
               <div>
                 <h2>{editId ? "Cập nhật sản phẩm" : "Thêm sản phẩm mới"}</h2>
@@ -690,7 +717,7 @@ export default function SanPhamManager() {
                 <button className="secondary-btn" type="button" onClick={resetForm}>Làm mới</button>
               </div>
             </form>
-          </div>
+          </div>}
 
           {/* Table panel */}
           <div className="panel table-panel">
@@ -713,12 +740,12 @@ export default function SanPhamManager() {
                   <th className="right">Tồn</th>
                   <th>Trạng thái</th>
                   <th>Hình ảnh</th>
-                  <th className="right">Hành động</th>
+                  {canWriteProducts && <th className="right">Hành động</th>}
                 </tr>
                 </thead>
                 <tbody>
                 {filtered.length === 0 ? (
-                    <tr><td colSpan={9} className="empty-row">{loading ? "Đang tải..." : "Không có sản phẩm phù hợp"}</td></tr>
+                    <tr><td colSpan={canWriteProducts ? 9 : 8} className="empty-row">{loading ? "Đang tải..." : "Không có sản phẩm phù hợp"}</td></tr>
                 ) : filtered.map((p) => (
                     <tr key={p.sanPhamId}>
                       <td><span className="product-code">{p.maSanPham}</span></td>
@@ -733,18 +760,20 @@ export default function SanPhamManager() {
                       </span>
                       </td>
                       <td>{renderThumbs(p)}</td>
-                      <td>
-                        <div className="row-actions">
-                          <button className="ghost-btn" type="button" onClick={() => setDetailProduct(p)}>
-                            🔍 Chi tiết
-                          </button>
-                          <button className="ghost-btn" type="button" onClick={() => setImgProduct(p)}>
-                            🖼 Ảnh
-                          </button>
-                          <button className="ghost-btn"  type="button" onClick={() => openEdit(p)}>Sửa</button>
-                          <button className="danger-btn" type="button" onClick={() => setDeleteConfirm(p)}>Xóa</button>
-                        </div>
-                      </td>
+                      {canWriteProducts && (
+                          <td>
+                            <div className="row-actions">
+                              <button className="ghost-btn" type="button" onClick={() => setDetailProduct(p)}>
+                                🔍 Chi tiết
+                              </button>
+                              <button className="ghost-btn" type="button" onClick={() => setImgProduct(p)}>
+                                🖼 Ảnh
+                              </button>
+                              <button className="ghost-btn"  type="button" onClick={() => openEdit(p)}>Sửa</button>
+                              <button className="danger-btn" type="button" onClick={() => setDeleteConfirm(p)}>Xóa</button>
+                            </div>
+                          </td>
+                      )}
                     </tr>
                 ))}
                 </tbody>
@@ -754,7 +783,7 @@ export default function SanPhamManager() {
         </section>
 
         {/* ── Image modal ── */}
-        {imgProduct && (
+        {canWriteProducts && imgProduct && (
             <ImageModal
                 product={imgProduct}
                 baseUrl={API_BASE_URL}
@@ -765,7 +794,7 @@ export default function SanPhamManager() {
         )}
 
         {/* ── Delete confirm ── */}
-        {deleteConfirm && (
+        {canWriteProducts && deleteConfirm && (
             <div className="overlay">
               <div className="modal modal-sm">
                 <div className="modal-header">
@@ -797,8 +826,8 @@ export default function SanPhamManager() {
                 categories={categories}
                 baseUrl={API_BASE_URL}
                 onClose={() => setDetailProduct(null)}
-                onEdit={openEdit}
-                onManageImages={setImgProduct}
+                onEdit={canWriteProducts ? openEdit : null}
+                onManageImages={canWriteProducts ? setImgProduct : null}
             />
         )}
       </main>
