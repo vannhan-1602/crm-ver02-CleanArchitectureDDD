@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { authFetch } from "../apiClient";
 import "./LeadManager.css";
+import "./ManagerForm.css";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
@@ -415,85 +416,100 @@ function LeadManager() {
       <section className="content-grid">
         {/* Form Panel */}
         <form className="panel form-panel" onSubmit={handleSubmit}>
-          <div className="panel-head">
-            <div>
+          <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
+            <div className="form-title-wrap">
+              <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
+              <div>
+                <span className="form-mode-badge">{editingId ? "Đang chỉnh sửa" : "Tạo mới"}</span>
               <h2>{editingId ? "Cập nhật Lead" : "Thêm mới Lead"}</h2>
-              <p>Dữ liệu sẽ gọi vào API `api/leads`.</p>
+                <p>Nhập thông tin liên hệ và người phụ trách.</p>
+              </div>
             </div>
             {editingId && (
-              <button className="ghost-btn" type="button" onClick={resetForm}>
+              <button className="ghost-btn form-cancel-btn" type="button" onClick={resetForm}>
                 Hủy sửa
               </button>
             )}
           </div>
 
-          <label>
-            Tên Lead <span style={{ color: "#d84d5b" }}>*</span>
-            <input
-              name="tenLead"
-              value={form.tenLead}
-              onChange={handleChange}
-              placeholder="Nhập tên lead..."
-            />
-          </label>
+          <div className="manager-form-body">
+            <div className="form-section">
+              <div className="section-title">Thông tin lead</div>
+              <label className="field">
+                Tên Lead <span style={{ color: "#d84d5b" }}>*</span>
+                <input
+                  name="tenLead"
+                  value={form.tenLead}
+                  onChange={handleChange}
+                  placeholder="Nhập tên lead..."
+                />
+              </label>
 
-          <label>
-            Tên Công Ty
-            <input
-              name="tenCongTy"
-              value={form.tenCongTy}
-              onChange={handleChange}
-              placeholder="Tên công ty (nếu có)"
-            />
-          </label>
+              <label className="field">
+                Tên Công Ty
+                <input
+                  name="tenCongTy"
+                  value={form.tenCongTy}
+                  onChange={handleChange}
+                  placeholder="Tên công ty (nếu có)"
+                />
+              </label>
+            </div>
 
-          <div className="two-col">
-            <label>
-              Email
+            <div className="form-section">
+              <div className="section-title">Liên hệ</div>
+              <div className="two-col">
+                <label className="field">
+                  Email
               <input
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="example@email.com"
               />
-            </label>
-            <label>
-              Số điện thoại
+                </label>
+                <label className="field">
+                  Số điện thoại
               <input
                 name="soDienThoai"
                 value={form.soDienThoai}
                 onChange={handleChange}
                 placeholder="0xxxxxxxxx"
               />
-            </label>
-          </div>
+                </label>
+              </div>
+            </div>
 
-          <label>
-            Nhân viên phụ trách
-            <select
-              name="nhanVienPhuTrachId"
-              value={form.nhanVienPhuTrachId}
-              onChange={handleChange}
-            >
-              <option value="">— Chọn nhân viên —</option>
-              {nhanVienList.map((nv) => (
-                <option key={nv.id} value={nv.id}>
-                  {nv.hoTen}
-                </option>
-              ))}
-            </select>
-          </label>
+            <div className="form-section">
+              <div className="section-title">Phân công</div>
+              <label className="field">
+                Nhân viên phụ trách
+                <select
+                  name="nhanVienPhuTrachId"
+                  value={form.nhanVienPhuTrachId}
+                  onChange={handleChange}
+                >
+                  <option value="">— Chọn nhân viên —</option>
+                  {nhanVienList.map((nv) => (
+                    <option key={nv.id} value={nv.id}>
+                      {nv.hoTen}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
-          {error && <div className="message error">{error}</div>}
-          {success && <div className="message success">{success}</div>}
+            {error && <div className="message error">{error}</div>}
+            {success && <div className="message success">{success}</div>}
 
-          <div className="actions">
-            <button className="primary-btn" type="submit" disabled={submitting}>
-              {submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Tạo mới"}
-            </button>
-            <button className="secondary-btn" type="button" onClick={resetForm}>
-              Làm mới form
-            </button>
+            <div className="actions">
+              <button className="secondary-btn" type="button" onClick={resetForm}>
+                Làm mới
+              </button>
+              <button className="primary-btn" type="submit" disabled={submitting}>
+                {submitting ? "Đang lưu..." : editingId ? "Cập nhật Lead" : "Tạo Lead"}
+              </button>
+            </div>
           </div>
         </form>
 

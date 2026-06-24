@@ -3,6 +3,7 @@ import { authFetch } from "../apiClient";
 import "./HopDong.css";
 import "./KhachHang.css";
 import "./HoatDong.css";
+import "./ManagerForm.css";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
@@ -383,152 +384,163 @@ function HoatDongManager() {
       <section className="content-grid">
         {/* FORM */}
         <form className="panel form-panel" onSubmit={handleSubmit}>
-          <div className="panel-head">
-            <div>
+          <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
+            <div className="form-title-wrap">
+              <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
+              <div>
+                <span className="form-mode-badge">{editingId ? "Đang chỉnh sửa" : "Tạo mới"}</span>
               <h2>
                 {editingId ? "Cập nhật hoạt động" : "Thêm hoạt động mới"}
               </h2>
-              <p>Ghi nhận lịch sử tương tác với khách hàng/lead.</p>
+                <p>Ghi nhận lịch sử tương tác với khách hàng hoặc lead.</p>
+              </div>
             </div>
             {editingId ? (
-              <button className="ghost-btn" type="button" onClick={resetForm}>
+              <button className="ghost-btn form-cancel-btn" type="button" onClick={resetForm}>
                 Hủy sửa
               </button>
             ) : null}
           </div>
 
-          {/* Đối tượng */}
-          <div className="two-col">
-            <label>
-              Đối tượng <span className="kh-req">*</span>
-              <select
-                name="targetType"
-                value={form.targetType}
-                onChange={handleTargetTypeChange}
-                disabled={editingId != null}
-              >
-                {TARGET_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="manager-form-body">
+            <div className="form-section">
+              <div className="section-title">Đối tượng</div>
+              <div className="two-col">
+                <label className="field">
+                  Đối tượng <span className="kh-req">*</span>
+                  <select
+                    name="targetType"
+                    value={form.targetType}
+                    onChange={handleTargetTypeChange}
+                    disabled={editingId != null}
+                  >
+                    {TARGET_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-            {form.targetType === "khachhang" ? (
-              <label>
-                Khách hàng <span className="kh-req">*</span>
-                <select
-                  name="khachHangId"
-                  value={form.khachHangId}
+                {form.targetType === "khachhang" ? (
+                  <label className="field">
+                    Khách hàng <span className="kh-req">*</span>
+                    <select
+                      name="khachHangId"
+                      value={form.khachHangId}
+                      onChange={handleChange}
+                      disabled={editingId != null}
+                    >
+                      <option value="">-- Chọn khách hàng --</option>
+                      {khachHangList.map((kh) => (
+                        <option key={kh.id} value={kh.id}>
+                          {kh.tenKhachHang}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ) : (
+                  <label className="field">
+                    Lead <span className="kh-req">*</span>
+                    <select
+                      name="leadId"
+                      value={form.leadId}
+                      onChange={handleChange}
+                      disabled={editingId != null}
+                    >
+                      <option value="">-- Chọn lead --</option>
+                      {leadList.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.tenLead}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+              </div>
+            </div>
+
+            <div className="form-section">
+              <div className="section-title">Nội dung hoạt động</div>
+              <div className="two-col">
+                <label className="field">
+                  Loại hoạt động <span className="kh-req">*</span>
+                  <select
+                    name="loaiHoatDong"
+                    value={form.loaiHoatDong}
+                    onChange={handleChange}
+                  >
+                    {LOAI_HOAT_DONG_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field">
+                  Thời gian thực hiện <span className="kh-req">*</span>
+                  <input
+                    name="thoiGianThucHien"
+                    type="datetime-local"
+                    value={form.thoiGianThucHien}
+                    onChange={handleChange}
+                  />
+                </label>
+              </div>
+
+              <label className="field">
+                Nội dung
+                <textarea
+                  name="noiDung"
+                  rows={3}
+                  value={form.noiDung}
                   onChange={handleChange}
-                  disabled={editingId != null}
-                >
-                  <option value="">-- Chọn khách hàng --</option>
-                  {khachHangList.map((kh) => (
-                    <option key={kh.id} value={kh.id}>
-                      {kh.tenKhachHang}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Ghi chú nội dung trao đổi..."
+                />
               </label>
-            ) : (
-              <label>
-                Lead <span className="kh-req">*</span>
-                <select
-                  name="leadId"
-                  value={form.leadId}
-                  onChange={handleChange}
-                  disabled={editingId != null}
-                >
-                  <option value="">-- Chọn lead --</option>
-                  {leadList.map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.tenLead}
-                    </option>
-                  ))}
-                </select>
+            </div>
+
+            <div className="form-section">
+              <div className="section-title">Thực hiện</div>
+              <label className="field">
+                Nhân viên thực hiện
+                {nhanVienList.length > 0 ? (
+                  <select
+                    name="nhanVienId"
+                    value={form.nhanVienId}
+                    onChange={handleChange}
+                  >
+                    <option value="">-- Chọn nhân viên --</option>
+                    {nhanVienList.map((nv) => (
+                      <option key={nv.id} value={nv.id}>
+                        {nv.hoTen ?? nv.tenNhanVien ?? `NV #${nv.id}`}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    name="nhanVienId"
+                    type="number"
+                    min="1"
+                    value={form.nhanVienId}
+                    onChange={handleChange}
+                    placeholder="ID nhân viên"
+                  />
+                )}
               </label>
-            )}
-          </div>
+            </div>
 
-          {/* Loại hoạt động + thời gian */}
-          <div className="two-col">
-            <label>
-              Loại hoạt động <span className="kh-req">*</span>
-              <select
-                name="loaiHoatDong"
-                value={form.loaiHoatDong}
-                onChange={handleChange}
-              >
-                {LOAI_HOAT_DONG_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Thời gian thực hiện <span className="kh-req">*</span>
-              <input
-                name="thoiGianThucHien"
-                type="datetime-local"
-                value={form.thoiGianThucHien}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
+            {error ? <div className="message error">{error}</div> : null}
+            {success ? <div className="message success">{success}</div> : null}
 
-          {/* Nội dung */}
-          <label>
-            Nội dung
-            <textarea
-              name="noiDung"
-              rows={3}
-              value={form.noiDung}
-              onChange={handleChange}
-              placeholder="Ghi chú nội dung trao đổi..."
-            />
-          </label>
-
-          {/* Nhân viên thực hiện */}
-          <label>
-            Nhân viên thực hiện
-            {nhanVienList.length > 0 ? (
-              <select
-                name="nhanVienId"
-                value={form.nhanVienId}
-                onChange={handleChange}
-              >
-                <option value="">-- Chọn nhân viên --</option>
-                {nhanVienList.map((nv) => (
-                  <option key={nv.id} value={nv.id}>
-                    {nv.hoTen ?? nv.tenNhanVien ?? `NV #${nv.id}`}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                name="nhanVienId"
-                type="number"
-                min="1"
-                value={form.nhanVienId}
-                onChange={handleChange}
-                placeholder="ID nhân viên"
-              />
-            )}
-          </label>
-
-          {error ? <div className="message error">{error}</div> : null}
-          {success ? <div className="message success">{success}</div> : null}
-
-          <div className="actions">
-            <button className="primary-btn" type="submit" disabled={submitting}>
-              {submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Thêm mới"}
-            </button>
-            <button className="secondary-btn" type="button" onClick={resetForm}>
-              Làm mới form
-            </button>
+            <div className="actions">
+              <button className="secondary-btn" type="button" onClick={resetForm}>
+                Làm mới
+              </button>
+              <button className="primary-btn" type="submit" disabled={submitting}>
+                {submitting ? "Đang lưu..." : editingId ? "Cập nhật hoạt động" : "Thêm hoạt động"}
+              </button>
+            </div>
           </div>
         </form>
 

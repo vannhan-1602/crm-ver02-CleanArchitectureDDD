@@ -4,9 +4,9 @@ import "./BaoCaoThongKe.css"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081"
 const REPORT_TABS = [
-  { id: "doanhSo", label: "Doanh số" },
-  { id: "kpi", label: "KPI" },
-  { id: "hieuQua", label: "Hiệu quả hoạt động" },
+  { id: "doanhSo", label: "Doanh số", helper: "Dòng tiền, doanh thu và xu hướng tháng" },
+  { id: "kpi", label: "KPI", helper: "Chỉ số pipeline và tỷ lệ chuyển đổi" },
+  { id: "hieuQua", label: "Hiệu quả hoạt động", helper: "Khối lượng xử lý và chất lượng vận hành" },
 ]
 
 function formatMoney(value) {
@@ -96,16 +96,22 @@ function BaoCaoThongKe() {
   const monthlySummaries = report?.monthlySummaries ?? []
   const opportunityStages = report?.opportunityStages ?? []
   const quoteStatuses = report?.quoteStatuses ?? []
+  const activeMetrics =
+    activeTab === "doanhSo"
+      ? financeMetrics.slice(0, 6)
+      : activeTab === "kpi"
+        ? pipelineMetrics.slice(0, 6)
+        : operationMetrics.slice(0, 6)
+  const activeTabInfo = REPORT_TABS.find((tab) => tab.id === activeTab)
 
   return (
     <div className="report-page">
       <section className="report-hero">
         <div>
           <p className="eyebrow">Báo cáo thống kê</p>
-          <h1>Tổng hợp doanh số, KPI và hiệu quả hoạt động</h1>
+          <h1>Dashboard tổng hợp CRM</h1>
           <p className="subtitle">
-            Màn hình này gom dữ liệu từ hóa đơn, phiếu thu, phiếu chi, lead, hợp đồng, báo
-            giá và hoạt động để nhìn toàn bộ quy trình trong một trang.
+            Theo dõi doanh số, pipeline, báo giá và hiệu quả vận hành từ một màn hình.
           </p>
         </div>
         <div className="hero-actions">
@@ -128,6 +134,16 @@ function BaoCaoThongKe() {
 
       {report ? (
         <>
+          <section className="report-summary-row" aria-label="Chỉ số nổi bật">
+            {heroMetrics.slice(0, 4).map((metric) => (
+              <article key={`hero-${metric.label}-${metric.hint}`} className={`summary-card ${toneClass(metric.tone)}`}>
+                <span>{metric.label}</span>
+                <strong>{formatMetricValue(metric)}</strong>
+                <p>{metric.hint}</p>
+              </article>
+            ))}
+          </section>
+
           <nav className="report-tabs" aria-label="Chuyển tab báo cáo thống kê">
             {REPORT_TABS.map((tab) => (
               <button
@@ -136,23 +152,28 @@ function BaoCaoThongKe() {
                 className={`report-tab ${activeTab === tab.id ? "active" : ""}`}
                 onClick={() => setActiveTab(tab.id)}
               >
-                {tab.label}
+                <span>{tab.label}</span>
               </button>
             ))}
           </nav>
 
+          <div className="tab-context">
+            <div>
+              <span>Đang xem</span>
+              <strong>{activeTabLabel}</strong>
+            </div>
+            <p>{activeTabInfo?.helper}</p>
+          </div>
+
           <section className="metric-grid">
-            {(activeTab === "doanhSo"
-              ? financeMetrics.slice(0, 6)
-              : activeTab === "kpi"
-                ? pipelineMetrics.slice(0, 6)
-                : operationMetrics.slice(0, 6)
-            ).map((metric) => (
+            {activeMetrics.map((metric) => (
               <article
                 key={`${activeTab}-${metric.label}-${metric.hint}`}
                 className={`metric-card ${toneClass(metric.tone)}`}
               >
-                <span>{metric.label}</span>
+                <div className="metric-card-head">
+                  <span>{metric.label}</span>
+                </div>
                 <strong>{formatMetricValue(metric)}</strong>
                 <p>{metric.hint}</p>
               </article>

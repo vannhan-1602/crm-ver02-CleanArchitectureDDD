@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api as ax } from "../apiClient";
 import "./HopDong.css";
 import "./TicketManager.css";
+import "./ManagerForm.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 
@@ -349,114 +350,135 @@ export default function TicketManager() {
 
       <section className="content-grid ticket-grid">
         <form className="panel form-panel ticket-form" onSubmit={handleSubmit}>
-          <div className="panel-head">
-            <div>
+          <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
+            <div className="form-title-wrap">
+              <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
+              <div>
+                <span className="form-mode-badge">{editingId ? "Đang chỉnh sửa" : "Tạo mới"}</span>
               <h2>{editingId ? "Cập nhật ticket" : "Thêm ticket mới"}</h2>
-              <p>Nhập thông tin tiếp nhận và xử lý.</p>
+                <p>Nhập thông tin tiếp nhận, phân công và xử lý.</p>
+              </div>
             </div>
-            {editingId ? <button className="ghost-btn" type="button" onClick={resetForm}>Hủy sửa</button> : null}
+            {editingId ? <button className="ghost-btn form-cancel-btn" type="button" onClick={resetForm}>Hủy sửa</button> : null}
           </div>
 
-          <div className="two-col">
-            <label>Mã ticket <span className="ticket-req">*</span>
-              <input name="maTicket" value={form.maTicket} onChange={handleChange} disabled={Boolean(editingId)} placeholder="TK-0001" />
-            </label>
-            <label>Loại ticket
-              <select name="loaiTicketId" value={form.loaiTicketId} onChange={handleChange}>
-                <option value="">-- Chọn loại --</option>
-                {loaiTickets.map((item) => <option key={item.id} value={item.id}>{item.tenLoai}</option>)}
-              </select>
-            </label>
-          </div>
+          <div className="manager-form-body">
+            <div className="form-section">
+              <div className="section-title">Thông tin ticket</div>
+              <div className="two-col">
+                <label className="field">Mã ticket <span className="ticket-req">*</span>
+                  <input name="maTicket" value={form.maTicket} onChange={handleChange} disabled={Boolean(editingId)} placeholder="TK-0001" />
+                </label>
+                <label className="field">Loại ticket
+                  <select name="loaiTicketId" value={form.loaiTicketId} onChange={handleChange}>
+                    <option value="">-- Chọn loại --</option>
+                    {loaiTickets.map((item) => <option key={item.id} value={item.id}>{item.tenLoai}</option>)}
+                  </select>
+                </label>
+              </div>
 
-          <label>Tiêu đề <span className="ticket-req">*</span>
-            <input name="tieuDe" value={form.tieuDe} onChange={handleChange} placeholder="Tóm tắt vấn đề" />
-          </label>
+              <label className="field">Tiêu đề <span className="ticket-req">*</span>
+                <input name="tieuDe" value={form.tieuDe} onChange={handleChange} placeholder="Tóm tắt vấn đề" />
+              </label>
 
-          <label>Mô tả
-            <textarea name="moTa" value={form.moTa} onChange={handleChange} placeholder="Mô tả chi tiết nội dung cần xử lý" />
-          </label>
+              <label className="field">Mô tả
+                <textarea name="moTa" value={form.moTa} onChange={handleChange} placeholder="Mô tả chi tiết nội dung cần xử lý" />
+              </label>
+            </div>
 
-          <div className="two-col">
-            <label>Khách hàng <span className="ticket-req">*</span>
-              <select name="khachHangId" value={form.khachHangId} onChange={handleChange}>
-                <option value="">-- Chọn khách hàng --</option>
-                {khachHangList.map((item) => <option key={item.id} value={item.id}>{item.tenKhachHang ?? `KH #${item.id}`}</option>)}
-              </select>
-            </label>
-            <label>Sản phẩm
-              <select name="sanPhamId" value={form.sanPhamId} onChange={handleChange}>
-                <option value="">-- Chọn sản phẩm --</option>
-                {sanPhamList.map((item) => {
-                  const id = item.sanPhamId ?? item.id;
-                  return <option key={id} value={id}>{item.tenSanPham ?? item.tenSP ?? `SP #${id}`}</option>;
-                })}
-              </select>
-            </label>
-          </div>
+            <div className="form-section">
+              <div className="section-title">Liên kết</div>
+              <div className="two-col">
+                <label className="field">Khách hàng <span className="ticket-req">*</span>
+                  <select name="khachHangId" value={form.khachHangId} onChange={handleChange}>
+                    <option value="">-- Chọn khách hàng --</option>
+                    {khachHangList.map((item) => <option key={item.id} value={item.id}>{item.tenKhachHang ?? `KH #${item.id}`}</option>)}
+                  </select>
+                </label>
+                <label className="field">Sản phẩm
+                  <select name="sanPhamId" value={form.sanPhamId} onChange={handleChange}>
+                    <option value="">-- Chọn sản phẩm --</option>
+                    {sanPhamList.map((item) => {
+                      const id = item.sanPhamId ?? item.id;
+                      return <option key={id} value={id}>{item.tenSanPham ?? item.tenSP ?? `SP #${id}`}</option>;
+                    })}
+                  </select>
+                </label>
+              </div>
 
-          <div className="two-col">
-            <label>Hợp đồng ID
-              <input name="hopDongId" type="number" min="1" value={form.hopDongId} onChange={handleChange} placeholder="ID hợp đồng" />
-            </label>
-            <label>File đính kèm
-              <input name="fileDinhKem" value={form.fileDinhKem} onChange={handleChange} placeholder="/uploads/..." />
-            </label>
-          </div>
+              <div className="two-col">
+                <label className="field">Hợp đồng ID
+                  <input name="hopDongId" type="number" min="1" value={form.hopDongId} onChange={handleChange} placeholder="ID hợp đồng" />
+                </label>
+                <label className="field">File đính kèm
+                  <input name="fileDinhKem" value={form.fileDinhKem} onChange={handleChange} placeholder="/uploads/..." />
+                </label>
+              </div>
+            </div>
 
-          <div className="two-col">
-            <label>Mức độ ưu tiên
-              <select name="mucDoUuTien" value={form.mucDoUuTien} onChange={handleChange}>
-                {PRIORITIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
-            </label>
-            <label>Nguồn tiếp nhận
-              <select name="nguonTiepNhan" value={form.nguonTiepNhan} onChange={handleChange}>
-                {SOURCES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
-            </label>
-          </div>
+            <div className="form-section">
+              <div className="section-title">Phân loại và xử lý</div>
+              <div className="two-col">
+                <label className="field">Mức độ ưu tiên
+                  <select name="mucDoUuTien" value={form.mucDoUuTien} onChange={handleChange}>
+                    {PRIORITIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                </label>
+                <label className="field">Nguồn tiếp nhận
+                  <select name="nguonTiepNhan" value={form.nguonTiepNhan} onChange={handleChange}>
+                    {SOURCES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                </label>
+              </div>
 
-          <div className="two-col">
-            <label>Trạng thái
-              <select name="trangThai" value={form.trangThai} onChange={handleChange}>
-                {STATUSES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
-            </label>
-            <label>Ngày hẹn xử lý
-              <input name="ngayHenXuLy" type="datetime-local" value={form.ngayHenXuLy} onChange={handleChange} />
-            </label>
-          </div>
+              <div className="two-col">
+                <label className="field">Trạng thái
+                  <select name="trangThai" value={form.trangThai} onChange={handleChange}>
+                    {STATUSES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                </label>
+                <label className="field">Ngày hẹn xử lý
+                  <input name="ngayHenXuLy" type="datetime-local" value={form.ngayHenXuLy} onChange={handleChange} />
+                </label>
+              </div>
+            </div>
 
-          <div className="two-col">
-            <label>NV tiếp nhận
-              <select name="nhanVienTiepNhanId" value={form.nhanVienTiepNhanId} onChange={handleChange}>
-                <option value="">-- Chọn nhân viên --</option>
-                {nhanVienList.map((item) => <option key={item.id} value={item.id}>{item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`}</option>)}
-              </select>
-            </label>
-            <label>NV xử lý
-              <select name="nhanVienXuLyId" value={form.nhanVienXuLyId} onChange={handleChange}>
-                <option value="">-- Chọn nhân viên --</option>
-                {nhanVienList.map((item) => <option key={item.id} value={item.id}>{item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`}</option>)}
-              </select>
-            </label>
-          </div>
+            <div className="form-section">
+              <div className="section-title">Nhân sự</div>
+              <div className="two-col">
+                <label className="field">NV tiếp nhận
+                  <select name="nhanVienTiepNhanId" value={form.nhanVienTiepNhanId} onChange={handleChange}>
+                    <option value="">-- Chọn nhân viên --</option>
+                    {nhanVienList.map((item) => <option key={item.id} value={item.id}>{item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`}</option>)}
+                  </select>
+                </label>
+                <label className="field">NV xử lý
+                  <select name="nhanVienXuLyId" value={form.nhanVienXuLyId} onChange={handleChange}>
+                    <option value="">-- Chọn nhân viên --</option>
+                    {nhanVienList.map((item) => <option key={item.id} value={item.id}>{item.hoTen ?? item.tenNhanVien ?? `NV #${item.id}`}</option>)}
+                  </select>
+                </label>
+              </div>
+            </div>
 
-          <div className="two-col">
-            <label>Ngày đóng
-              <input name="ngayDong" type="datetime-local" value={form.ngayDong} onChange={handleChange} />
-            </label>
-            <label>Lý do đóng
-              <input name="lyDoDong" value={form.lyDoDong} onChange={handleChange} placeholder="Nhập khi đóng ticket" />
-            </label>
-          </div>
+            <div className="form-section">
+              <div className="section-title">Đóng ticket</div>
+              <div className="two-col">
+                <label className="field">Ngày đóng
+                  <input name="ngayDong" type="datetime-local" value={form.ngayDong} onChange={handleChange} />
+                </label>
+                <label className="field">Lý do đóng
+                  <input name="lyDoDong" value={form.lyDoDong} onChange={handleChange} placeholder="Nhập khi đóng ticket" />
+                </label>
+              </div>
+            </div>
 
-          {message.text ? <div className={`message ${message.type}`}>{message.text}</div> : null}
+            {message.text ? <div className={`message ${message.type}`}>{message.text}</div> : null}
 
-          <div className="actions">
-            <button className="primary-btn" type="submit" disabled={submitting}>{submitting ? "Đang lưu..." : editingId ? "Cập nhật" : "Thêm mới"}</button>
-            <button className="secondary-btn" type="button" onClick={resetForm}>Làm mới form</button>
+            <div className="actions">
+              <button className="secondary-btn" type="button" onClick={resetForm}>Làm mới</button>
+              <button className="primary-btn" type="submit" disabled={submitting}>{submitting ? "Đang lưu..." : editingId ? "Cập nhật ticket" : "Thêm ticket"}</button>
+            </div>
           </div>
         </form>
 

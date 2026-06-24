@@ -1,0 +1,215 @@
+/* Shared add/edit form treatment for manager screens. */
+.panel.form-panel,
+.coho-panel.coho-form-panel {
+  overflow: hidden;
+}
+
+.panel.form-panel {
+  padding: 0;
+}
+
+.panel-head.form-panel-head,
+.coho-panel-head.form-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border-bottom: 1px solid #eef2f7;
+  margin-bottom: 0;
+  padding: 18px;
+}
+
+.panel-head.form-panel-head.is-edit,
+.coho-panel-head.form-panel-head.is-edit {
+  background: linear-gradient(180deg, #fffdf7 0%, #fffbeb 100%);
+}
+
+.form-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.form-title-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.form-panel-head.is-edit .form-title-icon {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+}
+
+.form-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.form-panel-head.is-edit .form-mode-badge {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.form-cancel-btn {
+  white-space: nowrap;
+}
+
+.manager-form-body,
+.panel.form-panel > .form-section,
+.panel.form-panel > label,
+.panel.form-panel > .two-col,
+.panel.form-panel > .message,
+.panel.form-panel > .actions {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.manager-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+}
+
+.coho-form-inner .manager-form-body {
+  padding: 0;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+.form-section + .form-section {
+  border-top: 1px solid #eef2f7;
+  padding-top: 16px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #111827;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.section-title::before {
+  content: "";
+  width: 6px;
+  height: 18px;
+  border-radius: 999px;
+  background: #2563eb;
+}
+
+.form-panel .field,
+.coho-form-inner .field {
+  margin-bottom: 0;
+}
+
+.form-panel input:disabled,
+.form-panel select:disabled,
+.coho-form-panel input:disabled,
+.coho-form-panel select:disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.input-affix {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  border: 1px solid #d6deea;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-affix:focus-within {
+  border-color: #4a78ff;
+  box-shadow: 0 0 0 4px rgba(74, 120, 255, 0.12);
+}
+
+.input-affix span {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  background: #f8fafc;
+  border-right: 1px solid #e5e7eb;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.input-affix input {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.form-panel .actions,
+.coho-actions {
+  border-top: 1px solid #eef2f7;
+  padding-top: 14px;
+}
+
+.form-panel .actions .primary-btn,
+.coho-actions .coho-primary-btn {
+  order: 2;
+}
+
+@media (max-width: 640px) {
+  .panel-head.form-panel-head,
+  .coho-panel-head.form-panel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-cancel-btn {
+    align-self: flex-start;
+  }
+
+  .manager-form-body {
+    padding-top: 16px;
+  }
+
+  .form-panel .actions,
+  .coho-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-panel .actions button,
+  .coho-actions button {
+    width: 100%;
+  }
+}

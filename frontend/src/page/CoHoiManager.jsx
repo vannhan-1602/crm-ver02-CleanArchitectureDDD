@@ -3,6 +3,7 @@ import { api as ax } from "../apiClient";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 import "./Cohoimanager.css"
+import "./ManagerForm.css";
 const formatVND = (n) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n ?? 0);
 
@@ -394,134 +395,148 @@ export default function CoHoiManager() {
 
                 {/* ── Form panel ── */}
                 <div className="coho-panel coho-form-panel">
-                    <div className="coho-panel-head">
-                        <div>
+                    <div className={`coho-panel-head form-panel-head ${editId ? "is-edit" : ""}`}>
+                        <div className="form-title-wrap">
+                            <div className="form-title-icon" aria-hidden="true">{editId ? "✎" : "+"}</div>
+                            <div>
+                                <span className="form-mode-badge">{editId ? "Đang chỉnh sửa" : "Tạo mới"}</span>
                             <h2>{editId ? "Cập nhật cơ hội" : "Thêm cơ hội mới"}</h2>
-                            <p>Nhập thông tin chi tiết thương vụ.</p>
+                                <p>Nhập thông tin thương vụ, doanh thu và người phụ trách.</p>
+                            </div>
                         </div>
                         {editId && (
-                            <button className="coho-ghost-btn" type="button" onClick={resetForm}>Hủy sửa</button>
+                            <button className="coho-ghost-btn form-cancel-btn" type="button" onClick={resetForm}>Hủy sửa</button>
                         )}
                     </div>
 
                     <form className="coho-form-inner" onSubmit={handleSubmit}>
+                        <div className="manager-form-body">
+                            <div className="form-section">
+                                <div className="section-title">Thông tin thương vụ</div>
+                                <label className="field">
+                                    Tên thương vụ <span className="coho-req">*</span>
+                                    <input
+                                        name="tenThuongVu"
+                                        value={form.tenThuongVu}
+                                        onChange={handleChange}
+                                        placeholder="VD: Bán gói CRM Pro cho công ty ABC"
+                                    />
+                                </label>
 
-                        {/* Tên thương vụ */}
-                        <label>
-                            Tên thương vụ <span className="coho-req">*</span>
-                            <input
-                                name="tenThuongVu"
-                                value={form.tenThuongVu}
-                                onChange={handleChange}
-                                placeholder="VD: Bán gói CRM Pro cho công ty ABC"
-                            />
-                        </label>
+                                <div className="coho-two-col">
+                                    <label className="field">
+                                        Giai đoạn <span className="coho-req">*</span>
+                                        <select name="giaiDoan" value={form.giaiDoan} onChange={handleChange}>
+                                            {GIAI_DOAN_LIST.map((g) => (
+                                                <option key={g.value} value={g.value}>{g.label}</option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                    <label className="field">
+                                        Tỷ lệ thành công (%)
+                                        <input
+                                            name="tyLeThanhCong"
+                                            type="number"
+                                            min={0} max={100}
+                                            value={form.tyLeThanhCong}
+                                            onChange={handleChange}
+                                            placeholder="0 – 100"
+                                        />
+                                    </label>
+                                </div>
 
-                        {/* Giai đoạn + Tỷ lệ */}
-                        <div className="coho-two-col">
-                            <label>
-                                Giai đoạn <span className="coho-req">*</span>
-                                <select name="giaiDoan" value={form.giaiDoan} onChange={handleChange}>
-                                    {GIAI_DOAN_LIST.map((g) => (
-                                        <option key={g.value} value={g.value}>{g.label}</option>
-                                    ))}
-                                </select>
-                            </label>
-                            <label>
-                                Tỷ lệ thành công (%)
-                                <input
-                                    name="tyLeThanhCong"
-                                    type="number"
-                                    min={0} max={100}
-                                    value={form.tyLeThanhCong}
-                                    onChange={handleChange}
-                                    placeholder="0 – 100"
-                                />
-                            </label>
-                        </div>
-
-                        {form.tyLeThanhCong !== "" && (
-                            <div style={{ padding: "4px 0" }}>
-                                <TyLeBar value={form.tyLeThanhCong} />
+                                {form.tyLeThanhCong !== "" && (
+                                    <div style={{ padding: "4px 0" }}>
+                                        <TyLeBar value={form.tyLeThanhCong} />
+                                    </div>
+                                )}
                             </div>
-                        )}
 
-                        {/* Doanh thu + Ngày */}
-                        <div className="coho-two-col">
-                            <label>
-                                Doanh thu kỳ vọng (VNĐ)
-                                <input
-                                    name="doanhThuKyVong"
-                                    type="number" min={0}
-                                    value={form.doanhThuKyVong}
+                            <div className="form-section">
+                                <div className="section-title">Doanh thu và thời gian</div>
+                                <div className="coho-two-col">
+                                    <label className="field">
+                                        Doanh thu kỳ vọng
+                                        <div className="input-affix">
+                                            <span>VNĐ</span>
+                                            <input
+                                                name="doanhThuKyVong"
+                                                type="number" min={0}
+                                                value={form.doanhThuKyVong}
+                                                onChange={handleChange}
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                    </label>
+                                    <label className="field">
+                                        Ngày dự kiến
+                                        <input
+                                            name="ngayDuKien"
+                                            type="date"
+                                            value={form.ngayDuKien}
+                                            onChange={handleChange}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="form-section">
+                                <div className="section-title">Liên kết và phụ trách</div>
+                                <SelectField
+                                    label="Nhân viên phụ trách"
+                                    name="nhanVienPhuTrach_Id"
+                                    value={form.nhanVienPhuTrach_Id}
                                     onChange={handleChange}
-                                    placeholder="0"
+                                    options={nhanViens}
+                                    placeholder="— Chọn nhân viên —"
                                 />
-                            </label>
-                            <label>
-                                Ngày dự kiến
-                                <input
-                                    name="ngayDuKien"
-                                    type="date"
-                                    value={form.ngayDuKien}
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
 
-                        {/* ✅ NV phụ trách — Select */}
-                        <SelectField
-                            label="Nhân viên phụ trách"
-                            name="nhanVienPhuTrach_Id"
-                            value={form.nhanVienPhuTrach_Id}
-                            onChange={handleChange}
-                            options={nhanViens}
-                            placeholder="— Chọn nhân viên —"
-                        />
+                                <div className="coho-two-col">
+                                    <SelectField
+                                        label="Lead"
+                                        name="lead_Id"
+                                        value={form.lead_Id}
+                                        onChange={handleChange}
+                                        options={leads}
+                                        placeholder="— Chọn lead —"
+                                    />
+                                    <SelectField
+                                        label="Khách hàng"
+                                        name="khachHang_Id"
+                                        value={form.khachHang_Id}
+                                        onChange={handleChange}
+                                        options={khachHangs}
+                                        placeholder="— Chọn khách hàng —"
+                                    />
+                                </div>
+                            </div>
 
-                        {/* ✅ Lead + KhachHang — 2 cột */}
-                        <div className="coho-two-col">
-                            <SelectField
-                                label="Lead"
-                                name="lead_Id"
-                                value={form.lead_Id}
-                                onChange={handleChange}
-                                options={leads}
-                                placeholder="— Chọn lead —"
-                            />
-                            <SelectField
-                                label="Khách hàng"
-                                name="khachHang_Id"
-                                value={form.khachHang_Id}
-                                onChange={handleChange}
-                                options={khachHangs}
-                                placeholder="— Chọn khách hàng —"
-                            />
-                        </div>
+                            <div className="form-section">
+                                <div className="section-title">Ghi chú</div>
+                                <label className="field">
+                                    Ghi chú
+                                    <textarea
+                                        name="ghiChu"
+                                        value={form.ghiChu}
+                                        onChange={handleChange}
+                                        placeholder="Ghi chú thêm về thương vụ..."
+                                        rows={3}
+                                    />
+                                </label>
+                            </div>
 
-                        {/* Ghi chú */}
-                        <label>
-                            Ghi chú
-                            <textarea
-                                name="ghiChu"
-                                value={form.ghiChu}
-                                onChange={handleChange}
-                                placeholder="Ghi chú thêm về thương vụ..."
-                                rows={3}
-                            />
-                        </label>
+                            {message.text && (
+                                <div className={`coho-message coho-message-${message.type}`}>{message.text}</div>
+                            )}
 
-                        {message.text && (
-                            <div className={`coho-message coho-message-${message.type}`}>{message.text}</div>
-                        )}
-
-                        <div className="coho-actions">
-                            <button className="coho-primary-btn" type="submit" disabled={saving}>
-                                {saving ? "Đang lưu..." : editId ? "Cập nhật" : "Thêm mới"}
-                            </button>
-                            <button className="coho-secondary-btn" type="button" onClick={resetForm}>
-                                Làm mới
-                            </button>
+                            <div className="coho-actions">
+                                <button className="coho-secondary-btn" type="button" onClick={resetForm}>
+                                    Làm mới
+                                </button>
+                                <button className="coho-primary-btn" type="submit" disabled={saving}>
+                                    {saving ? "Đang lưu..." : editId ? "Cập nhật cơ hội" : "Thêm cơ hội"}
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
