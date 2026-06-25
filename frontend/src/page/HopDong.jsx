@@ -14,6 +14,16 @@ const emptyForm = {
   trangThai: "DangThucHien",
 };
 
+const STATUS_LABELS = {
+  DangThucHien: "Đang thực hiện",
+  TamDung: "Tạm dừng",
+  ThanhLy: "Thanh lý",
+};
+
+function formatStatus(value) {
+  return STATUS_LABELS[value] ?? value ?? "-";
+}
+
 function formatDateTime(value) {
   if (!value) return "-";
   const date = new Date(value);
@@ -226,7 +236,7 @@ function HopDong() {
           <input
             className="search"
             type="search"
-            placeholder="Tìm theo mã, khách hàng, trạng thái..."
+            placeholder="🔎Tìm theo mã, khách hàng, trạng thái..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -325,9 +335,11 @@ function HopDong() {
               value={form.trangThai}
               onChange={handleChange}
             >
-              <option value="DangThucHien">Đang thực hiện</option>
-              <option value="TamDung">Tạm dừng</option>
-              <option value="ThanhLy">Thanh lý</option>
+              {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
 
@@ -395,7 +407,7 @@ function HopDong() {
                         <span
                           className={`badge badge-${String(item.trangThai || "").toLowerCase()}`}
                         >
-                          {item.trangThai || "-"}
+                          {formatStatus(item.trangThai)}
                         </span>
                       </td>
                       <td>{formatDateTime(item.updatedAt)}</td>
