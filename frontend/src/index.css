@@ -37,6 +37,24 @@ button {
   cursor: pointer;
 }
 
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-icon svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.btn-icon-only {
+  gap: 0;
+  min-width: 34px;
+}
+
 a {
   color: inherit;
 }

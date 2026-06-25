@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { api as ax } from "../apiClient";
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 import "./Cohoimanager.css"
@@ -149,10 +150,10 @@ function DetailModal({ item, onClose, onEdit, nhanViens, leads, khachHangs }) {
                         </div>
                     )}
                     <div className="coho-detail-actions">
-                        <button className="coho-primary-btn" onClick={() => { onEdit(item); onClose(); }}>
-                            ✏️ Chỉnh sửa
+                        <button className="coho-primary-btn btn-icon" onClick={() => { onEdit(item); onClose(); }}>
+                            <ActionIcon name="edit" /> Chỉnh sửa
                         </button>
-                        <button className="coho-ghost-btn" onClick={onClose}>Đóng</button>
+                        <button className="coho-ghost-btn btn-icon" onClick={onClose}><ActionIcon name="close" /> Đóng</button>
                     </div>
                 </div>
             </div>
@@ -342,7 +343,7 @@ export default function CoHoiManager() {
                             <option key={g.value} value={g.value}>{g.label}</option>
                         ))}
                     </select>
-                    <button className="coho-secondary-btn" type="button" onClick={fetchAll}>Tải lại</button>
+                    <button className="coho-secondary-btn btn-icon" type="button" onClick={fetchAll}><ActionIcon name="refresh" /> Tải lại</button>
                 </div>
             </section>
 
@@ -405,7 +406,7 @@ export default function CoHoiManager() {
                             </div>
                         </div>
                         {editId && (
-                            <button className="coho-ghost-btn form-cancel-btn" type="button" onClick={resetForm}>Hủy sửa</button>
+                            <button className="coho-ghost-btn form-cancel-btn btn-icon" type="button" onClick={resetForm}><ActionIcon name="close" /> Hủy sửa</button>
                         )}
                     </div>
 
@@ -530,10 +531,11 @@ export default function CoHoiManager() {
                             )}
 
                             <div className="coho-actions">
-                                <button className="coho-secondary-btn" type="button" onClick={resetForm}>
-                                    Làm mới
+                                <button className="coho-secondary-btn btn-icon" type="button" onClick={resetForm}>
+                                    <ActionIcon name="refresh" /> Làm mới
                                 </button>
-                                <button className="coho-primary-btn" type="submit" disabled={saving}>
+                                <button className="coho-primary-btn btn-icon" type="submit" disabled={saving}>
+                      <ActionIcon name="save" />
                                     {saving ? "Đang lưu..." : editId ? "Cập nhật cơ hội" : "Thêm cơ hội"}
                                 </button>
                             </div>
@@ -604,14 +606,14 @@ export default function CoHoiManager() {
                                     </td>
                                     <td>
                                         <div className="coho-row-actions">
-                                            <button className="coho-ghost-btn" type="button" onClick={() => setDetailItem(p)}>
-                                                🔍 Chi tiết
+                                            <button className="coho-ghost-btn btn-icon" type="button" onClick={() => setDetailItem(p)}>
+                                                <ActionIcon name="search" /> Chi tiết
                                             </button>
-                                            <button className="coho-ghost-btn" type="button" onClick={() => openEdit(p)}>
-                                                Sửa
+                                            <button className="coho-ghost-btn btn-icon" type="button" onClick={() => openEdit(p)}>
+                                                <ActionIcon name="edit" /> Sửa
                                             </button>
-                                            <button className="coho-danger-btn" type="button" onClick={() => setDeleteConfirm(p)}>
-                                                Xóa
+                                            <button className="coho-danger-btn btn-icon" type="button" onClick={() => setDeleteConfirm(p)}>
+                                                <ActionIcon name="delete" /> Xóa
                                             </button>
                                         </div>
                                     </td>
@@ -639,9 +641,9 @@ export default function CoHoiManager() {
                             </p>
                         </div>
                         <div className="coho-modal-footer">
-                            <button className="coho-secondary-btn" onClick={() => setDeleteConfirm(null)}>Hủy</button>
-                            <button className="coho-delete-confirm-btn" onClick={() => handleDelete(deleteConfirm)}>
-                                Xóa cơ hội
+                            <button className="coho-secondary-btn btn-icon" onClick={() => setDeleteConfirm(null)}><ActionIcon name="close" /> Hủy</button>
+                            <button className="coho-delete-confirm-btn btn-icon" onClick={() => handleDelete(deleteConfirm)}>
+                                <ActionIcon name="delete" /> Xóa cơ hội
                             </button>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { authFetch } from '../apiClient'
 import './BaoGia.css'
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081'
 
@@ -401,8 +402,8 @@ function BaoGia() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
-          <button className="secondary-btn" type="button" onClick={loadBaoGia}>
-            Tải lại
+          <button className="secondary-btn btn-icon" type="button" onClick={loadBaoGia}>
+            <ActionIcon name="refresh" /> Tải lại
           </button>
         </div>
       </section>
@@ -438,8 +439,8 @@ function BaoGia() {
               <p>Dữ liệu sẽ gọi vào API `api/bao-gia`.</p>
             </div>
             {editingId ? (
-              <button className="ghost-btn" type="button" onClick={resetForm}>
-                Hủy sửa
+              <button className="ghost-btn btn-icon" type="button" onClick={resetForm}>
+                <ActionIcon name="close" /> Hủy sửa
               </button>
             ) : null}
           </div>
@@ -503,9 +504,7 @@ function BaoGia() {
               <h3>Chi tiết sản phẩm</h3>
               <p>Chọn sản phẩm từ danh sách, số lượng và đơn giá sẽ tính ngay bên dưới.</p>
             </div>
-            <button type="button" className="ghost-btn" onClick={addLine}>
-              + Thêm dòng
-            </button>
+            <button type="button" className="ghost-btn btn-icon" onClick={addLine}><ActionIcon name="add" /> Thêm dòng</button>
           </div>
 
           <div className="detail-list">
@@ -559,11 +558,11 @@ function BaoGia() {
 
                 <button
                   type="button"
-                  className="danger-btn small"
+                  className="danger-btn small btn-icon"
                   onClick={() => removeLine(index)}
                   disabled={form.chiTiets.length === 1}
                 >
-                  Xóa
+                  <ActionIcon name="delete" /> Xóa
                 </button>
               </div>
             ))}
@@ -578,10 +577,11 @@ function BaoGia() {
           {success ? <div className="message success">{success}</div> : null}
 
           <div className="actions">
-            <button className="primary-btn" type="submit" disabled={saving}>
+            <button className="primary-btn btn-icon" type="submit" disabled={saving}>
+                      <ActionIcon name="save" />
               {saving ? 'Đang lưu...' : editingId ? 'Cập nhật' : 'Tạo mới'}
             </button>
-            <button className="secondary-btn" type="button" onClick={resetForm}>
+            <button className="secondary-btn btn-icon" type="button" onClick={resetForm}>
               Làm mới form
             </button>
           </div>
@@ -645,11 +645,11 @@ function BaoGia() {
                       <td>{formatDateTime(item.updatedAt)}</td>
                       <td>
                         <div className="row-actions">
-                          <button type="button" className="ghost-btn" onClick={() => handleEdit(item)}>
-                            Sửa
+                          <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
+                            <ActionIcon name="edit" /> Sửa
                           </button>
-                          <button type="button" className="danger-btn" onClick={() => handleDelete(item.id)}>
-                            Xóa
+                          <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
+                            <ActionIcon name="delete" /> Xóa
                           </button>
                         </div>
                       </td>

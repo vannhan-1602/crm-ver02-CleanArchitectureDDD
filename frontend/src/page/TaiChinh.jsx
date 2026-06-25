@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { authFetch, getCurrentUser, getPermissions } from "../apiClient";
 import "./HopDong.css";
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
@@ -841,11 +842,11 @@ function TaiChinh() {
           <td>{formatDateTime(item.updatedAt)}</td>
           <td>
             <div className="row-actions">
-              <button type="button" className="ghost-btn" onClick={() => handleEdit(item)}>
-                Sửa
+              <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
+                <ActionIcon name="edit" /> Sửa
               </button>
-              <button type="button" className="danger-btn" onClick={() => handleDelete(item.id)}>
-                Xóa
+              <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
+                <ActionIcon name="delete" /> Xóa
               </button>
             </div>
           </td>
@@ -867,11 +868,11 @@ function TaiChinh() {
           <td>{formatDateTime(item.updatedAt)}</td>
           <td>
             <div className="row-actions">
-              <button type="button" className="ghost-btn" onClick={() => handleEdit(item)}>
-                Sửa
+              <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
+                <ActionIcon name="edit" /> Sửa
               </button>
-              <button type="button" className="danger-btn" onClick={() => handleDelete(item.id)}>
-                Xóa
+              <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
+                <ActionIcon name="delete" /> Xóa
               </button>
             </div>
           </td>
@@ -899,8 +900,8 @@ function TaiChinh() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
-          <button className="secondary-btn" type="button" onClick={reloadTaiChinhData}>
-            Tải lại
+          <button className="secondary-btn btn-icon" type="button" onClick={reloadTaiChinhData}>
+            <ActionIcon name="refresh" /> Tải lại
           </button>
         </div>
       </section>
@@ -924,7 +925,8 @@ function TaiChinh() {
             onChange={handleThongKeFilterChange}
           />
         </label>
-        <button className="secondary-btn" type="button" onClick={loadThongKe} disabled={thongKeLoading}>
+        <button className="secondary-btn btn-icon" type="button" onClick={loadThongKe} disabled={thongKeLoading}>
+          <ActionIcon name="refresh" />
           {thongKeLoading ? "Đang tải..." : "Tải thống kê"}
         </button>
         {thongKeError ? <span className="stats-error">{thongKeError}</span> : null}
@@ -1013,8 +1015,8 @@ function TaiChinh() {
               <p>Biểu mẫu dành cho {activeTabLabel}.</p>
             </div>
             {editing.id ? (
-              <button className="ghost-btn" type="button" onClick={resetForms}>
-                Hủy sửa
+              <button className="ghost-btn btn-icon" type="button" onClick={resetForms}>
+                <ActionIcon name="close" /> Hủy sửa
               </button>
             ) : null}
           </div>
@@ -1025,10 +1027,11 @@ function TaiChinh() {
           {success ? <div className="message success">{success}</div> : null}
 
           <div className="actions">
-            <button className="primary-btn" type="submit" disabled={submitting}>
+            <button className="primary-btn btn-icon" type="submit" disabled={submitting}>
+                      <ActionIcon name="save" />
               {submitting ? "Đang lưu..." : editing.id ? "Cập nhật" : "Tạo mới"}
             </button>
-            <button className="secondary-btn" type="button" onClick={resetForms}>
+            <button className="secondary-btn btn-icon" type="button" onClick={resetForms}>
               Làm mới form
             </button>
           </div>

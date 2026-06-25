@@ -14,6 +14,7 @@ import BaoGia from "./page/BaoGia.jsx";
 import BaoCaoThongKe from "./page/BaoCaoThongKe.jsx";
 import LoginPage from "./page/LoginPage.jsx";
 import UserPermissionManager from "./page/UserPermissionManager.jsx";
+import { ModuleIcon } from "./moduleIcons.jsx";
 
 const APP_MODULES = [
   { path: "/leads", moduleKeys: ["LEAD"], label: "Quản lý Lead", icon: "👤", element: <LeadManager /> },
@@ -144,7 +145,9 @@ function AppShell({ auth, onLogin, onLogout }) {
                               ...(isActive ? styles.navItemActive : {}),
                             }}
                         >
-                          <span style={styles.navIcon}>{module.icon}</span>
+                          <span style={styles.navIcon}>
+                            <ModuleIcon moduleKey={module.moduleKeys[0]} size={17} />
+                          </span>
                           <span>{module.label}</span>
                           {isActive && <span style={styles.navActiveBar} />}
                         </button>
@@ -161,7 +164,9 @@ function AppShell({ auth, onLogin, onLogout }) {
                               ...(currentPath === "/users" ? styles.navItemActive : {}),
                             }}
                         >
-                          <span style={styles.navIcon}>⚙️</span>
+                          <span style={styles.navIcon}>
+                            <ModuleIcon moduleKey="NHAN_VIEN" size={17} />
+                          </span>
                           <span>Quản lý người dùng</span>
                         </button>
                       </>
@@ -337,9 +342,10 @@ const styles = {
   },
 
   navIcon: {
-    fontSize: "15px",
     width: "20px",
-    textAlign: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     flexShrink: 0,
   },
 

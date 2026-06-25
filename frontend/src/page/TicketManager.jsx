@@ -3,6 +3,7 @@ import { api as ax } from "../apiClient";
 import "./HopDong.css";
 import "./TicketManager.css";
 import "./ManagerForm.css";
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 
@@ -337,7 +338,7 @@ export default function TicketManager() {
             <option value="">Tất cả ưu tiên</option>
             {PRIORITIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
-          <button className="secondary-btn" type="button" onClick={loadTickets}>Tải lại</button>
+          <button className="secondary-btn btn-icon" type="button" onClick={loadTickets}><ActionIcon name="refresh" /> Tải lại</button>
         </div>
       </section>
 
@@ -359,7 +360,7 @@ export default function TicketManager() {
                 <p>Nhập thông tin tiếp nhận, phân công và xử lý.</p>
               </div>
             </div>
-            {editingId ? <button className="ghost-btn form-cancel-btn" type="button" onClick={resetForm}>Hủy sửa</button> : null}
+            {editingId ? <button className="ghost-btn form-cancel-btn btn-icon" type="button" onClick={resetForm}><ActionIcon name="close" /> Hủy sửa</button> : null}
           </div>
 
           <div className="manager-form-body">
@@ -476,8 +477,9 @@ export default function TicketManager() {
             {message.text ? <div className={`message ${message.type}`}>{message.text}</div> : null}
 
             <div className="actions">
-              <button className="secondary-btn" type="button" onClick={resetForm}>Làm mới</button>
-              <button className="primary-btn" type="submit" disabled={submitting}>{submitting ? "Đang lưu..." : editingId ? "Cập nhật ticket" : "Thêm ticket"}</button>
+              <button className="secondary-btn btn-icon" type="button" onClick={resetForm}><ActionIcon name="refresh" /> Làm mới</button>
+              <button className="primary-btn btn-icon" type="submit" disabled={submitting}>
+                      <ActionIcon name="save" />{submitting ? "Đang lưu..." : editingId ? "Cập nhật ticket" : "Thêm ticket"}</button>
             </div>
           </div>
         </form>
@@ -525,9 +527,9 @@ export default function TicketManager() {
                       <td>{formatDateTime(ticket.ngayHenXuLy)}</td>
                       <td>
                         <div className="row-actions">
-                          <button type="button" className="ghost-btn" onClick={() => selectTicket(ticket)}>Phản hồi</button>
-                          <button type="button" className="ghost-btn" onClick={() => handleEdit(ticket)}>Sửa</button>
-                          <button type="button" className="danger-btn" onClick={() => handleDelete(ticket)}>Xóa</button>
+                          <button type="button" className="ghost-btn btn-icon" onClick={() => selectTicket(ticket)}><ActionIcon name="reply" /> Phản hồi</button>
+                          <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(ticket)}><ActionIcon name="edit" /> Sửa</button>
+                          <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(ticket)}><ActionIcon name="delete" /> Xóa</button>
                         </div>
                       </td>
                     </tr>
@@ -575,7 +577,7 @@ export default function TicketManager() {
                   <label>Nội dung phản hồi <span className="ticket-req">*</span>
                     <textarea name="noiDung" value={feedbackForm.noiDung} onChange={handleFeedbackChange} placeholder="Nhập nội dung xử lý hoặc phản hồi khách hàng" />
                   </label>
-                  <button className="primary-btn" type="submit">Thêm phản hồi</button>
+                  <button className="primary-btn btn-icon" type="submit"><ActionIcon name="add" /> Thêm phản hồi</button>
                 </form>
 
                 <div className="ticket-timeline">

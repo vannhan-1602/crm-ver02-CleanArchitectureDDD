@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { ActionIcon, ModuleIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL = "http://localhost:8081";
 
@@ -266,8 +267,8 @@ export default function UserPermissionManager({ token }) {
             <h2 style={{ fontSize: 16, fontWeight: 500, margin: 0 }}>Phân quyền người dùng</h2>
             <p style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>Nguồn: HT_UserModulePermission</p>
           </div>
-          <button onClick={loadUsers} style={s.reloadBtn}>
-            ↺ Tải lại
+          <button onClick={loadUsers} style={{ ...s.reloadBtn, ...s.btnIcon }}>
+            <ActionIcon name="refresh" /> Tải lại
           </button>
         </div>
 
@@ -353,8 +354,15 @@ export default function UserPermissionManager({ token }) {
                         return (
                             <tr key={perm.moduleKey} style={{ cursor: "default" }}>
                               <td style={s.td}>
-                                <div style={{ fontWeight: 500, fontSize: 13 }}>{mod?.name || perm.moduleKey}</div>
-                                <div style={{ fontSize: 11, color: "#6b7280", marginTop: 1 }}>{mod?.path}</div>
+                                <div style={s.moduleCell}>
+                                  <span style={s.moduleIcon}>
+                                    <ModuleIcon moduleKey={perm.moduleKey} size={16} />
+                                  </span>
+                                  <span style={{ minWidth: 0 }}>
+                                    <div style={{ fontWeight: 500, fontSize: 13 }}>{mod?.name || perm.moduleKey}</div>
+                                    <div style={{ fontSize: 11, color: "#6b7280", marginTop: 1 }}>{mod?.path}</div>
+                                  </span>
+                                </div>
                               </td>
                               {ACTIONS.map(([key]) => (
                                   <td key={key} style={{ ...s.td, textAlign: "center" }}>
@@ -378,9 +386,9 @@ export default function UserPermissionManager({ token }) {
                     <button
                         onClick={savePermissions}
                         disabled={saving || isAdmin}
-                        style={{ ...s.saveBtn, opacity: saving || isAdmin ? 0.5 : 1, cursor: saving || isAdmin ? "not-allowed" : "pointer" }}
+                        style={{ ...s.saveBtn, ...s.btnIcon, opacity: saving || isAdmin ? 0.5 : 1, cursor: saving || isAdmin ? "not-allowed" : "pointer" }}
                     >
-                      {saving ? "Đang lưu…" : "💾 Lưu quyền"}
+                      <><ActionIcon name="save" /> {saving ? "Đang lưu…" : "Lưu quyền"}</>
                     </button>
                   </div>
                 </div>
@@ -392,6 +400,12 @@ export default function UserPermissionManager({ token }) {
 }
 
 const s = {
+  btnIcon: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
   grid: {
     display: "grid",
     gridTemplateColumns: "280px minmax(0, 1fr)",
@@ -480,6 +494,23 @@ const s = {
     padding: "6px 12px",
   },
   table: { width: "100%", borderCollapse: "collapse" },
+  moduleCell: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    minWidth: 0,
+  },
+  moduleIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    background: "#E6F1FB",
+    color: "#185FA5",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
   th: {
     fontSize: 11,
     fontWeight: 500,

@@ -4,6 +4,7 @@ import "./HopDong.css";
 import "./KhachHang.css";
 import "./HoatDong.css";
 import "./ManagerForm.css";
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
@@ -351,11 +352,11 @@ function HoatDongManager() {
             ))}
           </select>
           <button
-            className="secondary-btn"
+            className="secondary-btn btn-icon"
             type="button"
             onClick={loadHoatDong}
           >
-            Tải lại
+            <ActionIcon name="refresh" /> Tải lại
           </button>
         </div>
       </section>
@@ -396,8 +397,8 @@ function HoatDongManager() {
               </div>
             </div>
             {editingId ? (
-              <button className="ghost-btn form-cancel-btn" type="button" onClick={resetForm}>
-                Hủy sửa
+              <button className="ghost-btn form-cancel-btn btn-icon" type="button" onClick={resetForm}>
+                <ActionIcon name="close" /> Hủy sửa
               </button>
             ) : null}
           </div>
@@ -534,10 +535,11 @@ function HoatDongManager() {
             {success ? <div className="message success">{success}</div> : null}
 
             <div className="actions">
-              <button className="secondary-btn" type="button" onClick={resetForm}>
-                Làm mới
+              <button className="secondary-btn btn-icon" type="button" onClick={resetForm}>
+                <ActionIcon name="refresh" /> Làm mới
               </button>
-              <button className="primary-btn" type="submit" disabled={submitting}>
+              <button className="primary-btn btn-icon" type="submit" disabled={submitting}>
+                      <ActionIcon name="save" />
                 {submitting ? "Đang lưu..." : editingId ? "Cập nhật hoạt động" : "Thêm hoạt động"}
               </button>
             </div>
@@ -624,17 +626,17 @@ function HoatDongManager() {
                           <div className="row-actions">
                             <button
                               type="button"
-                              className="ghost-btn"
+                              className="ghost-btn btn-icon"
                               onClick={() => handleEdit(item)}
                             >
-                              Sửa
+                              <ActionIcon name="edit" /> Sửa
                             </button>
                             <button
                               type="button"
-                              className="danger-btn"
+                              className="danger-btn btn-icon"
                               onClick={() => handleDelete(item.id)}
                             >
-                              Xóa
+                              <ActionIcon name="delete" /> Xóa
                             </button>
                           </div>
                         </td>

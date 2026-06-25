@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { API_BASE_URL, api as ax, getCurrentUser, getPermissions } from "../apiClient";
 import "./SanPham.css";
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const formatVND = (n) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
@@ -159,21 +160,21 @@ function ImageModal({ product, baseUrl, onClose, onRefresh, setGlobalMsg }) {
                           <span className="img-idx-badge">{i + 1}</span>
                           <div className="img-card-actions">
                             {img.isMain !== 1 && (
-                                <button className="img-action-btn img-action-set-main" onClick={() => handleSetMain(img.id)}>
+                                <button className="img-action-btn img-action-set-main btn-icon" onClick={() => handleSetMain(img.id)}>
                                   Đặt chính
                                 </button>
                             )}
                             <button
-                                className="img-action-btn img-action-delete"
+                                className="img-action-btn img-action-delete btn-icon"
                                 onClick={(e) => { e.stopPropagation(); setDeleteTarget(img.id); }}
-                            >Xóa</button>
+                            ><ActionIcon name="delete" /> Xóa</button>
                           </div>
                           {deleteTarget === img.id && (
                               <div className="img-delete-confirm" onClick={(e) => e.stopPropagation()}>
                                 <p>Xóa ảnh này?</p>
                                 <div className="img-delete-confirm-btns">
-                                  <button className="img-confirm-yes" onClick={() => handleDeleteImage(img.id)}>Xóa</button>
-                                  <button className="img-confirm-no" onClick={() => setDeleteTarget(null)}>Hủy</button>
+                                  <button className="img-confirm-yes btn-icon" onClick={() => handleDeleteImage(img.id)}><ActionIcon name="delete" /> Xóa</button>
+                                  <button className="img-confirm-no btn-icon" onClick={() => setDeleteTarget(null)}><ActionIcon name="close" /> Hủy</button>
                                 </div>
                               </div>
                           )}
@@ -227,8 +228,9 @@ function ImageModal({ product, baseUrl, onClose, onRefresh, setGlobalMsg }) {
                   {previews.length > 0 ? `${previews.length} ảnh đã chọn, chưa upload` : "Chọn ảnh để bắt đầu upload"}
                 </span>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button className="secondary-btn" type="button" onClick={onClose}>Đóng</button>
-                  <button className="primary-btn" type="button" disabled={previews.length === 0 || uploading} onClick={handleUpload}>
+                  <button className="secondary-btn btn-icon" type="button" onClick={onClose}><ActionIcon name="close" /> Đóng</button>
+                  <button className="primary-btn btn-icon" type="button" disabled={previews.length === 0 || uploading} onClick={handleUpload}>
+                      <ActionIcon name="add" />
                     {uploading ? "Đang upload..." : `Upload${previews.length > 0 ? ` (${previews.length})` : ""}`}
                   </button>
                 </div>
@@ -375,16 +377,16 @@ function ProductDetailModal({ product, categories, baseUrl, onClose, onEdit, onM
 
               <div className="detail-actions">
                 {onEdit && (
-                    <button className="primary-btn" type="button" onClick={() => { onEdit(product); onClose(); }}>
-                      ✏️ Chỉnh sửa
+                    <button className="primary-btn btn-icon" type="button" onClick={() => { onEdit(product); onClose(); }}>
+                      <ActionIcon name="edit" /> Chỉnh sửa
                     </button>
                 )}
                 {onManageImages && (
-                    <button className="secondary-btn" type="button" onClick={() => { onManageImages(product); onClose(); }}>
-                      🖼 Quản lý ảnh
+                    <button className="secondary-btn btn-icon" type="button" onClick={() => { onManageImages(product); onClose(); }}>
+                      <ActionIcon name="image" /> Quản lý ảnh
                     </button>
                 )}
-                <button className="ghost-btn" type="button" onClick={onClose}>Đóng</button>
+                <button className="ghost-btn btn-icon" type="button" onClick={onClose}><ActionIcon name="close" /> Đóng</button>
               </div>
             </div>
           </div>
@@ -560,7 +562,7 @@ export default function SanPhamManager() {
           </div>
           <div className="toolbar">
             <div style={{ position: "relative" }}>
-              <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: "#9ca3af", pointerEvents: "none" }}>🔍</span>
+              <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: "#9ca3af", pointerEvents: "none" }}><ActionIcon name="search" size={15} /></span>
               <input className="search" type="search" placeholder="Tìm theo tên, mã..."
                      value={search} onChange={(e) => setSearch(e.target.value)}
                      style={{ paddingLeft: 34 }} />
@@ -574,9 +576,9 @@ export default function SanPhamManager() {
               <option value="1">Đang bán</option>
               <option value="0">Ngừng bán</option>
             </select>
-            <button className="secondary-btn" type="button" onClick={fetchAll}
+            <button className="secondary-btn btn-icon" type="button" onClick={fetchAll}
                     style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 14 }}>↻</span> Tải lại
+              <ActionIcon name="refresh" /> Tải lại
             </button>
           </div>
         </section>
@@ -618,7 +620,7 @@ export default function SanPhamManager() {
                     </div>
                   </div>
                   {editId && (
-                      <button className="ghost-btn form-cancel-btn" type="button" onClick={resetForm}>Hủy sửa</button>
+                      <button className="ghost-btn form-cancel-btn btn-icon" type="button" onClick={resetForm}><ActionIcon name="close" /> Hủy sửa</button>
                   )}
                 </div>
 
@@ -675,8 +677,9 @@ export default function SanPhamManager() {
                   )}
 
                   <div className="actions">
-                    <button className="secondary-btn" type="button" onClick={resetForm}>Làm mới</button>
-                    <button className="primary-btn" type="submit" disabled={saving}>
+                    <button className="secondary-btn btn-icon" type="button" onClick={resetForm}><ActionIcon name="refresh" /> Làm mới</button>
+                    <button className="primary-btn btn-icon" type="submit" disabled={saving}>
+                      <ActionIcon name="save" />
                       {saving ? "Đang lưu..." : editId ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
                     </button>
                   </div>
@@ -753,14 +756,14 @@ export default function SanPhamManager() {
                       {canWriteProducts && (
                           <td>
                             <div className="row-actions">
-                              <button className="ghost-btn" type="button" onClick={() => setDetailProduct(p)}
-                                      title="Xem chi tiết">🔍</button>
-                              <button className="ghost-btn" type="button" onClick={() => setImgProduct(p)}
-                                      title="Quản lý ảnh">🖼</button>
-                              <button className="ghost-btn" type="button" onClick={() => openEdit(p)}
-                                      title="Chỉnh sửa">✏️</button>
-                              <button className="danger-btn" type="button" onClick={() => setDeleteConfirm(p)}
-                                      title="Xóa">🗑</button>
+                              <button className="ghost-btn btn-icon" type="button" onClick={() => setDetailProduct(p)}
+                                      title="Xem chi tiết"><ActionIcon name="search" /></button>
+                              <button className="ghost-btn btn-icon" type="button" onClick={() => setImgProduct(p)}
+                                      title="Quản lý ảnh"><ActionIcon name="image" /></button>
+                              <button className="ghost-btn btn-icon" type="button" onClick={() => openEdit(p)}
+                                      title="Chỉnh sửa"><ActionIcon name="edit" /></button>
+                              <button className="danger-btn btn-icon" type="button" onClick={() => setDeleteConfirm(p)}
+                                      title="Xóa"><ActionIcon name="delete" /></button>
                             </div>
                           </td>
                       )}
@@ -805,7 +808,7 @@ export default function SanPhamManager() {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button className="secondary-btn" type="button" onClick={() => setDeleteConfirm(null)}>Hủy bỏ</button>
+                  <button className="secondary-btn btn-icon" type="button" onClick={() => setDeleteConfirm(null)}><ActionIcon name="close" /> Hủy bỏ</button>
                   <button
                       type="button"
                       style={{
@@ -815,7 +818,7 @@ export default function SanPhamManager() {
                       }}
                       onClick={() => handleDelete(deleteConfirm)}
                   >
-                    🗑 Xóa sản phẩm
+                    <ActionIcon name="delete" /> Xóa sản phẩm
                   </button>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { authFetch } from "../apiClient"
 import "./BaoCaoThongKe.css"
+import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081"
 const REPORT_TABS = [
@@ -115,7 +116,8 @@ function BaoCaoThongKe() {
           </p>
         </div>
         <div className="hero-actions">
-          <button className="refresh-btn" onClick={loadReport} disabled={loading}>
+          <button className="refresh-btn btn-icon" onClick={loadReport} disabled={loading}>
+            <ActionIcon name="refresh" />
             {loading ? "Đang tải..." : "Làm mới báo cáo"}
           </button>
           <div className="generated-at">
