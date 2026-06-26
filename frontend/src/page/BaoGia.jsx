@@ -19,6 +19,17 @@ const emptyForm = {
   chiTiets: [emptyLine],
 }
 
+const STATUS_LABELS = {
+  Nhap: 'Nháp',
+  DaGui: 'Đã gửi',
+  TuChoi: 'Từ chối',
+  ChapNhan: 'Chấp nhận',
+}
+
+function formatStatus(value) {
+  return STATUS_LABELS[value] ?? value ?? '-'
+}
+
 function formatCurrency(value) {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -389,16 +400,14 @@ function BaoGia() {
         <div>
           <p className="eyebrow">CRM / Báo giá</p>
           <h1>Quản lý báo giá</h1>
-          <p className="subtitle">
-            Tạo báo giá có nhiều dòng sản phẩm, tự tính tổng tiền và lưu qua API backend.
-          </p>
+         
         </div>
 
         <div className="toolbar">
           <input
             className="search"
             type="search"
-            placeholder="Tìm theo mã, khách hàng, sản phẩm, trạng thái..."
+            placeholder="🔎Tìm theo mã, khách hàng, sản phẩm, trạng thái..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -436,7 +445,7 @@ function BaoGia() {
           <div className="panel-head">
             <div>
               <h2>{editingId ? 'Cập nhật báo giá' : 'Tạo báo giá mới'}</h2>
-              <p>Dữ liệu sẽ gọi vào API `api/bao-gia`.</p>
+             
             </div>
             {editingId ? (
               <button className="ghost-btn btn-icon" type="button" onClick={resetForm}>
@@ -492,10 +501,11 @@ function BaoGia() {
           <label>
             Trạng thái
             <select name="trangThai" value={form.trangThai} onChange={handleFieldChange}>
-              <option value="Nhap">Nháp</option>
-              <option value="DaGui">Đã gửi</option>
-              <option value="TuChoi">Từ chối</option>
-              <option value="ChapNhan">Chấp nhận</option>
+              {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
 
@@ -639,7 +649,7 @@ function BaoGia() {
                       <td>{formatCurrency(item.tongTien)}</td>
                       <td>
                         <span className={`badge badge-${String(item.trangThai || '').toLowerCase()}`}>
-                          {item.trangThai || '-'}
+                          {formatStatus(item.trangThai)}
                         </span>
                       </td>
                       <td>{formatDateTime(item.updatedAt)}</td>

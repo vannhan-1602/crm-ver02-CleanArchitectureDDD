@@ -194,7 +194,7 @@ CREATE TABLE `hd_baogia_chitiet` (
   `Id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `BaoGia_Id` bigint unsigned NOT NULL,
   `SanPham_Id` int unsigned NOT NULL,
-  `SoLuong` int NOT NULL DEFAULT (0),
+  `SoLuong` int NOT NULL DEFAULT 0,
   `DonGia` decimal(18,2) NOT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_bgct_bg` (`BaoGia_Id`),
