@@ -717,13 +717,13 @@ export default function SanPhamManager() {
                   <th className="right">Tồn kho</th>
                   <th>Trạng thái</th>
                   <th>Hình ảnh</th>
-                  {canWriteProducts && <th className="right">Hành động</th>}
+                  <th className="right">H?nh ??ng</th>
                 </tr>
                 </thead>
                 <tbody>
                 {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={canWriteProducts ? 9 : 8} className="empty-row">
+                      <td colSpan={9} className="empty-row">
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
                           <span style={{ fontSize: 32 }}>{loading ? "⏳" : "🔍"}</span>
                           <span>{loading ? "Đang tải dữ liệu..." : "Không có sản phẩm phù hợp"}</span>
@@ -749,20 +749,22 @@ export default function SanPhamManager() {
                         </span>
                       </td>
                       <td>{renderThumbs(p)}</td>
-                      {canWriteProducts && (
-                          <td>
-                            <div className="row-actions">
-                              <button className="ghost-btn btn-icon" type="button" onClick={() => setDetailProduct(p)}
-                                      title="Xem chi tiết"><ActionIcon name="search" /></button>
-                              <button className="ghost-btn btn-icon" type="button" onClick={() => setImgProduct(p)}
-                                      title="Quản lý ảnh"><ActionIcon name="image" /></button>
-                              <button className="ghost-btn btn-icon" type="button" onClick={() => openEdit(p)}
-                                      title="Chỉnh sửa"><ActionIcon name="edit" /></button>
-                              <button className="danger-btn btn-icon" type="button" onClick={() => setDeleteConfirm(p)}
-                                      title="Xóa"><ActionIcon name="delete" /></button>
-                            </div>
-                          </td>
-                      )}
+                      <td>
+                        <div className="row-actions">
+                          <button className="ghost-btn btn-icon" type="button" onClick={() => setDetailProduct(p)}
+                                  title="Xem chi ti?t"><ActionIcon name="search" /></button>
+                          {canWriteProducts && (
+                              <>
+                                <button className="ghost-btn btn-icon" type="button" onClick={() => setImgProduct(p)}
+                                        title="Qu?n l? ?nh"><ActionIcon name="image" /></button>
+                                <button className="ghost-btn btn-icon" type="button" onClick={() => openEdit(p)}
+                                        title="Ch?nh s?a"><ActionIcon name="edit" /></button>
+                                <button className="danger-btn btn-icon" type="button" onClick={() => setDeleteConfirm(p)}
+                                        title="X?a"><ActionIcon name="delete" /></button>
+                              </>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                 ))}
                 </tbody>

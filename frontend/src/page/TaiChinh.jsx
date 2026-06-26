@@ -273,6 +273,10 @@ function TaiChinh() {
   }, [activeItems, search]);
 
   const activeTabLabel = TABS.find((tab) => tab.id === activeTab)?.label;
+  const canWriteActiveTab =
+    (activeTab === "hoaDon" && canWriteFinanceTab("HOA_DON")) ||
+    (activeTab === "phieuThu" && canWriteFinanceTab("PHIEU_THU")) ||
+    (activeTab === "phieuChi" && canWriteFinanceTab("PHIEU_CHI"));
   const customerNameById = useMemo(() => {
     const names = new Map();
     hopDongs.forEach((hopDong) => {
@@ -834,14 +838,16 @@ function TaiChinh() {
           </td>
           <td>{formatDateTime(item.updatedAt)}</td>
           <td>
-            <div className="row-actions">
-              <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
-                <ActionIcon name="edit" /> Sửa
-              </button>
-              <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
-                <ActionIcon name="delete" /> Xóa
-              </button>
-            </div>
+            {canWriteActiveTab ? (
+              <div className="row-actions">
+                <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
+                  <ActionIcon name="edit" /> S?a
+                </button>
+                <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
+                  <ActionIcon name="delete" /> X?a
+                </button>
+              </div>
+            ) : null}
           </td>
         </tr>
       ));
@@ -860,14 +866,16 @@ function TaiChinh() {
           <td>{formatDateTime(item.ngayTao)}</td>
           <td>{formatDateTime(item.updatedAt)}</td>
           <td>
-            <div className="row-actions">
-              <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
-                <ActionIcon name="edit" /> Sửa
-              </button>
-              <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
-                <ActionIcon name="delete" /> Xóa
-              </button>
-            </div>
+            {canWriteActiveTab ? (
+              <div className="row-actions">
+                <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
+                  <ActionIcon name="edit" /> S?a
+                </button>
+                <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
+                  <ActionIcon name="delete" /> X?a
+                </button>
+              </div>
+            ) : null}
           </td>
         </tr>
       );
@@ -1000,8 +1008,8 @@ function TaiChinh() {
         </section>
       ) : null}
 
-      <section className="content-grid">
-        <form className="panel form-panel" onSubmit={handleSubmit}>
+      <section className="content-grid" style={!canWriteActiveTab ? { gridTemplateColumns: "1fr" } : undefined}>
+        {canWriteActiveTab ? <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
               <h2>{editing.id ? "Cập nhật" : "Tạo mới"}</h2>
@@ -1028,7 +1036,7 @@ function TaiChinh() {
               Làm mới form
             </button>
           </div>
-        </form>
+        </form> : null}
 
         <section className="panel table-panel">
           <div className="panel-head">

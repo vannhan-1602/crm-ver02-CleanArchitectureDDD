@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { authFetch } from "../apiClient";
+import { authFetch, canWriteModule } from "../apiClient";
 import "./HopDong.css";
 import { ActionIcon } from "../moduleIcons.jsx";
 
@@ -35,6 +35,7 @@ function formatDateTime(value) {
 }
 
 function HopDong() {
+  const canWriteHopDong = canWriteModule("HOP_DONG");
   const [items, setItems] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -265,8 +266,8 @@ function HopDong() {
         </article>
       </section>
 
-      <section className="content-grid">
-        <form className="panel form-panel" onSubmit={handleSubmit}>
+      <section className="content-grid" style={!canWriteHopDong ? { gridTemplateColumns: "1fr" } : undefined}>
+        {canWriteHopDong ? <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
               <h2>{editingId ? "Cập nhật hợp đồng" : "Tạo hợp đồng mới"}</h2>
@@ -355,7 +356,7 @@ function HopDong() {
               Làm mới form
             </button>
           </div>
-        </form>
+        </form> : null}
 
         <section className="panel table-panel">
           <div className="panel-head">
@@ -413,20 +414,24 @@ function HopDong() {
                       <td>{formatDateTime(item.updatedAt)}</td>
                       <td>
                         <div className="row-actions">
-                          <button
+                          {canWriteHopDong ? (
+                            <>
+                              <button
                             type="button"
                             className="ghost-btn btn-icon"
                             onClick={() => handleEdit(item)}
                           >
-                            <ActionIcon name="edit" /> Sửa
-                          </button>
-                          <button
+                                <ActionIcon name="edit" /> Sửa
+                              </button>
+                              <button
                             type="button"
                             className="danger-btn btn-icon"
                             onClick={() => handleDelete(item.id)}
                           >
-                            <ActionIcon name="delete" /> Xóa
-                          </button>
+                                <ActionIcon name="delete" /> Xóa
+                              </button>
+                            </>
+                          ) : null}
                         </div>
                       </td>
                     </tr>

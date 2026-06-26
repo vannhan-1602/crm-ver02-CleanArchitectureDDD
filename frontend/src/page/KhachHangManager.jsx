@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { authFetch } from "../apiClient";
+import { authFetch, canWriteModule } from "../apiClient";
 import "./HopDong.css";
 import "./KhachHang.css";
 import "./ManagerForm.css";
@@ -61,6 +61,7 @@ function formatDateTime(value) {
 
 // ─── component ──────────────────────────────────────────────────────────────
 function KhachHangManager() {
+  const canWriteKhachHang = canWriteModule("KHACH_HANG");
   const [items, setItems] = useState([]);
   const [nhanVienList, setNhanVienList] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -338,9 +339,9 @@ function KhachHangManager() {
       </section>
 
       {/* CONTENT */}
-      <section className="content-grid">
+      <section className="content-grid" style={!canWriteKhachHang ? { gridTemplateColumns: "1fr" } : undefined}>
         {/* FORM */}
-        <form className="panel form-panel" onSubmit={handleSubmit}>
+        {canWriteKhachHang ? <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
             <div className="form-title-wrap">
               <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
@@ -484,7 +485,7 @@ function KhachHangManager() {
               </button>
             </div>
           </div>
-        </form>
+        </form> : null}
 
         {/* TABLE */}
         <section className="panel table-panel">
@@ -604,6 +605,8 @@ function KhachHangManager() {
                       <td>{formatDateTime(item.updatedAt)}</td>
                       <td>
                         <div className="row-actions">
+                          {canWriteKhachHang ? (
+                            <>
                           <button
                             type="button"
                             className="ghost-btn btn-icon"
@@ -618,6 +621,8 @@ function KhachHangManager() {
                           >
                             <ActionIcon name="delete" /> Xóa
                           </button>
+                            </>
+                          ) : null}
                         </div>
                       </td>
                     </tr>

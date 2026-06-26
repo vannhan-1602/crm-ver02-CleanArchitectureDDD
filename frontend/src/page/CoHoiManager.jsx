@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { api as ax } from "../apiClient";
+import { api as ax, canWriteModule } from "../apiClient";
 import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
@@ -89,7 +89,7 @@ function SelectField({ label, name, value, onChange, options, placeholder, requi
 }
 
 /* ─── DetailModal ─── */
-function DetailModal({ item, onClose, onEdit, nhanViens, leads, khachHangs }) {
+function DetailModal({ item, onClose, onEdit, nhanViens, leads, khachHangs, canWrite }) {
     useEffect(() => {
         const h = (e) => { if (e.key === "Escape") onClose(); };
         window.addEventListener("keydown", h);
@@ -150,9 +150,11 @@ function DetailModal({ item, onClose, onEdit, nhanViens, leads, khachHangs }) {
                         </div>
                     )}
                     <div className="coho-detail-actions">
-                        <button className="coho-primary-btn btn-icon" onClick={() => { onEdit(item); onClose(); }}>
-                            <ActionIcon name="edit" /> Chỉnh sửa
-                        </button>
+                        {canWrite ? (
+                            <button className="coho-primary-btn btn-icon" onClick={() => { onEdit(item); onClose(); }}>
+                                <ActionIcon name="edit" /> Ch?nh s?a
+                            </button>
+                        ) : null}
                         <button className="coho-ghost-btn btn-icon" onClick={onClose}><ActionIcon name="close" /> Đóng</button>
                     </div>
                 </div>
@@ -165,6 +167,7 @@ function DetailModal({ item, onClose, onEdit, nhanViens, leads, khachHangs }) {
    Main Component
 ═══════════════════════════════════════ */
 export default function CoHoiManager() {
+    const canWriteCoHoi = canWriteModule("CO_HOI");
     const [items, setItems]                 = useState([]);
     const [loading, setLoading]             = useState(true);
     const [search, setSearch]               = useState("");
@@ -392,10 +395,10 @@ export default function CoHoiManager() {
             </section>
 
             {/* ── Main grid ── */}
-            <section className="coho-grid">
+            <section className="coho-grid" style={!canWriteCoHoi ? { gridTemplateColumns: "1fr" } : undefined}>
 
                 {/* ── Form panel ── */}
-                <div className="coho-panel coho-form-panel">
+                {canWriteCoHoi ? <div className="coho-panel coho-form-panel">
                     <div className={`coho-panel-head form-panel-head ${editId ? "is-edit" : ""}`}>
                         <div className="form-title-wrap">
                             <div className="form-title-icon" aria-hidden="true">{editId ? "✎" : "+"}</div>
@@ -541,7 +544,7 @@ export default function CoHoiManager() {
                             </div>
                         </div>
                     </form>
-                </div>
+                </div> : null}
 
                 {/* ── Table panel ── */}
                 <div className="coho-panel coho-table-panel">
@@ -609,12 +612,16 @@ export default function CoHoiManager() {
                                             <button className="coho-ghost-btn btn-icon" type="button" onClick={() => setDetailItem(p)}>
                                                 <ActionIcon name="search" /> Chi tiết
                                             </button>
+                                            {canWriteCoHoi ? (
+                                                <>
                                             <button className="coho-ghost-btn btn-icon" type="button" onClick={() => openEdit(p)}>
                                                 <ActionIcon name="edit" /> Sửa
                                             </button>
                                             <button className="coho-danger-btn btn-icon" type="button" onClick={() => setDeleteConfirm(p)}>
-                                                <ActionIcon name="delete" /> Xóa
+                                                <ActionIcon name="delete" /> X?a
                                             </button>
+                                                </>
+                                            ) : null}
                                         </div>
                                     </td>
                                 </tr>
@@ -626,7 +633,7 @@ export default function CoHoiManager() {
             </section>
 
             {/* ── Delete confirm ── */}
-            {deleteConfirm && (
+            {canWriteCoHoi && deleteConfirm && (
                 <div className="coho-overlay">
                     <div className="coho-modal coho-modal-sm">
                         <div className="coho-modal-header">
@@ -659,6 +666,7 @@ export default function CoHoiManager() {
                     nhanViens={nhanViens}
                     leads={leads}
                     khachHangs={khachHangs}
+                    canWrite={canWriteCoHoi}
                 />
             )}
         </main>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { api as ax } from "../apiClient";
+import { api as ax, canWriteModule } from "../apiClient";
 import "./HopDong.css";
 import "./TicketManager.css";
 import "./ManagerForm.css";
@@ -81,6 +81,7 @@ function formatDateTime(value) {
 }
 
 export default function TicketManager() {
+  const canWriteTickets = canWriteModule("TICKET");
   const [tickets, setTickets] = useState([]);
   const [loaiTickets, setLoaiTickets] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
@@ -423,8 +424,8 @@ export default function TicketManager() {
         <article className="stat-card"><span>Khẩn cấp</span><strong>{stats.khanCap}</strong></article>
       </section>
 
-      <section className="content-grid ticket-grid">
-        <form className="panel form-panel ticket-form" onSubmit={handleSubmit}>
+      <section className="content-grid ticket-grid" style={!canWriteTickets ? { gridTemplateColumns: "1fr" } : undefined}>
+        {canWriteTickets ? <form className="panel form-panel ticket-form" onSubmit={handleSubmit}>
           <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
             <div className="form-title-wrap">
               <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
@@ -582,7 +583,7 @@ export default function TicketManager() {
                       <ActionIcon name="save" />{submitting ? "Đang lưu..." : editingId ? "Cập nhật ticket" : "Thêm ticket"}</button>
             </div>
           </div>
-        </form>
+        </form> : null}
 
         <section className="ticket-main-column">
           <section className="panel table-panel">
@@ -628,8 +629,12 @@ export default function TicketManager() {
                       <td>
                         <div className="row-actions">
                           <button type="button" className="ghost-btn btn-icon" onClick={() => selectTicket(ticket)}><ActionIcon name="reply" /> Phản hồi</button>
-                          <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(ticket)}><ActionIcon name="edit" /> Sửa</button>
-                          <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(ticket)}><ActionIcon name="delete" /> Xóa</button>
+                          {canWriteTickets ? (
+                            <>
+                              <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(ticket)}><ActionIcon name="edit" /> Sửa</button>
+                              <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(ticket)}><ActionIcon name="delete" /> Xóa</button>
+                            </>
+                          ) : null}
                         </div>
                       </td>
                     </tr>
@@ -649,7 +654,7 @@ export default function TicketManager() {
 
             {selectedTicketFresh ? (
               <>
-                <form className="ticket-feedback-form" onSubmit={handleFeedbackSubmit}>
+                {canWriteTickets ? <form className="ticket-feedback-form" onSubmit={handleFeedbackSubmit}>
                   <div className="two-col">
                     <label>Người phản hồi
                       <select name="nguoiPhanHoiId" value={feedbackForm.nguoiPhanHoiId} onChange={handleFeedbackChange}>
@@ -677,18 +682,18 @@ export default function TicketManager() {
                           onChange={(event) => uploadAttachment(event.target.files?.[0], "feedback")}
                         />
                         {uploadingAttachment.feedback ? (
-                          <span className="ticket-attachment-status">Đang tải file...</span>
+                          <span className="ticket-attachment-status">?ang t?i file...</span>
                         ) : feedbackForm.fileDinhKem ? (
                           <div className="ticket-attachment-preview">
                             <a href={`${API_BASE_URL}${feedbackForm.fileDinhKem}`} target="_blank" rel="noreferrer">
                               {feedbackForm.fileDinhKem.split("/").pop()}
                             </a>
                             <button type="button" className="ghost-btn btn-icon" onClick={() => clearAttachment("feedback")}>
-                              <ActionIcon name="close" /> Bỏ file
+                              <ActionIcon name="close" /> B? file
                             </button>
                           </div>
                         ) : (
-                          <span className="ticket-attachment-status">Chưa chọn file</span>
+                          <span className="ticket-attachment-status">Ch?a ch?n file</span>
                         )}
                       </div>
                     </label>
@@ -697,7 +702,7 @@ export default function TicketManager() {
                     <textarea name="noiDung" value={feedbackForm.noiDung} onChange={handleFeedbackChange} placeholder="Nhập nội dung xử lý hoặc phản hồi khách hàng" />
                   </label>
                   <button className="primary-btn btn-icon" type="submit"><ActionIcon name="add" /> Thêm phản hồi</button>
-                </form>
+                </form> : null}
 
                 <div className="ticket-timeline">
                   {feedbackList.length === 0 ? (

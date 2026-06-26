@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { authFetch } from '../apiClient'
+import { authFetch, canWriteModule } from '../apiClient'
 import './BaoGia.css'
 import { ActionIcon } from "../moduleIcons.jsx";
 
@@ -49,6 +49,7 @@ function formatDateTime(value) {
 }
 
 function BaoGia() {
+  const canWriteBaoGia = canWriteModule("BAO_GIA")
   const [items, setItems] = useState([])
   const [products, setProducts] = useState([])
   const [khachHangList, setKhachHangList] = useState([])
@@ -440,8 +441,8 @@ function BaoGia() {
         </article>
       </section>
 
-      <section className="content-grid">
-        <form className="panel form-panel" onSubmit={handleSubmit}>
+      <section className="content-grid" style={!canWriteBaoGia ? { gridTemplateColumns: "1fr" } : undefined}>
+        {canWriteBaoGia ? <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-head">
             <div>
               <h2>{editingId ? 'Cập nhật báo giá' : 'Tạo báo giá mới'}</h2>
@@ -595,7 +596,7 @@ function BaoGia() {
               Làm mới form
             </button>
           </div>
-        </form>
+        </form> : null}
 
         <section className="panel table-panel">
           <div className="panel-head">
@@ -655,12 +656,16 @@ function BaoGia() {
                       <td>{formatDateTime(item.updatedAt)}</td>
                       <td>
                         <div className="row-actions">
+                          {canWriteBaoGia ? (
+                            <>
                           <button type="button" className="ghost-btn btn-icon" onClick={() => handleEdit(item)}>
                             <ActionIcon name="edit" /> Sửa
                           </button>
                           <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
-                            <ActionIcon name="delete" /> Xóa
+                            <ActionIcon name="delete" /> X?a
                           </button>
+                            </>
+                          ) : null}
                         </div>
                       </td>
                     </tr>

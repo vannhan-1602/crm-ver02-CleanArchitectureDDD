@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { authFetch } from "../apiClient";
+import { authFetch, canWriteModule } from "../apiClient";
 import "./HopDong.css";
 import "./KhachHang.css";
 import "./HoatDong.css";
@@ -60,6 +60,7 @@ function toInputDateTime(value) {
 
 // ─── component ──────────────────────────────────────────────────────────────
 function HoatDongManager() {
+  const canWriteHoatDong = canWriteModule("HOAT_DONG");
   const [items, setItems] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
   const [leadList, setLeadList] = useState([]);
@@ -382,9 +383,9 @@ function HoatDongManager() {
       </section>
 
       {/* CONTENT */}
-      <section className="content-grid">
+      <section className="content-grid" style={!canWriteHoatDong ? { gridTemplateColumns: "1fr" } : undefined}>
         {/* FORM */}
-        <form className="panel form-panel" onSubmit={handleSubmit}>
+        {canWriteHoatDong ? <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
             <div className="form-title-wrap">
               <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
@@ -544,7 +545,7 @@ function HoatDongManager() {
               </button>
             </div>
           </div>
-        </form>
+        </form> : null}
 
         {/* TABLE */}
         <section className="panel table-panel">
@@ -624,6 +625,8 @@ function HoatDongManager() {
                         <td>{formatDateTime(item.updatedAt)}</td>
                         <td>
                           <div className="row-actions">
+                            {canWriteHoatDong ? (
+                              <>
                             <button
                               type="button"
                               className="ghost-btn btn-icon"
@@ -638,6 +641,8 @@ function HoatDongManager() {
                             >
                               <ActionIcon name="delete" /> Xóa
                             </button>
+                              </>
+                            ) : null}
                           </div>
                         </td>
                       </tr>

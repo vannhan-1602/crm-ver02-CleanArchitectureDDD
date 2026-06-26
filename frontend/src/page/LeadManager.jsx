@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { authFetch } from "../apiClient";
+import { authFetch, canWriteModule } from "../apiClient";
 import "./LeadManager.css";
 import "./ManagerForm.css";
 import { ActionIcon } from "../moduleIcons.jsx";
@@ -33,6 +33,7 @@ function formatDateTime(value) {
 }
 
 function LeadManager() {
+  const canWriteLeads = canWriteModule("LEAD");
   const [items, setItems] = useState([]);
   const [nhanVienList, setNhanVienList] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -324,7 +325,7 @@ function LeadManager() {
       )}
 
       {/* Status Modal */}
-      {statusModal.visible && statusModal.lead && (
+      {canWriteLeads && statusModal.visible && statusModal.lead && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
@@ -414,9 +415,9 @@ function LeadManager() {
       </section>
 
       {/* Main Content */}
-      <section className="content-grid">
+      <section className="content-grid" style={!canWriteLeads ? { gridTemplateColumns: "1fr" } : undefined}>
         {/* Form Panel */}
-        <form className="panel form-panel" onSubmit={handleSubmit}>
+        {canWriteLeads ? <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
             <div className="form-title-wrap">
               <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
@@ -513,7 +514,7 @@ function LeadManager() {
               </button>
             </div>
           </div>
-        </form>
+        </form> : null}
 
         {/* Table Panel */}
         <section className="panel table-panel">
@@ -585,6 +586,8 @@ function LeadManager() {
                           >
                             Chi tiết
                           </button>
+                          {canWriteLeads ? (
+                            <>
                           <button
                             type="button"
                             className="ghost-btn btn-icon"
@@ -621,6 +624,8 @@ function LeadManager() {
                           >
                             <ActionIcon name="delete" /> Xóa
                           </button>
+                            </>
+                          ) : null}
                         </div>
                       </td>
                     </tr>
