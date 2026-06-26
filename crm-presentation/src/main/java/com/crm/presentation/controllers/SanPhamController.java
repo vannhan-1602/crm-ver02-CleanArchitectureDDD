@@ -8,7 +8,9 @@ import com.crm.application.sanpham.command.UpdateSanPhamCommand;
 import com.crm.application.sanpham.query.GetAllSanPhamQuery;
 import com.crm.application.sanpham.query.GetSanPhamByIdQuery;
 import com.crm.application.sanphamhinhanh.command.DeleteSanPhamHinhAnhCommand;
+import com.crm.application.sanphamhinhanh.command.SetMainSanPhamHinhAnhCommand;
 import com.crm.domain.entities.SanPham;
+import com.crm.domain.entities.SanPhamHinhAnh;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -76,6 +78,13 @@ public class SanPhamController {
             @PathVariable Integer hinhAnhId) {
         mediator.send(new DeleteSanPhamHinhAnhCommand(hinhAnhId));
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{sanPhamId}/hinhanh/{hinhAnhId}/setMain")
+    public ResponseEntity<SanPhamHinhAnh> setMainHinhAnh(
+            @PathVariable Integer sanPhamId,
+            @PathVariable Integer hinhAnhId) {
+        return ResponseEntity.ok(mediator.send(new SetMainSanPhamHinhAnhCommand(sanPhamId, hinhAnhId)));
     }
 
     @PutMapping("/{id}")

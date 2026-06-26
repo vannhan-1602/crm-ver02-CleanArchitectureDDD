@@ -22,6 +22,11 @@ public class SanPhamHinhAnhJpaRepoIml implements SanPhamHinhAnhRepo {
     }
 
     @Override
+    public List<SanPhamHinhAnh> findBySanPhamId(Integer sanPhamId) {
+        return repo.findBySanPhamId(sanPhamId).stream().map(SanPhamHinhAnhMapper::toDomain).toList();
+    }
+
+    @Override
     public Optional<SanPhamHinhAnh> findById(Integer id) {
         return repo.findById(id).map(SanPhamHinhAnhMapper::toDomain);
     }
@@ -29,6 +34,16 @@ public class SanPhamHinhAnhJpaRepoIml implements SanPhamHinhAnhRepo {
     @Override
     public SanPhamHinhAnh save(SanPhamHinhAnh sanPham) {
         return SanPhamHinhAnhMapper.toDomain(repo.save(SanPhamHinhAnhMapper.toJpa(sanPham)));
+    }
+
+    @Override
+    public List<SanPhamHinhAnh> saveAll(List<SanPhamHinhAnh> hinhAnh) {
+        return repo.saveAll(hinhAnh.stream()
+                        .map(SanPhamHinhAnhMapper::toJpa)
+                        .toList())
+                .stream()
+                .map(SanPhamHinhAnhMapper::toDomain)
+                .toList();
     }
 
     @Override

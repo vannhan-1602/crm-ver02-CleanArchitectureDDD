@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { clearSession, getPermissions, setSession } from "./apiClient";
+import { canAccessModule, clearSession, getPermissions, isAdminUser, setSession } from "./apiClient";
 import HopDong from "./page/HopDong";
 import TaiChinh from "./page/TaiChinh";
 import LeadManager from "./page/LeadManager";
@@ -40,11 +40,7 @@ function NoPermissionPage() {
 }
 
 function hasAdminAccess(user) {
-  return Boolean(user?.admin || user?.roleId === 1 || user?.roleName?.toLowerCase() === "admin");
-}
-
-function canUsePermission(permission) {
-  return Boolean(permission?.canView || permission?.canRead || permission?.canWrite);
+  return isAdminUser(user);
 }
 
 function App() {
@@ -81,10 +77,7 @@ function AppShell({ auth, onLogin, onLogout }) {
 
   const canUseModule = (moduleKeys = []) => {
     if (isAdmin) return true;
-    return moduleKeys.some((moduleKey) => {
-      const permission = userPermissions.find((item) => item.moduleKey === moduleKey);
-      return canUsePermission(permission);
-    });
+    return moduleKeys.some((moduleKey) => canAccessModule(moduleKey, currentUser, userPermissions));
   };
 
   const visibleModules = APP_MODULES.filter((module) => canUseModule(module.moduleKeys));

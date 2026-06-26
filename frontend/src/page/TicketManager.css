@@ -24,9 +24,35 @@
   grid-template-columns: 420px minmax(0, 1fr);
 }
 
-.ticket-form {
+.ticket-page .panel.form-panel.ticket-form {
   max-height: calc(100vh - 110px);
-  overflow: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.ticket-page .panel.form-panel.ticket-form::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ticket-page .panel.form-panel.ticket-form::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.ticket-page .panel.form-panel.ticket-form::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border: 2px solid #f1f5f9;
+  border-radius: 999px;
+}
+
+.ticket-page .panel.form-panel.ticket-form::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.ticket-page .ticket-form .panel-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .ticket-main-column {
@@ -170,8 +196,9 @@
     grid-template-columns: 1fr;
   }
 
-  .ticket-form {
+  .ticket-page .panel.form-panel.ticket-form {
     max-height: none;
+    overflow-y: visible;
   }
 }
 /* ── Fix form alignment ── */

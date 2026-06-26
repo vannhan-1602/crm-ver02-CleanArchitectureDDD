@@ -84,6 +84,7 @@ export default function TicketManager() {
   const [tickets, setTickets] = useState([]);
   const [loaiTickets, setLoaiTickets] = useState([]);
   const [khachHangList, setKhachHangList] = useState([]);
+  const [hopDongList, setHopDongList] = useState([]);
   const [nhanVienList, setNhanVienList] = useState([]);
   const [sanPhamList, setSanPhamList] = useState([]);
   const [feedbackList, setFeedbackList] = useState([]);
@@ -110,6 +111,21 @@ export default function TicketManager() {
     () => new Map(loaiTickets.map((item) => [String(item.id), item.tenLoai])),
     [loaiTickets],
   );
+  const hopDongMap = useMemo(
+    () => new Map(hopDongList.map((item) => [String(item.id), item])),
+    [hopDongList],
+  );
+
+  const formatHopDongLabel = (hopDong) => {
+    if (!hopDong) return "";
+    const maHopDong = hopDong.maHopDong || `HD #${hopDong.id}`;
+    const tenKhachHang = hopDong.tenKhachHang || khachHangMap.get(String(hopDong.khachHangId));
+    return tenKhachHang ? `${maHopDong} - ${tenKhachHang}` : maHopDong;
+  };
+  const availableHopDongs = useMemo(
+    () => hopDongList.filter((item) => !form.khachHangId || String(item.khachHangId) === String(form.khachHangId)),
+    [form.khachHangId, hopDongList],
+  );
 
   const loadTickets = async () => {
     setLoading(true);
@@ -124,14 +140,16 @@ export default function TicketManager() {
   };
 
   const loadLookups = async () => {
-    const [loai, khachHang, nhanVien, sanPham] = await Promise.allSettled([
+    const [loai, khachHang, hopDong, nhanVien, sanPham] = await Promise.allSettled([
       ax.get("/api/loai-ticket"),
       ax.get("/api/khach-hang"),
+      ax.get("/api/hop-dong"),
       ax.get("/api/nhan-vien"),
       ax.get("/api/sanpham"),
     ]);
     if (loai.status === "fulfilled") setLoaiTickets(Array.isArray(loai.value.data) ? loai.value.data : []);
     if (khachHang.status === "fulfilled") setKhachHangList(Array.isArray(khachHang.value.data) ? khachHang.value.data : []);
+    if (hopDong.status === "fulfilled") setHopDongList(Array.isArray(hopDong.value.data) ? hopDong.value.data : []);
     if (nhanVien.status === "fulfilled") setNhanVienList(Array.isArray(nhanVien.value.data) ? nhanVien.value.data : []);
     if (sanPham.status === "fulfilled") setSanPhamList(Array.isArray(sanPham.value.data) ? sanPham.value.data : []);
   };
@@ -193,6 +211,28 @@ export default function TicketManager() {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleHopDongChange = (event) => {
+    const { value } = event.target;
+    const hopDong = hopDongMap.get(String(value));
+    setForm((prev) => ({
+      ...prev,
+      hopDongId: value,
+      khachHangId: hopDong?.khachHangId ? String(hopDong.khachHangId) : prev.khachHangId,
+    }));
+  };
+
+  const handleKhachHangChange = (event) => {
+    const { value } = event.target;
+    setForm((prev) => {
+      const currentHopDong = hopDongMap.get(String(prev.hopDongId));
+      return {
+        ...prev,
+        khachHangId: value,
+        hopDongId: currentHopDong && String(currentHopDong.khachHangId) !== String(value) ? "" : prev.hopDongId,
+      };
+    });
   };
 
   const handleFeedbackChange = (event) => {
@@ -391,7 +431,7 @@ export default function TicketManager() {
               <div className="section-title">Liên kết</div>
               <div className="two-col">
                 <label className="field">Khách hàng <span className="ticket-req">*</span>
-                  <select name="khachHangId" value={form.khachHangId} onChange={handleChange}>
+                  <select name="khachHangId" value={form.khachHangId} onChange={handleKhachHangChange}>
                     <option value="">-- Chọn khách hàng --</option>
                     {khachHangList.map((item) => <option key={item.id} value={item.id}>{item.tenKhachHang ?? `KH #${item.id}`}</option>)}
                   </select>
@@ -408,8 +448,15 @@ export default function TicketManager() {
               </div>
 
               <div className="two-col">
-                <label className="field">Hợp đồng ID
-                  <input name="hopDongId" type="number" min="1" value={form.hopDongId} onChange={handleChange} placeholder="ID hợp đồng" />
+                <label className="field">Hợp đồng
+                  <select name="hopDongId" value={form.hopDongId} onChange={handleHopDongChange}>
+                    <option value="">-- Chọn hợp đồng --</option>
+                    {availableHopDongs.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {formatHopDongLabel(item)}
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <label className="field">File đính kèm
                   <input name="fileDinhKem" value={form.fileDinhKem} onChange={handleChange} placeholder="/uploads/..." />

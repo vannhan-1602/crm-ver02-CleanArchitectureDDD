@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { authFetch, getCurrentUser, getPermissions } from "../apiClient";
+import { authFetch, canAccessModule, canWriteModule } from "../apiClient";
 import "./HopDong.css";
 import { ActionIcon } from "../moduleIcons.jsx";
 
@@ -120,15 +120,8 @@ async function throwIfRequestFailed(response, fallbackMessage) {
 }
 
 function TaiChinh() {
-  const currentUser = getCurrentUser();
-  const userPermissions = getPermissions();
-  const canAccessModule = (moduleKey) => {
-    if (currentUser?.admin || currentUser?.roleId === 1 || currentUser?.roleName === "Admin") {
-      return true;
-    }
-    const permission = userPermissions.find((item) => item.moduleKey === moduleKey);
-    return Boolean(permission?.canView || permission?.canRead || permission?.canWrite);
-  };
+  const canAccessFinanceTab = (moduleKey) => canAccessModule(moduleKey === "HOA_DON" ? "HOA_DON" : "TAI_CHINH");
+  const canWriteFinanceTab = (moduleKey) => canWriteModule(moduleKey === "HOA_DON" ? "HOA_DON" : "TAI_CHINH");
 
   const [activeTab, setActiveTab] = useState("hoaDon");
   const [hoaDons, setHoaDons] = useState([]);
@@ -156,7 +149,7 @@ function TaiChinh() {
     try {
       const requests = [];
 
-      if (canAccessModule("HOA_DON")) {
+      if (canAccessFinanceTab("HOA_DON")) {
         requests.push(
           authFetch(`${API_BASE_URL}/api/hoa-don`).then(async (response) => {
             if (!response.ok) throw new Error(`Tải hóa đơn thất bại (${response.status})`);
@@ -178,7 +171,7 @@ function TaiChinh() {
         setHopDongs([]);
       }
 
-      if (canAccessModule("PHIEU_THU")) {
+      if (canAccessFinanceTab("PHIEU_THU")) {
         requests.push(
           authFetch(`${API_BASE_URL}/api/phieu-thu`).then(async (response) => {
             if (!response.ok) throw new Error(`Tải phiếu thu thất bại (${response.status})`);
@@ -189,7 +182,7 @@ function TaiChinh() {
         setPhieuThus([]);
       }
 
-      if (canAccessModule("PHIEU_CHI")) {
+      if (canAccessFinanceTab("PHIEU_CHI")) {
         requests.push(
           authFetch(`${API_BASE_URL}/api/phieu-chi`).then(async (response) => {
             if (!response.ok) throw new Error(`Tải phiếu chi thất bại (${response.status})`);
@@ -326,9 +319,9 @@ function TaiChinh() {
 
   const switchTab = (tab) => {
     if (
-      (tab === "hoaDon" && !canAccessModule("HOA_DON")) ||
-      (tab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
-      (tab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+      (tab === "hoaDon" && !canAccessFinanceTab("HOA_DON")) ||
+      (tab === "phieuThu" && !canAccessFinanceTab("PHIEU_THU")) ||
+      (tab === "phieuChi" && !canAccessFinanceTab("PHIEU_CHI"))
     ) {
       setError("Bạn không có quyền truy cập tab này");
       setSuccess("");
@@ -486,9 +479,9 @@ function TaiChinh() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (
-      (activeTab === "hoaDon" && !canAccessModule("HOA_DON")) ||
-      (activeTab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
-      (activeTab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+      (activeTab === "hoaDon" && !canWriteFinanceTab("HOA_DON")) ||
+      (activeTab === "phieuThu" && !canWriteFinanceTab("PHIEU_THU")) ||
+      (activeTab === "phieuChi" && !canWriteFinanceTab("PHIEU_CHI"))
     ) {
       setError("Bạn không có quyền lưu dữ liệu ở tab này");
       setSuccess("");
@@ -527,9 +520,9 @@ function TaiChinh() {
 
   const handleEdit = (item) => {
     if (
-      (activeTab === "hoaDon" && !canAccessModule("HOA_DON")) ||
-      (activeTab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
-      (activeTab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+      (activeTab === "hoaDon" && !canWriteFinanceTab("HOA_DON")) ||
+      (activeTab === "phieuThu" && !canWriteFinanceTab("PHIEU_THU")) ||
+      (activeTab === "phieuChi" && !canWriteFinanceTab("PHIEU_CHI"))
     ) {
       setError("Bạn không có quyền sửa dữ liệu ở tab này");
       setSuccess("");
@@ -571,9 +564,9 @@ function TaiChinh() {
 
   const handleDelete = async (id) => {
     if (
-      (activeTab === "hoaDon" && !canAccessModule("HOA_DON")) ||
-      (activeTab === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
-      (activeTab === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+      (activeTab === "hoaDon" && !canWriteFinanceTab("HOA_DON")) ||
+      (activeTab === "phieuThu" && !canWriteFinanceTab("PHIEU_THU")) ||
+      (activeTab === "phieuChi" && !canWriteFinanceTab("PHIEU_CHI"))
     ) {
       setError("Bạn không có quyền xóa dữ liệu ở tab này");
       setSuccess("");
@@ -979,9 +972,9 @@ function TaiChinh() {
             className={`finance-tab${activeTab === tab.id ? " active" : ""}`}
             onClick={() => switchTab(tab.id)}
             disabled={
-              (tab.id === "hoaDon" && !canAccessModule("HOA_DON")) ||
-              (tab.id === "phieuThu" && !canAccessModule("PHIEU_THU")) ||
-              (tab.id === "phieuChi" && !canAccessModule("PHIEU_CHI"))
+              (tab.id === "hoaDon" && !canAccessFinanceTab("HOA_DON")) ||
+              (tab.id === "phieuThu" && !canAccessFinanceTab("PHIEU_THU")) ||
+              (tab.id === "phieuChi" && !canAccessFinanceTab("PHIEU_CHI"))
             }
           >
             {tab.label}

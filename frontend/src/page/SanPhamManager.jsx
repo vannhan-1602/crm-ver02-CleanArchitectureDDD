@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { API_BASE_URL, api as ax, getCurrentUser, getPermissions } from "../apiClient";
+import { API_BASE_URL, api as ax, canWriteModule } from "../apiClient";
 import "./SanPham.css";
 import { ActionIcon } from "../moduleIcons.jsx";
 
@@ -399,11 +399,7 @@ function ProductDetailModal({ product, categories, baseUrl, onClose, onEdit, onM
    Main component
 ───────────────────────────────────────────── */
 export default function SanPhamManager() {
-  const currentUser = getCurrentUser();
-  const userPermissions = getPermissions();
-  const isAdmin = Boolean(currentUser?.admin || currentUser?.roleId === 1 || currentUser?.roleName?.toLowerCase() === "admin");
-  const productPermission = userPermissions.find((item) => item.moduleKey === "SAN_PHAM");
-  const canWriteProducts = isAdmin || Boolean(productPermission?.canWrite);
+  const canWriteProducts = canWriteModule("SAN_PHAM");
 
   const [products, setProducts]           = useState([]);
   const [categories, setCategories]       = useState([]);
