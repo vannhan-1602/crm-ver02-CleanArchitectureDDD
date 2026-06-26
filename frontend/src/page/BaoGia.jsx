@@ -662,7 +662,7 @@ function BaoGia() {
                             <ActionIcon name="edit" /> Sửa
                           </button>
                           <button type="button" className="danger-btn btn-icon" onClick={() => handleDelete(item.id)}>
-                            <ActionIcon name="delete" /> X?a
+                            <ActionIcon name="delete" /> Xóa
                           </button>
                             </>
                           ) : null}
