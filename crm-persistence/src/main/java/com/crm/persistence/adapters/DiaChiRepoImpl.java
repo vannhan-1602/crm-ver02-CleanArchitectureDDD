@@ -24,4 +24,9 @@ public class DiaChiRepoImpl implements DiaChiRepo {
                 .map(DiaChiMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public DiaChi save(DiaChi diaChi) {
+        return DiaChiMapper.toDomain(diaChiJPARepo.save(DiaChiMapper.toJpa(diaChi)));
+    }
 }

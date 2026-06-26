@@ -63,6 +63,7 @@ public class KhachHangController {
                 request.getMaSoThue(),
                 request.getNhanVienPhuTrachId()
         ));
+        saveDiaChiList(kh.getId(), request.getDiaChiList());
         return KhachHangResponse.from(kh, nhanVienRepository, diaChiRepo);
     }
 
@@ -79,7 +80,9 @@ public class KhachHangController {
                 request.getNhanVienPhuTrachId()
         );
         command.setId(id);
-        return KhachHangResponse.from(mediator.send(command), nhanVienRepository, diaChiRepo);
+        KhachHang kh = mediator.send(command);
+        saveDiaChiList(kh.getId(), request.getDiaChiList());
+        return KhachHangResponse.from(kh, nhanVienRepository, diaChiRepo);
     }
 
     @DeleteMapping("/{id}")
@@ -96,6 +99,7 @@ public class KhachHangController {
         private Integer tinhTrangId;
         private String maSoThue;
         private Integer nhanVienPhuTrachId;
+        private List<DiaChiRequest> diaChiList;
 
         public String getTenKhachHang()         { return tenKhachHang; }
         public String getEmail()                { return email; }
@@ -104,6 +108,7 @@ public class KhachHangController {
         public Integer getTinhTrangId()         { return tinhTrangId; }
         public String getMaSoThue()             { return maSoThue; }
         public Integer getNhanVienPhuTrachId()  { return nhanVienPhuTrachId; }
+        public List<DiaChiRequest> getDiaChiList() { return diaChiList; }
     }
 
     static class UpdateKhachHangRequest {
@@ -114,6 +119,7 @@ public class KhachHangController {
         private Integer tinhTrangId;
         private String maSoThue;
         private Integer nhanVienPhuTrachId;
+        private List<DiaChiRequest> diaChiList;
 
         public String getTenKhachHang()         { return tenKhachHang; }
         public String getEmail()                { return email; }
@@ -122,6 +128,60 @@ public class KhachHangController {
         public Integer getTinhTrangId()         { return tinhTrangId; }
         public String getMaSoThue()             { return maSoThue; }
         public Integer getNhanVienPhuTrachId()  { return nhanVienPhuTrachId; }
+        public List<DiaChiRequest> getDiaChiList() { return diaChiList; }
+    }
+
+    static class DiaChiRequest {
+        private Long id;
+        private String diaChiChiTiet;
+        private String tinhThanh;
+        private String quanHuyen;
+        private String phuongXa;
+        private String loaiDiaChi;
+        private Boolean isDefault;
+
+        public Long getId()              { return id; }
+        public String getDiaChiChiTiet() { return diaChiChiTiet; }
+        public String getTinhThanh()     { return tinhThanh; }
+        public String getQuanHuyen()     { return quanHuyen; }
+        public String getPhuongXa()      { return phuongXa; }
+        public String getLoaiDiaChi()    { return loaiDiaChi; }
+        public Boolean getIsDefault()    { return isDefault; }
+    }
+
+    private void saveDiaChiList(Long khachHangId, List<DiaChiRequest> diaChiList) {
+        if (diaChiList == null || diaChiList.isEmpty()) return;
+        for (int i = 0; i < diaChiList.size(); i++) {
+            DiaChiRequest item = diaChiList.get(i);
+            if (item == null || !hasDiaChiContent(item)) continue;
+            diaChiRepo.save(new DiaChi(
+                    item.getId(),
+                    khachHangId,
+                    trimToNull(item.getDiaChiChiTiet()),
+                    trimToNull(item.getTinhThanh()),
+                    trimToNull(item.getQuanHuyen()),
+                    trimToNull(item.getPhuongXa()),
+// dòng 16469
+                    trimToNull(item.getLoaiDiaChi()) == null ? "Office" : trimToNull(item.getLoaiDiaChi()),                    Boolean.TRUE.equals(item.getIsDefault()) || i == 0
+            ));
+        }
+    }
+
+    private boolean hasDiaChiContent(DiaChiRequest item) {
+        return hasText(item.getDiaChiChiTiet())
+                || hasText(item.getTinhThanh())
+                || hasText(item.getQuanHuyen())
+                || hasText(item.getPhuongXa());
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) return null;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     static class KhachHangResponse {

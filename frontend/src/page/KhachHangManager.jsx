@@ -6,7 +6,7 @@ import "./ManagerForm.css";
 import { ActionIcon } from "../moduleIcons.jsx";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
+    import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
 
 // ─── constants ──────────────────────────────────────────────────────────────
 const LOAI_KHACH_HANG_OPTIONS = [
@@ -41,13 +41,19 @@ const emptyForm = {
   tinhTrangId: "",
   maSoThue: "",
   nhanVienPhuTrachId: "",
+  diaChiId: "",
+  diaChiChiTiet: "",
+  tinhThanh: "",
+  quanHuyen: "",
+  phuongXa: "",
+  loaiDiaChi: "LienHe",
 };
 function formatDiaChi(diaChiList) {
   if (!Array.isArray(diaChiList) || diaChiList.length === 0) return null;
   const dc = diaChiList.find((d) => d.isDefault) ?? diaChiList[0];
   return [dc.diaChiChiTiet, dc.phuongXa, dc.quanHuyen, dc.tinhThanh]
-    .filter(Boolean)
-    .join(", ");
+      .filter(Boolean)
+      .join(", ");
 }
 function formatDateTime(value) {
   if (!value) return "-";
@@ -76,18 +82,18 @@ function KhachHangManager() {
 
   // map id → họ tên nhanh
   const nhanVienMap = useMemo(
-    () =>
-      new Map(
-        nhanVienList.map((nv) => [
-          String(nv.id),
-          nv.hoTen ?? nv.tenNhanVien ?? `NV #${nv.id}`,
-        ]),
-      ),
-    [nhanVienList],
+      () =>
+          new Map(
+              nhanVienList.map((nv) => [
+                String(nv.id),
+                nv.hoTen ?? nv.tenNhanVien ?? `NV #${nv.id}`,
+              ]),
+          ),
+      [nhanVienList],
   );
 
   const tenNhanVien = (id) =>
-    id != null ? (nhanVienMap.get(String(id)) ?? `NV #${id}`) : "—";
+      id != null ? (nhanVienMap.get(String(id)) ?? `NV #${id}`) : "—";
 
   // ── fetch ──
   const loadKhachHang = async () => {
@@ -127,33 +133,33 @@ function KhachHangManager() {
     const keyword = search.trim().toLowerCase();
     return items.filter((item) => {
       const matchSearch =
-        !keyword ||
-        [
-          item.maKhachHang,
-          item.tenKhachHang,
-          item.email,
-          item.soDienThoai,
-          item.maSoThue,
-        ]
-          .filter(Boolean)
-          .some((v) => String(v).toLowerCase().includes(keyword));
+          !keyword ||
+          [
+            item.maKhachHang,
+            item.tenKhachHang,
+            item.email,
+            item.soDienThoai,
+            item.maSoThue,
+          ]
+              .filter(Boolean)
+              .some((v) => String(v).toLowerCase().includes(keyword));
       const matchLoai =
-        !filterLoai || String(item.loaiKhachHangId) === filterLoai;
+          !filterLoai || String(item.loaiKhachHangId) === filterLoai;
       const matchTinhTrang =
-        !filterTinhTrang || String(item.tinhTrangId) === filterTinhTrang;
+          !filterTinhTrang || String(item.tinhTrangId) === filterTinhTrang;
       return matchSearch && matchLoai && matchTinhTrang;
     });
   }, [items, search, filterLoai, filterTinhTrang]);
 
   // ── stats ──
   const stats = useMemo(
-    () => ({
-      total: items.length,
-      doanhnghiep: items.filter((i) => i.loaiKhachHangId === 2).length,
-      canhan: items.filter((i) => i.loaiKhachHangId === 1).length,
-      vip: items.filter((i) => i.loaiKhachHangId === 3).length,
-    }),
-    [items],
+      () => ({
+        total: items.length,
+        doanhnghiep: items.filter((i) => i.loaiKhachHangId === 2).length,
+        canhan: items.filter((i) => i.loaiKhachHangId === 1).length,
+        vip: items.filter((i) => i.loaiKhachHangId === 3).length,
+      }),
+      [items],
   );
 
   // ── form handlers ──
@@ -167,6 +173,26 @@ function KhachHangManager() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const buildDiaChiList = () => {
+    const hasAddress =
+        form.diaChiChiTiet.trim() ||
+        form.tinhThanh.trim() ||
+        form.quanHuyen.trim() ||
+        form.phuongXa.trim();
+    if (!hasAddress) return [];
+    return [
+      {
+        id: form.diaChiId ? Number(form.diaChiId) : null,
+        diaChiChiTiet: form.diaChiChiTiet.trim() || null,
+        tinhThanh: form.tinhThanh.trim() || null,
+        quanHuyen: form.quanHuyen.trim() || null,
+        phuongXa: form.phuongXa.trim() || null,
+        loaiDiaChi: form.loaiDiaChi || "LienHe",
+        isDefault: true,
+      },
+    ];
   };
 
   const validateForm = () => {
@@ -200,31 +226,32 @@ function KhachHangManager() {
       tinhTrangId: toInt(form.tinhTrangId),
       maSoThue: form.maSoThue.trim() || null,
       nhanVienPhuTrachId: toInt(form.nhanVienPhuTrachId),
+      diaChiList: buildDiaChiList(),
     };
 
     try {
       const res = await authFetch(
-        editingId
-          ? `${API_BASE_URL}/api/khach-hang/${editingId}`
-          : `${API_BASE_URL}/api/khach-hang`,
-        {
-          method: editingId ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
+          editingId
+              ? `${API_BASE_URL}/api/khach-hang/${editingId}`
+              : `${API_BASE_URL}/api/khach-hang`,
+          {
+            method: editingId ? "PUT" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          },
       );
       if (!res.ok)
         throw new Error(
-          editingId
-            ? `Cập nhật thất bại (${res.status})`
-            : `Tạo mới thất bại (${res.status})`,
+            editingId
+                ? `Cập nhật thất bại (${res.status})`
+                : `Tạo mới thất bại (${res.status})`,
         );
       await loadKhachHang();
       resetForm();
       setSuccess(
-        editingId
-          ? "Cập nhật khách hàng thành công"
-          : "Thêm khách hàng thành công",
+          editingId
+              ? "Cập nhật khách hàng thành công"
+              : "Thêm khách hàng thành công",
       );
     } catch (err) {
       setError(err.message || "Không thể lưu khách hàng");
@@ -234,6 +261,9 @@ function KhachHangManager() {
   };
 
   const handleEdit = (item) => {
+    const diaChi = Array.isArray(item.diaChiList)
+        ? item.diaChiList.find((dc) => dc.isDefault) ?? item.diaChiList[0]
+        : null;
     setEditingId(item.id);
     setForm({
       tenKhachHang: item.tenKhachHang ?? "",
@@ -243,6 +273,12 @@ function KhachHangManager() {
       tinhTrangId: item.tinhTrangId ?? "",
       maSoThue: item.maSoThue ?? "",
       nhanVienPhuTrachId: item.nhanVienPhuTrachId ?? "",
+      diaChiId: diaChi?.id ?? "",
+      diaChiChiTiet: diaChi?.diaChiChiTiet ?? "",
+      tinhThanh: diaChi?.tinhThanh ?? "",
+      quanHuyen: diaChi?.quanHuyen ?? "",
+      phuongXa: diaChi?.phuongXa ?? "",
+      loaiDiaChi: diaChi?.loaiDiaChi ?? "LienHe",
     });
     setError("");
     setSuccess("");
@@ -269,239 +305,298 @@ function KhachHangManager() {
 
   // ─── render ─────────────────────────────────────────────────────────────
   return (
-    <main className="hopdong-page kh-page">
-      {/* HEADER */}
-      <section className="hopdong-header">
-        <div>
-          <p className="eyebrow">CRM / Khách hàng</p>
-          <h1>Quản lý khách hàng</h1>
-        </div>
-        <div className="toolbar">
-          <input
-            className="search"
-            type="search"
-            placeholder="Tìm theo mã, tên, email, SĐT..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <select
-            className="search kh-select-sm"
-            value={filterLoai}
-            onChange={(e) => setFilterLoai(e.target.value)}
-          >
-            <option value="">Tất cả loại</option>
-            {LOAI_KHACH_HANG_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-          <select
-            className="search kh-select-sm"
-            value={filterTinhTrang}
-            onChange={(e) => setFilterTinhTrang(e.target.value)}
-          >
-            <option value="">Tất cả trạng thái</option>
-            {TINH_TRANG_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-          <button
-            className="secondary-btn btn-icon"
-            type="button"
-            onClick={loadKhachHang}
-          >
-            <ActionIcon name="refresh" /> Tải lại
-          </button>
-        </div>
-      </section>
+      <main className="hopdong-page kh-page">
+        {/* HEADER */}
+        <section className="hopdong-header">
+          <div>
+            <p className="eyebrow">CRM / Khách hàng</p>
+            <h1>Quản lý khách hàng</h1>
+          </div>
+          <div className="toolbar">
+            <input
+                className="search"
+                type="search"
+                placeholder="Tìm theo mã, tên, email, SĐT..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+            <select
+                className="search kh-select-sm"
+                value={filterLoai}
+                onChange={(e) => setFilterLoai(e.target.value)}
+            >
+              <option value="">Tất cả loại</option>
+              {LOAI_KHACH_HANG_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+              ))}
+            </select>
+            <select
+                className="search kh-select-sm"
+                value={filterTinhTrang}
+                onChange={(e) => setFilterTinhTrang(e.target.value)}
+            >
+              <option value="">Tất cả trạng thái</option>
+              {TINH_TRANG_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+              ))}
+            </select>
+            <button
+                className="secondary-btn btn-icon"
+                type="button"
+                onClick={loadKhachHang}
+            >
+              <ActionIcon name="refresh" /> Tải lại
+            </button>
+          </div>
+        </section>
 
-      {/* STATS */}
-      <section className="stats-row">
-        <article className="stat-card">
-          <span>Tổng khách hàng</span>
-          <strong>{stats.total}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Cá nhân</span>
-          <strong>{stats.canhan}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Doanh nghiệp</span>
-          <strong>{stats.doanhnghiep}</strong>
-        </article>
-        <article className="stat-card">
-          <span>VIP</span>
-          <strong>{stats.vip}</strong>
-        </article>
-      </section>
+        {/* STATS */}
+        <section className="stats-row">
+          <article className="stat-card">
+            <span>Tổng khách hàng</span>
+            <strong>{stats.total}</strong>
+          </article>
+          <article className="stat-card">
+            <span>Cá nhân</span>
+            <strong>{stats.canhan}</strong>
+          </article>
+          <article className="stat-card">
+            <span>Doanh nghiệp</span>
+            <strong>{stats.doanhnghiep}</strong>
+          </article>
+          <article className="stat-card">
+            <span>VIP</span>
+            <strong>{stats.vip}</strong>
+          </article>
+        </section>
 
-      {/* CONTENT */}
-      <section className="content-grid" style={!canWriteKhachHang ? { gridTemplateColumns: "1fr" } : undefined}>
-        {/* FORM */}
-        {canWriteKhachHang ? <form className="panel form-panel" onSubmit={handleSubmit}>
-          <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
-            <div className="form-title-wrap">
-              <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
+        {/* CONTENT */}
+        <section className="content-grid" style={!canWriteKhachHang ? { gridTemplateColumns: "1fr" } : undefined}>
+          {/* FORM */}
+          {canWriteKhachHang ? <form className="panel form-panel" onSubmit={handleSubmit}>
+            <div className={`panel-head form-panel-head ${editingId ? "is-edit" : ""}`}>
+              <div className="form-title-wrap">
+                <div className="form-title-icon" aria-hidden="true">{editingId ? "✎" : "+"}</div>
+                <div>
+                  <span className="form-mode-badge">{editingId ? "Đang chỉnh sửa" : "Tạo mới"}</span>
+                  <h2>
+                    {editingId ? "Cập nhật khách hàng" : "Thêm khách hàng mới"}
+                  </h2>
+                  <p>Điền hồ sơ, phân loại và người phụ trách.</p>
+                </div>
+              </div>
+              {editingId ? (
+                  <button className="ghost-btn form-cancel-btn btn-icon" type="button" onClick={resetForm}>
+                    <ActionIcon name="close" /> Hủy sửa
+                  </button>
+              ) : null}
+            </div>
+
+            <div className="manager-form-body">
+              <div className="form-section">
+                <div className="section-title">Hồ sơ khách hàng</div>
+                <label className="field">
+                  Tên khách hàng <span className="kh-req">*</span>
+                  <input
+                      name="tenKhachHang"
+                      value={form.tenKhachHang}
+                      onChange={handleChange}
+                      placeholder="Nguyễn Văn A"
+                  />
+                </label>
+
+                <div className="two-col">
+                  <label className="field">
+                    Email
+                    <input
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        placeholder="example@mail.com"
+                    />
+                  </label>
+                  <label className="field">
+                    Số điện thoại
+                    <input
+                        name="soDienThoai"
+                        value={form.soDienThoai}
+                        onChange={handleChange}
+                        placeholder="0901234567"
+                    />
+                  </label>
+                </div>
+
+                <label className="field">
+                  Mã số thuế
+                  <input
+                      name="maSoThue"
+                      value={form.maSoThue}
+                      onChange={handleChange}
+                      placeholder="0123456789"
+                  />
+                </label>
+              </div>
+
+              <div className="form-section">
+                <div className="section-title">Địa chỉ</div>
+                <label className="field">
+                  Địa chỉ chi tiết
+                  <input
+                      name="diaChiChiTiet"
+                      value={form.diaChiChiTiet}
+                      onChange={handleChange}
+                      placeholder="Số nhà, tên đường..."
+                  />
+                </label>
+
+                <div className="two-col">
+                  <label className="field">
+                    Phường/Xã
+                    <input
+                        name="phuongXa"
+                        value={form.phuongXa}
+                        onChange={handleChange}
+                        placeholder="Phường/Xã"
+                    />
+                  </label>
+                  <label className="field">
+                    Quận/Huyện
+                    <input
+                        name="quanHuyen"
+                        value={form.quanHuyen}
+                        onChange={handleChange}
+                        placeholder="Quận/Huyện"
+                    />
+                  </label>
+                </div>
+
+                <div className="two-col">
+                  <label className="field">
+                    Tỉnh/Thành
+                    <input
+                        name="tinhThanh"
+                        value={form.tinhThanh}
+                        onChange={handleChange}
+                        placeholder="Tỉnh/Thành phố"
+                    />
+                  </label>
+                  <label className="field">
+                    Loại địa chỉ
+                    <select
+                        name="loaiDiaChi"
+                        value={form.loaiDiaChi}
+                        onChange={handleChange}
+                    >
+                      // KhachHangManager.jsx
+                      <option value="Office">Liên hệ</option>
+                      <option value="Shipping">Giao hàng</option>
+                      <option value="Billing">Hóa đơn</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-section">
+                <div className="section-title">Phân loại</div>
+                <div className="two-col">
+                  <label className="field">
+                    Loại khách hàng
+                    <select
+                        name="loaiKhachHangId"
+                        value={form.loaiKhachHangId}
+                        onChange={handleChange}
+                    >
+                      <option value="">-- Chọn loại --</option>
+                      {LOAI_KHACH_HANG_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value}>
+                            {o.label}
+                          </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="field">
+                    Tình trạng
+                    <select
+                        name="tinhTrangId"
+                        value={form.tinhTrangId}
+                        onChange={handleChange}
+                    >
+                      <option value="">-- Chọn tình trạng --</option>
+                      {TINH_TRANG_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value}>
+                            {o.label}
+                          </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-section">
+                <div className="section-title">Phân công</div>
+                <label className="field">
+                  Nhân viên phụ trách
+                  {nhanVienList.length > 0 ? (
+                      <select
+                          name="nhanVienPhuTrachId"
+                          value={form.nhanVienPhuTrachId}
+                          onChange={handleChange}
+                      >
+                        <option value="">-- Chọn nhân viên --</option>
+                        {nhanVienList.map((nv) => (
+                            <option key={nv.id} value={nv.id}>
+                              {nv.hoTen ?? nv.tenNhanVien ?? `NV #${nv.id}`}
+                            </option>
+                        ))}
+                      </select>
+                  ) : (
+                      <input
+                          name="nhanVienPhuTrachId"
+                          type="number"
+                          min="1"
+                          value={form.nhanVienPhuTrachId}
+                          onChange={handleChange}
+                          placeholder="ID nhân viên"
+                      />
+                  )}
+                </label>
+              </div>
+
+              {error ? <div className="message error">{error}</div> : null}
+              {success ? <div className="message success">{success}</div> : null}
+
+              <div className="actions">
+                <button className="secondary-btn btn-icon" type="button" onClick={resetForm}>
+                  <ActionIcon name="refresh" /> Làm mới
+                </button>
+                <button className="primary-btn btn-icon" type="submit" disabled={submitting}>
+                  <ActionIcon name="save" />
+                  {submitting ? "Đang lưu..." : editingId ? "Cập nhật khách hàng" : "Thêm khách hàng"}
+                </button>
+              </div>
+            </div>
+          </form> : null}
+
+          {/* TABLE */}
+          <section className="panel table-panel">
+            <div className="panel-head">
               <div>
-                <span className="form-mode-badge">{editingId ? "Đang chỉnh sửa" : "Tạo mới"}</span>
-              <h2>
-                {editingId ? "Cập nhật khách hàng" : "Thêm khách hàng mới"}
-              </h2>
-                <p>Điền hồ sơ, phân loại và người phụ trách.</p>
+                <h2>Danh sách khách hàng</h2>
+                <p>
+                  Hiển thị {filteredItems.length}/{items.length} bản ghi.
+                </p>
               </div>
-            </div>
-            {editingId ? (
-              <button className="ghost-btn form-cancel-btn btn-icon" type="button" onClick={resetForm}>
-                <ActionIcon name="close" /> Hủy sửa
-              </button>
-            ) : null}
-          </div>
-
-          <div className="manager-form-body">
-            <div className="form-section">
-              <div className="section-title">Hồ sơ khách hàng</div>
-              <label className="field">
-                Tên khách hàng <span className="kh-req">*</span>
-                <input
-                  name="tenKhachHang"
-                  value={form.tenKhachHang}
-                  onChange={handleChange}
-                  placeholder="Nguyễn Văn A"
-                />
-              </label>
-
-              <div className="two-col">
-                <label className="field">
-                  Email
-                  <input
-                    name="email"
-                    type="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="example@mail.com"
-                  />
-                </label>
-                <label className="field">
-                  Số điện thoại
-                  <input
-                    name="soDienThoai"
-                    value={form.soDienThoai}
-                    onChange={handleChange}
-                    placeholder="0901234567"
-                  />
-                </label>
-              </div>
-
-              <label className="field">
-                Mã số thuế
-                <input
-                  name="maSoThue"
-                  value={form.maSoThue}
-                  onChange={handleChange}
-                  placeholder="0123456789"
-                />
-              </label>
+              {loading ? <span className="loading">Đang tải...</span> : null}
             </div>
 
-            <div className="form-section">
-              <div className="section-title">Phân loại</div>
-              <div className="two-col">
-                <label className="field">
-                  Loại khách hàng
-                  <select
-                    name="loaiKhachHangId"
-                    value={form.loaiKhachHangId}
-                    onChange={handleChange}
-                  >
-                    <option value="">-- Chọn loại --</option>
-                    {LOAI_KHACH_HANG_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="field">
-                  Tình trạng
-                  <select
-                    name="tinhTrangId"
-                    value={form.tinhTrangId}
-                    onChange={handleChange}
-                  >
-                    <option value="">-- Chọn tình trạng --</option>
-                    {TINH_TRANG_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            </div>
-
-            <div className="form-section">
-              <div className="section-title">Phân công</div>
-              <label className="field">
-                Nhân viên phụ trách
-                {nhanVienList.length > 0 ? (
-                  <select
-                    name="nhanVienPhuTrachId"
-                    value={form.nhanVienPhuTrachId}
-                    onChange={handleChange}
-                  >
-                    <option value="">-- Chọn nhân viên --</option>
-                    {nhanVienList.map((nv) => (
-                      <option key={nv.id} value={nv.id}>
-                        {nv.hoTen ?? nv.tenNhanVien ?? `NV #${nv.id}`}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    name="nhanVienPhuTrachId"
-                    type="number"
-                    min="1"
-                    value={form.nhanVienPhuTrachId}
-                    onChange={handleChange}
-                    placeholder="ID nhân viên"
-                  />
-                )}
-              </label>
-            </div>
-
-            {error ? <div className="message error">{error}</div> : null}
-            {success ? <div className="message success">{success}</div> : null}
-
-            <div className="actions">
-              <button className="secondary-btn btn-icon" type="button" onClick={resetForm}>
-                <ActionIcon name="refresh" /> Làm mới
-              </button>
-              <button className="primary-btn btn-icon" type="submit" disabled={submitting}>
-                      <ActionIcon name="save" />
-                {submitting ? "Đang lưu..." : editingId ? "Cập nhật khách hàng" : "Thêm khách hàng"}
-              </button>
-            </div>
-          </div>
-        </form> : null}
-
-        {/* TABLE */}
-        <section className="panel table-panel">
-          <div className="panel-head">
-            <div>
-              <h2>Danh sách khách hàng</h2>
-              <p>
-                Hiển thị {filteredItems.length}/{items.length} bản ghi.
-              </p>
-            </div>
-            {loading ? <span className="loading">Đang tải...</span> : null}
-          </div>
-
-          <div className="table-wrap">
-            <table>
-              <thead>
+            <div className="table-wrap">
+              <table>
+                <thead>
                 <tr>
                   <th>Mã KH</th>
                   <th>Tên khách hàng</th>
@@ -513,127 +608,126 @@ function KhachHangManager() {
                   <th>Cập nhật</th>
                   <th>Hành động</th>
                 </tr>
-              </thead>
-              <tbody>
+                </thead>
+                <tbody>
                 {filteredItems.length === 0 ? (
-                  <tr>
-                    <td colSpan="9" className="empty-row">
-                      {loading
-                        ? "Đang tải dữ liệu..."
-                        : "Không có dữ liệu phù hợp"}
-                    </td>
-                  </tr>
+                    <tr>
+                      <td colSpan="9" className="empty-row">
+                        {loading
+                            ? "Đang tải dữ liệu..."
+                            : "Không có dữ liệu phù hợp"}
+                      </td>
+                    </tr>
                 ) : (
-                  filteredItems.map((item) => (
-                    <tr key={item.id}>
-                      <td>
+                    filteredItems.map((item) => (
+                        <tr key={item.id}>
+                          <td>
                         <span className="kh-ma">
                           {item.maKhachHang || `#${item.id}`}
                         </span>
-                      </td>
-                      <td>
-                        <div className="stacked-cell">
-                          <strong>{item.tenKhachHang}</strong>
-                          {item.maSoThue && (
-                            <span style={{ color: "#6d7c91", fontSize: 12 }}>
+                          </td>
+                          <td>
+                            <div className="stacked-cell">
+                              <strong>{item.tenKhachHang}</strong>
+                              {item.maSoThue && (
+                                  <span style={{ color: "#6d7c91", fontSize: 12 }}>
                               MST: {item.maSoThue}
                             </span>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="stacked-cell">
-                          {item.email && <span>{item.email}</span>}
-                          {item.soDienThoai && (
-                            <span style={{ color: "#6d7c91", fontSize: 12 }}>
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="stacked-cell">
+                              {item.email && <span>{item.email}</span>}
+                              {item.soDienThoai && (
+                                  <span style={{ color: "#6d7c91", fontSize: 12 }}>
                               {item.soDienThoai}
                             </span>
-                          )}
-                          {!item.email && !item.soDienThoai && (
-                            <span style={{ color: "#aaa" }}>—</span>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="stacked-cell">
-                          {formatDiaChi(item.diaChiList) ? (
-                            <span>{formatDiaChi(item.diaChiList)}</span>
-                          ) : (
-                            <span style={{ color: "#aaa" }}>—</span>
-                          )}
-                          {item.diaChiList?.length > 1 && (
-                            <span style={{ color: "#6d7c91", fontSize: 12 }}>
+                              )}
+                              {!item.email && !item.soDienThoai && (
+                                  <span style={{ color: "#aaa" }}>—</span>
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="stacked-cell">
+                              {formatDiaChi(item.diaChiList) ? (
+                                  <span>{formatDiaChi(item.diaChiList)}</span>
+                              ) : (
+                                  <span style={{ color: "#aaa" }}>—</span>
+                              )}
+                              {item.diaChiList?.length > 1 && (
+                                  <span style={{ color: "#6d7c91", fontSize: 12 }}>
                               +{item.diaChiList.length - 1} địa chỉ khác
                             </span>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        {item.loaiKhachHangId ? (
-                          <span
-                            className={`badge ${LOAI_BADGE_MAP[item.loaiKhachHangId] ?? "badge"}`}
-                          >
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            {item.loaiKhachHangId ? (
+                                <span
+                                    className={`badge ${LOAI_BADGE_MAP[item.loaiKhachHangId] ?? "badge"}`}
+                                >
                             {LOAI_KHACH_HANG_OPTIONS.find(
-                              (o) => o.value === item.loaiKhachHangId,
+                                (o) => o.value === item.loaiKhachHangId,
                             )?.label ?? `Loại ${item.loaiKhachHangId}`}
                           </span>
-                        ) : (
-                          "—"
-                        )}
-                      </td>
-                      <td>
-                        {item.tinhTrangId ? (
-                          <span
-                            className={`badge ${TINH_TRANG_BADGE_MAP[item.tinhTrangId] ?? "badge"}`}
-                          >
+                            ) : (
+                                "—"
+                            )}
+                          </td>
+                          <td>
+                            {item.tinhTrangId ? (
+                                <span
+                                    className={`badge ${TINH_TRANG_BADGE_MAP[item.tinhTrangId] ?? "badge"}`}
+                                >
                             {TINH_TRANG_OPTIONS.find(
-                              (o) => o.value === item.tinhTrangId,
+                                (o) => o.value === item.tinhTrangId,
                             )?.label ?? `Trạng thái ${item.tinhTrangId}`}
                           </span>
-                        ) : (
-                          "—"
-                        )}
-                      </td>
-                      <td>
-                        {/* Ưu tiên tenNhanVienPhuTrach từ API, fallback về map local */}
+                            ) : (
+                                "—"
+                            )}
+                          </td>
+                          <td>
                         <span className="kh-nv">
                           {item.tenNhanVienPhuTrach
-                            ? item.tenNhanVienPhuTrach
-                            : tenNhanVien(item.nhanVienPhuTrachId)}
+                              ? item.tenNhanVienPhuTrach
+                              : tenNhanVien(item.nhanVienPhuTrachId)}
                         </span>
-                      </td>
-                      <td>{formatDateTime(item.updatedAt)}</td>
-                      <td>
-                        <div className="row-actions">
-                          {canWriteKhachHang ? (
-                            <>
-                          <button
-                            type="button"
-                            className="ghost-btn btn-icon"
-                            onClick={() => handleEdit(item)}
-                          >
-                            <ActionIcon name="edit" /> Sửa
-                          </button>
-                          <button
-                            type="button"
-                            className="danger-btn btn-icon"
-                            onClick={() => handleDelete(item.id)}
-                          >
-                            <ActionIcon name="delete" /> Xóa
-                          </button>
-                            </>
-                          ) : null}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                          </td>
+                          <td>{formatDateTime(item.updatedAt)}</td>
+                          <td>
+                            <div className="row-actions">
+                              {canWriteKhachHang ? (
+                                  <>
+                                    <button
+                                        type="button"
+                                        className="ghost-btn btn-icon"
+                                        onClick={() => handleEdit(item)}
+                                    >
+                                      <ActionIcon name="edit" /> Sửa
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="danger-btn btn-icon"
+                                        onClick={() => handleDelete(item.id)}
+                                    >
+                                      <ActionIcon name="delete" /> Xóa
+                                    </button>
+                                  </>
+                              ) : null}
+                            </div>
+                          </td>
+                        </tr>
+                    ))
                 )}
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          </section>
         </section>
-      </section>
-    </main>
+      </main>
   );
 }
 

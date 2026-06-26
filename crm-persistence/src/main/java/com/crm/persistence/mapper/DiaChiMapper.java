@@ -19,4 +19,17 @@ public final class DiaChiMapper {
                 jpa.isDefault()
         );
     }
+
+    public static DiaChiJpaEntity toJpa(DiaChi diaChi) {
+        DiaChiJpaEntity jpa = new DiaChiJpaEntity();
+        jpa.setId(diaChi.getId());
+        jpa.setKhachHangId(diaChi.getKhachHangId());
+        jpa.setDiaChiChiTiet(diaChi.getDiaChiChiTiet());
+        jpa.setTinhThanh(diaChi.getTinhThanh());
+        jpa.setQuanHuyen(diaChi.getQuanHuyen());
+        jpa.setPhuongXa(diaChi.getPhuongXa());
+        jpa.setLoaiDiaChi(diaChi.getLoaiDiaChi());
+        jpa.setDefault(diaChi.isDefault());
+        return jpa;
+    }
 }
