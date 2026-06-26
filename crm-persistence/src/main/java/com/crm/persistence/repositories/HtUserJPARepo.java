@@ -85,6 +85,8 @@ public interface HtUserJPARepo extends JpaRepository<HtUserJpaEntity,Integer> {
                    u.Username AS username,
                    u.NhanSu_Id AS nhanSuId,
                    ns.HoTen AS hoTen,
+                   ns.Email AS email,
+                   ns.SoDienThoai AS soDienThoai,
                    u.Role_Id AS roleId,
                    r.TenRole AS roleName,
                    u.TrangThai AS trangThai
@@ -100,6 +102,8 @@ public interface HtUserJPARepo extends JpaRepository<HtUserJpaEntity,Integer> {
         String getUsername();
         Integer getNhanSuId();
         String getHoTen();
+        String getEmail();
+        String getSoDienThoai();
         Integer getRoleId();
         String getRoleName();
         String getTrangThai();

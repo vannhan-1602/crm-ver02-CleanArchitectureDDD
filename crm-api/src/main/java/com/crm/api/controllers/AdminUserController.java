@@ -3,6 +3,7 @@ package com.crm.api.controllers;
 import com.crm.api.security.AuthService;
 import com.crm.api.security.ModulePermission;
 import com.crm.api.security.ModuleRegistry;
+import com.crm.persistence.jpa.HtRoleJpaEntity;
 import com.crm.persistence.jpa.HtUserJpaEntity;
 import com.crm.persistence.repositories.HtUserJPARepo;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,6 +37,13 @@ public class AdminUserController {
         return moduleRegistry.getModules();
     }
 
+    @GetMapping("/roles")
+    public List<RoleResponse> roles() {
+        return authService.getRoles().stream()
+                .map(RoleResponse::from)
+                .toList();
+    }
+
     @GetMapping("/users")
     public List<UserSummaryResponse> users() {
         return authService.getUsers().stream()
@@ -46,6 +55,21 @@ public class AdminUserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserCreatedResponse createUser(@RequestBody AuthService.CreateUserInput request) {
         HtUserJpaEntity user = authService.createUser(request);
+        return new UserCreatedResponse(user.getId(), user.getUsername(), user.getNhanSuId(),
+                user.getRoleId(), user.getTrangThai());
+    }
+
+    @PutMapping("/users/{id}")
+    public UserCreatedResponse updateUser(@PathVariable Integer id,
+                                          @RequestBody AuthService.UpdateUserInput request) {
+        HtUserJpaEntity user = authService.updateUser(id, request);
+        return new UserCreatedResponse(user.getId(), user.getUsername(), user.getNhanSuId(),
+                user.getRoleId(), user.getTrangThai());
+    }
+
+    @DeleteMapping("/users/{id}")
+    public UserCreatedResponse deactivateUser(@PathVariable Integer id) {
+        HtUserJpaEntity user = authService.deactivateUser(id);
         return new UserCreatedResponse(user.getId(), user.getUsername(), user.getNhanSuId(),
                 user.getRoleId(), user.getTrangThai());
     }
@@ -77,11 +101,19 @@ public class AdminUserController {
                                Integer roleId, String trangThai) {
     }
 
+    record RoleResponse(Integer id, String tenRole, String moTa) {
+        static RoleResponse from(HtRoleJpaEntity role) {
+            return new RoleResponse(role.getId(), role.getTenRole(), role.getMoTa());
+        }
+    }
+
     static class UserSummaryResponse {
         private Integer id;
         private String username;
         private Integer nhanSuId;
         private String hoTen;
+        private String email;
+        private String soDienThoai;
         private Integer roleId;
         private String roleName;
         private String trangThai;
@@ -92,6 +124,8 @@ public class AdminUserController {
             response.username = projection.getUsername();
             response.nhanSuId = projection.getNhanSuId();
             response.hoTen = projection.getHoTen();
+            response.email = projection.getEmail();
+            response.soDienThoai = projection.getSoDienThoai();
             response.roleId = projection.getRoleId();
             response.roleName = projection.getRoleName();
             response.trangThai = projection.getTrangThai();
@@ -102,6 +136,8 @@ public class AdminUserController {
         public String getUsername() { return username; }
         public Integer getNhanSuId() { return nhanSuId; }
         public String getHoTen() { return hoTen; }
+        public String getEmail() { return email; }
+        public String getSoDienThoai() { return soDienThoai; }
         public Integer getRoleId() { return roleId; }
         public String getRoleName() { return roleName; }
         public String getTrangThai() { return trangThai; }
