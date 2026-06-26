@@ -191,6 +191,51 @@
   background: #f8fafc;
 }
 
+.ticket-attachment-control {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ticket-attachment-control input[type="file"] {
+  padding: 9px 10px;
+  cursor: pointer;
+}
+
+.ticket-attachment-status {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.ticket-attachment-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.ticket-attachment-preview a {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ticket-attachment-preview a:hover {
+  text-decoration: underline;
+}
+
+.ticket-attachment-preview button {
+  padding: 5px 8px;
+  font-size: 11px;
+}
+
 @media (max-width: 1200px) {
   .ticket-grid {
     grid-template-columns: 1fr;

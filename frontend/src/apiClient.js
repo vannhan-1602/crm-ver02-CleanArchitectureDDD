@@ -164,6 +164,12 @@ function assertCanWriteRequest(input, method = "GET") {
   if (moduleKey === "SAN_PHAM" && path.includes("/hinhanh")) {
     return;
   }
+  if (moduleKey === "TICKET" && path.includes("/attachments") && !canWriteModule(moduleKey)) {
+    throw new Error("Bạn không có quyền ghi nên không thể thêm, sửa hoặc xóa dữ liệu.");
+  }
+  if (moduleKey === "TICKET" && path.includes("/attachments")) {
+    return;
+  }
   if (moduleKey && !canWriteModuleForMethod(moduleKey, method)) {
     throw new Error("Bạn không có quyền ghi nên không thể thêm, sửa hoặc xóa dữ liệu.");
   }

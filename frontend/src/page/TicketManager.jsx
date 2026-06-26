@@ -97,6 +97,7 @@ export default function TicketManager() {
   const [filterPriority, setFilterPriority] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingAttachment, setUploadingAttachment] = useState({ ticket: false, feedback: false });
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const khachHangMap = useMemo(
@@ -238,6 +239,39 @@ export default function TicketManager() {
   const handleFeedbackChange = (event) => {
     const { name, value } = event.target;
     setFeedbackForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const uploadAttachment = async (file, target) => {
+    if (!file) return;
+
+    const data = new FormData();
+    data.append("file", file);
+    setUploadingAttachment((prev) => ({ ...prev, [target]: true }));
+    try {
+      const res = await ax.post("/api/tickets/attachments", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const url = res.data?.url || "";
+      if (!url) throw new Error("Upload khong tra ve duong dan file");
+      if (target === "ticket") {
+        setForm((prev) => ({ ...prev, fileDinhKem: url }));
+      } else {
+        setFeedbackForm((prev) => ({ ...prev, fileDinhKem: url }));
+      }
+      setMessage({ type: "success", text: "Đã tải file đính kèm lên." });
+    } catch (err) {
+      setMessage({ type: "error", text: `Không thể tải file đính kèm (${err.response?.status ?? err.message})` });
+    } finally {
+      setUploadingAttachment((prev) => ({ ...prev, [target]: false }));
+    }
+  };
+
+  const clearAttachment = (target) => {
+    if (target === "ticket") {
+      setForm((prev) => ({ ...prev, fileDinhKem: "" }));
+    } else {
+      setFeedbackForm((prev) => ({ ...prev, fileDinhKem: "" }));
+    }
   };
 
   const validate = () => {
@@ -459,7 +493,26 @@ export default function TicketManager() {
                   </select>
                 </label>
                 <label className="field">File đính kèm
-                  <input name="fileDinhKem" value={form.fileDinhKem} onChange={handleChange} placeholder="/uploads/..." />
+                  <div className="ticket-attachment-control">
+                    <input
+                      type="file"
+                      onChange={(event) => uploadAttachment(event.target.files?.[0], "ticket")}
+                    />
+                    {uploadingAttachment.ticket ? (
+                      <span className="ticket-attachment-status">Đang tải file...</span>
+                    ) : form.fileDinhKem ? (
+                      <div className="ticket-attachment-preview">
+                        <a href={`${API_BASE_URL}${form.fileDinhKem}`} target="_blank" rel="noreferrer">
+                          {form.fileDinhKem.split("/").pop()}
+                        </a>
+                        <button type="button" className="ghost-btn btn-icon" onClick={() => clearAttachment("ticket")}>
+                          <ActionIcon name="close" /> Bỏ file
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="ticket-attachment-status">Chưa chọn file</span>
+                    )}
+                  </div>
                 </label>
               </div>
             </div>
@@ -618,7 +671,26 @@ export default function TicketManager() {
                       </select>
                     </label>
                     <label>File đính kèm
-                      <input name="fileDinhKem" value={feedbackForm.fileDinhKem} onChange={handleFeedbackChange} placeholder="/uploads/..." />
+                      <div className="ticket-attachment-control">
+                        <input
+                          type="file"
+                          onChange={(event) => uploadAttachment(event.target.files?.[0], "feedback")}
+                        />
+                        {uploadingAttachment.feedback ? (
+                          <span className="ticket-attachment-status">Đang tải file...</span>
+                        ) : feedbackForm.fileDinhKem ? (
+                          <div className="ticket-attachment-preview">
+                            <a href={`${API_BASE_URL}${feedbackForm.fileDinhKem}`} target="_blank" rel="noreferrer">
+                              {feedbackForm.fileDinhKem.split("/").pop()}
+                            </a>
+                            <button type="button" className="ghost-btn btn-icon" onClick={() => clearAttachment("feedback")}>
+                              <ActionIcon name="close" /> Bỏ file
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="ticket-attachment-status">Chưa chọn file</span>
+                        )}
+                      </div>
                     </label>
                   </div>
                   <label>Nội dung phản hồi <span className="ticket-req">*</span>
